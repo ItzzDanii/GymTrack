@@ -1,0 +1,22 @@
+*{
+    transition: background-image 0.5s all; 
+}
+
+body {
+  
+  /* Blocca l'immagine in modo che non si ripeta */
+  background-repeat: no-repeat;
+  
+  /* Centra l'immagine nello schermo */
+  background-position: center center;
+  
+  /* Forza l'immagine a coprire l'intera area del browser */
+  background-size: cover;
+  
+  /* Tiene lo sfondo fisso così il testo ci scorre sopra */
+  background-attachment: fixed;
+  
+  /* MAGIA DELLA PIXEL ART: Impedisce al browser di sfocare l'immagine quando la ingrandisce */
+  image-rendering: pixelated; 
+  image-rendering: crisp-edges; /* Per compatibilità con alcuni browser */
+}
