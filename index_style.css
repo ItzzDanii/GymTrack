@@ -15,7 +15,7 @@ body {
   image-rendering: crisp-edges;
 }
 
-#login {
+#login, #register {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -27,26 +27,48 @@ body {
   text-align: center;
 }
 
-#login h2 {
+#login h2, #register h2 {
   font-weight: lighter;
   font-size: 2rem;
   margin-bottom: 30px;
 }
 
-#login label {
+#login label, #register label {
   display: block;
   margin-bottom: 10px;
   font-weight: lighter;
 }
 
-#login input[type="text"],
-#login input[type="password"] {
+#login input[type="email"],
+#login input[type="password"],
+#register input[type="email"],
+#register input[type="password"] {
   width: 90%;
   padding: 10px;
   margin-bottom: 20px;
   border: 2px solid black;
   box-shadow: 3px 3px black;
   border-radius: 5px;
+}
+
+#cancel-button {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  border: 2px solid #a8231a;
+  box-shadow: 2px 2px #a8231a;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+}
+
+#cancel-button:hover {
+  background-color: #da190b;
+  scale: 1.05;
+  transform: translate(-2px,-2px);
 }
 
 #login-button {
@@ -61,9 +83,34 @@ body {
   box-shadow: 2px 2px #1f4920;
 }
 
+#register-button,#register-toggle-button {
+  background-color: #008CBA;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  border: 2px solid #004297;
+  box-shadow: 2px 2px #004297;
+}
+
+#register-button:hover,#register-toggle-button:hover {
+  background-color: #007bb5;
+  cursor: pointer;
+  scale: 1.05;
+  transform: translate(-2px,-2px);
+}
+
 #login-button:hover {
   background-color: #45a049;
   cursor: pointer;
   scale: 1.05;
   transform: translate(-2px,-2px);
+}
+
+#peso-20kg {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
 }

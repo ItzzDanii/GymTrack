@@ -30,50 +30,24 @@ function mostraLogin() {
         return;
 
     document.getElementById("login").style.display = "block";
-    document.getElementById("username").value = "";
+    document.getElementById("register").style.display = "none"; 
+    
+    document.getElementById("email").value = "";
     document.getElementById("password").value = "";
 }
 
 function fadeInLogin() {
     if (!login_visibile)
         return;
+        
     document.getElementById("login").style.opacity = 0;
     let opacity = 0;
     let interval = setInterval(function () {
         if (opacity >= 1) {
             clearInterval(interval);
         }
-        opacity += 2;
+        opacity += 0.1;
         document.getElementById("login").style.opacity = opacity;
     }, 50);
 }
 
-function accedi() {
-    let username = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
-
-    if (username == "") {
-        document.getElementById("username").placeholder = "Inserisci username.."
-        return;
-    } else if (username != "" && username.length < 3) {
-        document.getElementById("username").value = "";
-        document.getElementById("username").placeholder = "Username non valido! (Almeno 3 caratteri)"
-        return;
-    } else if (username.length > 16) {
-        document.getElementById("username").value = "";
-        document.getElementById("username").placeholder = "Username non valido! (Max.16 caratteri)"
-        return
-    }
-    else if (password == "") {
-        document.getElementById("password").value = "";
-        document.getElementById("password").placeholder = "Inserisci password.."
-        return;
-    } else if (password.length > 8) {
-        document.getElementById("password").value = "";
-        document.getElementById("password").placeholder = "Password non valida! (Max. 8 caratteri)"
-        return;
-    }
-    else{
-        
-    }
-}

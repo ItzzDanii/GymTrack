@@ -11,15 +11,131 @@
 <body onload="animaScritta()">
     <div id="login" style="display: none;">
         <h2>Accedi</h2>
-        <label for="username">Username:</label>
-        <input type="text" id="username" placeholder="Max. 16 caratteri"><br><br>
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" placeholder="Inserisci la tua email"><br><br>
+
         <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Max. 8 caratteri"><br><br>
-        <button id="login-button" onclick="accedi()">
-            Accedi
-        </button>
+        <input type="password" id="password" placeholder="Inserisci la tua password"><br><br>
+
+        <button id="login-button">Accedi</button>
+        <button id="register-toggle-button">Registrati</button>
+    </div>
+
+    <div id="register" style="display: none; opacity: 0;">
+        <h2>Registrati</h2>
+        <label for="reg-email">E-mail:</label>
+        <input type="email" id="reg-email" placeholder="Inserisci la tua email"><br><br>
+
+        <label for="reg-password">Password:</label>
+        <input type="password" id="reg-password" placeholder="Min. 6 caratteri"><br><br>
+
+        <label for="reg-confirm-password">Conferma Password:</label>
+        <input type="password" id="reg-confirm-password" placeholder="Ripeti password"><br><br>
+
+        <button id="cancel-button">Annulla</button>
+        <button id="register-button">Conferma</button>
     </div>
 </body>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAgTXeBqQjGE-mpnOfzdN0DVY7wzzNy2gw",
+        authDomain: "gymtrack-237ba.firebaseapp.com",
+        projectId: "gymtrack-237ba",
+        storageBucket: "gymtrack-237ba.firebasestorage.app",
+        messagingSenderId: "848910935882",
+        appId: "1:848910935882:web:feffb2fc06f8c3470d03b3",
+        measurementId: "G-YZ0XJ91N62"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+
+    const loginDiv = document.getElementById('login');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginButton = document.getElementById('login-button');
+    const registerToggleButton = document.getElementById('register-toggle-button');
+
+    const registerDiv = document.getElementById('register');
+    const regEmailInput = document.getElementById('reg-email');
+    const regPasswordInput = document.getElementById('reg-password');
+    const regConfirmPasswordInput = document.getElementById('reg-confirm-password');
+    const cancelButton = document.getElementById('cancel-button');
+    const registerButton = document.getElementById('register-button');
+
+    registerToggleButton.addEventListener('click', () => {
+        loginDiv.style.display = "none";
+        registerDiv.style.display = "block";
+        registerDiv.style.opacity = 1;
+
+        regEmailInput.value = "";
+        regPasswordInput.value = "";
+        regConfirmPasswordInput.value = "";
+        regPasswordInput.placeholder = "Min. 6 caratteri";
+    });
+
+    cancelButton.addEventListener('click', () => {
+        registerDiv.style.display = "none";
+        loginDiv.style.display = "block";
+
+        emailInput.value = "";
+        passwordInput.value = "";
+    });
+
+    loginButton.addEventListener('click', () => {
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                window.location.href = "pages/home.html";
+            })
+            .catch((error) => {
+                emailInput.value = "";
+                passwordInput.value = "";
+                passwordInput.placeholder = "Dati errati. Riprova.";
+            });
+    });
+
+    registerButton.addEventListener('click', () => {
+        const email = regEmailInput.value;
+        const password = regPasswordInput.value;
+        const confirmPassword = regConfirmPasswordInput.value;
+
+        if (password !== confirmPassword) {
+            regPasswordInput.value = "";
+            regConfirmPasswordInput.value = "";
+            regPasswordInput.placeholder = "Le password non coincidono!";
+            return;
+        }
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                window.location.href = "pages/home.html"; 
+            })
+            .catch((error) => {
+                regEmailInput.value = "";
+                regPasswordInput.value = "";
+                regConfirmPasswordInput.value = "";
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    regEmailInput.placeholder = "Account già esistente!";
+                } else if (error.code === 'auth/weak-password') {
+                    regPasswordInput.placeholder = "Password troppo corta (min. 6).";
+                } else if (error.code === 'auth/invalid-email') {
+                    regEmailInput.placeholder = "Email non valida!";
+                } else {
+                    regPasswordInput.placeholder = "Errore nella registrazione.";
+                }
+            });
+    });
+</script>
 <script src="script.js"></script>
 
 </html>
