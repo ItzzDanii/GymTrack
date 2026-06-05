@@ -95,6 +95,7 @@
 
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
+                sessionStorage.getItem("utenteLoggato") === "true";
                 window.location.href = "pages/home.html";
             })
             .catch((error) => {
