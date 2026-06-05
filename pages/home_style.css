@@ -34,6 +34,22 @@ button{
     border-radius: 10px;
 }
 
+#logout-button i {
+    display: inline-block;
+    transition: transform 0.1s ease;
+}
+
+#logout-button:hover {
+    cursor: pointer;
+    scale: 1.05;
+    background-color: #333;
+    color: #fff;
+}
+
+#logout-button:active  {
+    transform: translateY(2px);
+}
+
 #nav-bar{
     display: flex;
     background-color: #333;
@@ -127,4 +143,9 @@ body.dark-mode #logout-button{
     background-color: #333;
     color: #fff;
     border-color: #fff;
+}
+
+body.dark-mode #logout-button:hover{
+    background-color: #fff;
+    color: #333;
 }
