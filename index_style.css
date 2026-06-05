@@ -2,6 +2,27 @@
 
 * {
   transition: all 0.5s ease-in-out;
+  box-sizing: border-box;
+}
+
+button, 
+#cancel-button, 
+#login-button, 
+#confirm-register-button, 
+#register-toggle-button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#login-button:active,
+#confirm-register-button:active,
+#register-toggle-button:active,
+#cancel-button:active {
+  transition: 0.05s ease-in-out;
 }
 
 body {
@@ -10,12 +31,12 @@ body {
   background-position: center center;
   background-size: cover;
   background-attachment: fixed;
-
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
 
-#login, #register {
+#login,
+#register {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -27,13 +48,15 @@ body {
   text-align: center;
 }
 
-#login h2, #register h2 {
+#login h2,
+#register h2 {
   font-weight: lighter;
   font-size: 2rem;
   margin-bottom: 30px;
 }
 
-#login label, #register label {
+#login label,
+#register label {
   display: block;
   margin-bottom: 10px;
   font-weight: lighter;
@@ -50,64 +73,80 @@ body {
   box-shadow: 3px 3px black;
   border-radius: 5px;
   font-weight: bold;
+  font-size: 0.7rem;
+  font-family: 'Press Start 2P', cursive;
+}
+
+#confirm-register-button {
+  background-color: #4CAF50;
+  color: white;
+  border: 2px solid #1f4920;
+  box-shadow: 2px 2px #1f4920;
+}
+
+#confirm-register-button:hover {
+  background-color: #45a049;
+  scale: 1.05;
+  transform: translate(-2px, -2px);
+}
+
+#confirm-register-button:active {
+  transform: translate(-2px, 0px);
+  box-shadow: 0px 0px #1f4920;
 }
 
 #cancel-button {
   background-color: #f44336;
   color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
   border: 2px solid #a8231a;
   box-shadow: 2px 2px #a8231a;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 0.6rem;
 }
 
 #cancel-button:hover {
   background-color: #da190b;
   scale: 1.05;
-  transform: translate(-2px,-2px);
+  transform: translate(-2px, -2px);
+}
+
+#cancel-button:active {
+  transform: translate(-2px, 0px);
+  box-shadow: 0px 0px #a8231a;
 }
 
 #login-button {
   background-color: #4CAF50;
   color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
   border: 2px solid #1f4920;
   box-shadow: 2px 2px #1f4920;
 }
 
-#register-button,#register-toggle-button {
+#login-button:hover {
+  background-color: #45a049;
+  scale: 1.05;
+  transform: translate(-2px, -2px);
+}
+
+#login-button:active {
+  transform: translate(-2px, 0px);
+  box-shadow: 0px 0px #1f4920;
+}
+
+#register-toggle-button {
   background-color: #008CBA;
   color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
   border: 2px solid #004297;
   box-shadow: 2px 2px #004297;
 }
 
-#register-button:hover,#register-toggle-button:hover {
+#register-toggle-button:hover {
   background-color: #007bb5;
-  cursor: pointer;
   scale: 1.05;
-  transform: translate(-2px,-2px);
+  transform: translate(-2px, -2px);
 }
 
-#login-button:hover {
-  background-color: #45a049;
-  cursor: pointer;
-  scale: 1.05;
-  transform: translate(-2px,-2px);
+#register-toggle-button:active {
+  transform: translate(-2px, 0px);
+  box-shadow: 0px 0px #004297;
 }
 
 #snatch-animation {
