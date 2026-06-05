@@ -9,7 +9,16 @@
 </head>
 
 <body onload="animaScritta()">
-
+    <div id="login" style="display: none;">
+        <h2>Accedi</h2>
+        <label for="username">Username:</label>
+        <input type="text" id="username" placeholder="Max. 16 caratteri"><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Max. 8 caratteri"><br><br>
+        <button id="login-button" onclick="accedi()">
+            Accedi
+        </button>
+    </div>
 </body>
 <script src="script.js"></script>
 

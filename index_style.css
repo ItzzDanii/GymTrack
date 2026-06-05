@@ -1,22 +1,69 @@
-*{
-    transition: background-image 0.5s all; 
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+  transition: all 0.5s ease-in-out;
 }
 
 body {
-  
-  /* Blocca l'immagine in modo che non si ripeta */
+  font-family: 'Press Start 2P', cursive;
   background-repeat: no-repeat;
-  
-  /* Centra l'immagine nello schermo */
   background-position: center center;
-  
-  /* Forza l'immagine a coprire l'intera area del browser */
   background-size: cover;
-  
-  /* Tiene lo sfondo fisso così il testo ci scorre sopra */
   background-attachment: fixed;
-  
-  /* MAGIA DELLA PIXEL ART: Impedisce al browser di sfocare l'immagine quando la ingrandisce */
-  image-rendering: pixelated; 
-  image-rendering: crisp-edges; /* Per compatibilità con alcuni browser */
+
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+#login {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  width: 500px;
+  text-align: center;
+}
+
+#login h2 {
+  font-weight: lighter;
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+#login label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: lighter;
+}
+
+#login input[type="text"],
+#login input[type="password"] {
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 2px solid black;
+  box-shadow: 3px 3px black;
+  border-radius: 5px;
+}
+
+#login-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  border: 2px solid #1f4920;
+  box-shadow: 2px 2px #1f4920;
+}
+
+#login-button:hover {
+  background-color: #45a049;
+  cursor: pointer;
+  scale: 1.05;
+  transform: translate(-2px,-2px);
 }
