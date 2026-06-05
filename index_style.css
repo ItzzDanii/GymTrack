@@ -49,6 +49,7 @@ body {
   border: 2px solid black;
   box-shadow: 3px 3px black;
   border-radius: 5px;
+  font-weight: bold;
 }
 
 #cancel-button {
@@ -109,8 +110,10 @@ body {
   transform: translate(-2px,-2px);
 }
 
-#peso-20kg {
+#snatch-animation {
   position: absolute;
-  bottom: 20px;
-  right: 20px;
+  bottom: -80px;
+  left: -50px;
+  transform: scale(0.5);
+  transition: all 0.5s ease-in-out;
 }

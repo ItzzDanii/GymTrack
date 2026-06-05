@@ -16,6 +16,10 @@ function animaScritta() {
         document.body.style.backgroundImage = "url('img/bg_index4.png')";
     }, 450);
 
+    setTimeout(function () {
+        document.body.style.backgroundImage = "url('img/title_animation.gif')";
+    }, 600);
+
     inizia_animazione = false;
     login_visibile = true;
 
