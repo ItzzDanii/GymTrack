@@ -1,0 +1,130 @@
+*{
+    transition: 0.5s ease-in-out;
+}
+
+body {
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-top: 50px;
+    color: #333;
+    text-shadow: 2px 1px #aaa;
+    font-weight: lighter;
+}
+
+p {
+    margin-top: -30px;
+}
+
+button{
+    transition: 0.2s ease-in-out;
+}
+
+#logout-button{
+    position:absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 30px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    background-color: #fff;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+#nav-bar{
+    display: flex;
+    background-color: #333;
+    border-right: 5px solid black;
+    flex-direction: row;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 210px;
+    height: 100vh;
+    align-items:center;
+    z-index: 1000;
+}
+
+#nav-bar button{
+    padding: 10px 5px;
+    width: 130px;
+    margin-bottom: 20px;
+    border: 3px solid white;
+    color: #fff;
+    background-color: #333;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    box-shadow: 2px 2px #fff;
+}
+
+#nav-bar button:hover{
+    cursor: pointer;
+    scale: 1.05;
+}
+
+#nav-bar button:active{
+    transform: translateY(2px);
+    background-color: #494949;
+}
+
+#nav-bar ul{
+    list-style:none;
+}
+
+#change-theme{
+    position: absolute;
+    bottom: 2%;
+    left: 20px;
+    color: white;
+    scale: 1.3;
+}
+
+#change-theme:hover{
+    scale: 1.4;
+    cursor: pointer;
+}
+
+#change-theme:active{
+    transform: translateY(2px);
+}
+
+/* --- MODALITÀ SCURA --- */
+body.dark-mode {
+    background-color: #222;
+    color: #fff;
+}
+
+body.dark-mode h1 {
+    color: #fff;
+    text-shadow: 2px 1px #555;
+}
+
+body.dark-mode #nav-bar {
+    background-color: #f4f4f4;
+    border-right: 5px solid #333;
+}
+
+body.dark-mode #nav-bar button {
+    background-color: #f4f4f4;
+    color: #333;
+    border: 3px solid #333;
+    box-shadow: 2px 2px #333;
+}
+
+body.dark-mode #nav-bar button:active {
+    background-color: #ddd;
+}
+
+body.dark-mode #change-theme {
+    color: #333;
+}
+
+body.dark-mode #logout-button{
+    background-color: #333;
+    color: #fff;
+    border-color: #fff;
+}

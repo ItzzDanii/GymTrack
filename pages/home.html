@@ -1,15 +1,32 @@
 <!DOCTYPE html>
 <html lang="it">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="home_style.css">
-        <title>GymTrack - Home</title>
-    </head>
 
-    <body>
-        <h1>Benvenuto su GymTrack!</h1>
-        <p>Il tuo compagno ideale per tenere traccia dei tuoi allenamenti e raggiungere i tuoi obiettivi fitness.</p>
-        <button id="logout-button">Esci</button>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../pages/home_style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>GymTrack - Home</title>
+</head>
+
+<body>
+
+    <h1>Benvenuto su GymTrack!</h1>
+    <p>Il tuo compagno ideale per tenere traccia dei tuoi allenamenti e raggiungere i tuoi obiettivi fitness.</p>
+    <button id="logout-button" onclick="window.location.href='../index.html'">
+        <i class="fa-solid fa-right-from-bracket"></i> Esci
+    </button>
+
+    <div id="nav-bar">
+        <ul>
+            <li><button><i class="fa-solid fa-house"></i> Inizio</button></li>
+            <li><button><i class="fa-solid fa-magnifying-glass"></i> Esplora</button></li>
+            <li><button><i class="fa-solid fa-dumbbell"></i> Allenamento</button></li>
+            <li><button><i class="fa-solid fa-arrow-trend-up"></i> Progressi</button></li>
+            <li><button><i class="fa-solid fa-user"></i> Profilo</button></li>
+            <li><i class="fa-solid fa-sun" id="change-theme" onclick="changeTheme()"></i></li>
+        </ul>
+    </div>
+</body>
+<script src="../pages/home_script.js"></script>
 </html>
