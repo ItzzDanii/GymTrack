@@ -109,6 +109,8 @@ button {
 #nav-bar .user-profile-header #profile-pic {
     border-radius: 30px;
     margin-bottom: 10px;
+    border: 2px solid #333;
+    box-shadow: 3px 3px #fff;
 }
 
 #show-username {
@@ -168,6 +170,76 @@ button {
     transform: translate(-50(), 2px);
 }
 
+/* PROGRESSI */
+/* PROGRESSI */
+#nav-bar-progress {
+    display: flex;
+    gap: 50px;
+    margin-left: 40%;
+    flex-direction: row;
+    justify-content: start;
+    align-items: flex-start;
+    column-gap: 130px;
+    box-sizing: border-box;
+}
+
+#nav-bar-progress #panoramica h2,
+#nav-bar-progress #misure h2,
+#nav-bar-progress #foto h2 {
+    margin-bottom: 50px;
+    cursor: pointer;
+    transition: 0.1s all ease-in-out;
+}
+
+#nav-bar-progress #panoramica h2:hover,
+#nav-bar-progress #misure h2:hover,
+#nav-bar-progress #foto h2:hover {
+    scale: 1.1;
+}
+
+#nav-bar-progress #workouts,
+#nav-bar-progress #volume {
+    border: 2px solid white;
+    width: 400px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    justify-content: center;
+    padding: 20px; 
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+#nav-bar-progress #panoramica h3 {
+    color: #aaaaaa;
+    font-size: 0.9rem;
+    margin: 0 0 5px 0; 
+    text-align: left;
+}
+
+#nav-bar-progress #panoramica #n-workout,
+#nav-bar-progress #panoramica #n-volume {
+    margin: 0;
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-align: left;
+}
+
+#nav-bar-progress #panoramica #n-workout::after {
+    content: " allenamenti";
+    margin-left: 10px;
+}
+
+#nav-bar-progress #panoramica #n-volume::after {
+    content: " kg";
+    margin-left: 10px;
+}
+
+
+
+
+/* PROFILO */
 #profile-container {
     display: none;
     background-color: #aaaaaa98;
@@ -183,6 +255,38 @@ button {
 #profile-container #profile-pic {
     margin-bottom: 10px;
     border-radius: 30px;
+    border: 2px solid black;
+}
+
+#more-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 30px auto;
+    width: 80%;
+}
+
+.info-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#more-info .value {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+    color: #333;
+}
+
+#more-info .head {
+    font-size: 0.7rem;
+    margin: 5px 0 0 0;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 #btnChangePic {
@@ -214,6 +318,22 @@ button {
 
 .fa-instagram {
     color: rgb(255, 44, 79);
+}
+
+.social-trigger {
+    display: inline-block;
+}
+
+.social-trigger i,
+.social-trigger label {
+    display: inline-block;
+    transition: transform 0.5s ease-in-out;
+}
+
+.social-trigger:hover i,
+.social-trigger:hover label {
+    transform: scale(1.05);
+    cursor: pointer;
 }
 
 .fa-facebook {
@@ -268,6 +388,11 @@ body.dark-mode #nav-bar {
     border-right: 5px solid #333;
 }
 
+body.dark-mode #nav-bar .user-profile-header #profile-pic {
+    border: 2px solid #000;
+    box-shadow: 3px 3px #aaaaaa;
+}
+
 body.dark-mode #show-username {
     color: #333;
 }
@@ -302,6 +427,18 @@ body.dark-mode #logout-button:hover {
 body.dark-mode #profile-container {
     border-color: #fff;
     background-color: #333;
+}
+
+body.dark-mode #profile-container #profile-pic {
+    border: 2px solid #aaaaaa98;
+}
+
+body.dark-mode #more-info .value {
+    color: #fff;
+}
+
+body.dark-mode #more-info .head {
+    color: #aaa;
 }
 
 body.dark-mode #btnChangePic {
