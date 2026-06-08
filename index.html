@@ -70,6 +70,14 @@
     const cancelButton = document.getElementById('cancel-button');
     const registerButton = document.getElementById('confirm-register-button');
 
+    if(sessionStorage.getItem("loggato") === "true"){
+        window.location.href = '/pages/home.html';
+    }
+
+    if(!sessionStorage.getItem("loggato")) {
+        sessionStorage.setItem("loggato", "false");
+    }
+
     registerToggleButton.addEventListener('click', () => {
         loginDiv.style.display = "none";
         registerDiv.style.display = "block";
@@ -95,7 +103,8 @@
 
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                sessionStorage.getItem("utenteLoggato") === "true";
+                sessionStorage.setItem("loggato", "true"); 
+                sessionStorage.setItem("email",emailInput.value);
                 window.location.href = "pages/home.html";
             })
             .catch((error) => {
@@ -120,18 +129,16 @@
 
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                window.location.href = "..pages/home.html"; 
+                sessionStorage.setItem("loggato", "true"); 
+                sessionStorage.setItem("email",emailInput.value);
+                window.location.href = "pages/home.html";
             })
             .catch((error) => {
                 regEmailInput.value = "";
                 regPasswordInput.value = "";
                 regConfirmPasswordInput.value = "";
-                
+
                 if (error.code === 'auth/email-already-in-use') {
-                    document.getElementById("reg-confirm-password").value = "";
-                    document.getElementById("reg-password").value = "";
-                    document.getElementById("reg-confirm-password").placeholder = "";
-                    document.getElementById("reg-password").placeholder = "";
                     regEmailInput.placeholder = "Account già esistente!";
                 } else if (error.code === 'auth/weak-password') {
                     regPasswordInput.placeholder = "Password troppo corta (min. 6).";
