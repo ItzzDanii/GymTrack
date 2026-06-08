@@ -13,6 +13,12 @@
     <div id="main-container">
         <h1>Benvenuto su GymTrack!</h1>
         <p>Il tuo compagno ideale per tenere traccia dei tuoi allenamenti e raggiungere i tuoi obiettivi fitness.</p>
+
+        <div class="shortcut-column-bar">
+            <button><i class="fa-solid fa-plus"></i> Nuovo Allenamento</button>
+            <button onclick="openProfile()"><i class="fa-solid fa-user"></i> Profilo</button>
+            <button><i class="fa-solid fa-trophy"></i> Obiettivi Mese</button>
+        </div>
     </div>
 
     <button id="logout-button" onclick="logout()">
@@ -20,8 +26,11 @@
     </button>
 
     <div id="nav-bar">
+        <div class="user-profile-header">
+            <img src="/img/bg_index1.png" width="100" height="100" id="profile-pic">
+            <p id="show-username"></p>
+        </div>
         <ul>
-            <li><img src="/img/bg_index1.png" width="100" height="100" id="profile-pic"></li>
             <li><button onclick="openHome()"><i class="fa-solid fa-house"></i> Inizio</button></li>
             <li><button><i class="fa-solid fa-dumbbell"></i> Allenamento</button></li>
             <li><button><i class="fa-solid fa-arrow-trend-up"></i> Progressi</button></li>
