@@ -70,11 +70,11 @@
     const cancelButton = document.getElementById('cancel-button');
     const registerButton = document.getElementById('confirm-register-button');
 
-    if(sessionStorage.getItem("loggato") === "true"){
+    if (sessionStorage.getItem("loggato") === "true") {
         window.location.href = '/pages/home.html';
     }
 
-    if(!sessionStorage.getItem("loggato")) {
+    if (!sessionStorage.getItem("loggato")) {
         sessionStorage.setItem("loggato", "false");
     }
 
@@ -103,8 +103,10 @@
 
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                sessionStorage.setItem("loggato", "true"); 
-                sessionStorage.setItem("email",emailInput.value);
+                const usernameEstratto = email.split('@')[0];
+                sessionStorage.setItem("loggato", "true");
+                sessionStorage.setItem("email", email);
+                sessionStorage.setItem("username", usernameEstratto);
                 window.location.href = "pages/home.html";
             })
             .catch((error) => {
@@ -129,8 +131,10 @@
 
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                sessionStorage.setItem("loggato", "true"); 
-                sessionStorage.setItem("email",emailInput.value);
+                const usernameEstratto = email.split('@')[0];
+                sessionStorage.setItem("loggato", "true");
+                sessionStorage.setItem("email", email);
+                sessionStorage.setItem("username", usernameEstratto);
                 window.location.href = "pages/home.html";
             })
             .catch((error) => {

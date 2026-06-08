@@ -18,7 +18,7 @@ function changeTheme() {
 }
 
 function logout() {
-    sessionStorage.removeItem("loggato");
+    sessionStorage.clear();
     window.location.href = '/index.html';
 }
 
@@ -27,8 +27,9 @@ function controllaLoggato() {
         window.location.href = '/index.html';
     } else {
         inizializzaScenari();
+        loadProfile();
         showUsername();
-        setInterval(showUsername, 1);
+        setInterval(showUsername, 500);
     }
 }
 
@@ -43,17 +44,52 @@ function setScenario(scenario) {
 }
 
 function showUsername() {
-    let username = sessionStorage.getItem("username");
+    let emailSalvata = sessionStorage.getItem("email") || "";
+    let username = localStorage.getItem("username_" + emailSalvata) || sessionStorage.getItem("username");
     if (username) {
         document.getElementById("show-username").innerText = username;
     }
 }
 
 function loadProfile() {
-    document.getElementById("profile-email").value = sessionStorage.getItem("email") || "";
+    let emailSalvata = sessionStorage.getItem("email") || "";
+    if (emailSalvata === "") return;
+
+    document.getElementById("profile-email").value = emailSalvata;
+
     let inputUsername = document.getElementById("profile-username");
-    if (inputUsername && inputUsername.value.trim() !== "") {
-        sessionStorage.setItem("username", inputUsername.value);
+    let inputInstagram = document.getElementById("profile-instagram");
+    let inputFacebook = document.getElementById("profile-facebook");
+
+    if (inputUsername) {
+        inputUsername.value = localStorage.getItem("username_" + emailSalvata) || sessionStorage.getItem("username") || "";
+        inputUsername.oninput = function () {
+            if (inputUsername.value.trim() !== "") {
+                sessionStorage.setItem("username", inputUsername.value);
+                localStorage.setItem("username_" + emailSalvata, inputUsername.value);
+            }
+        };
+    }
+
+    if (inputInstagram) {
+        inputInstagram.value = localStorage.getItem("instagram_" + emailSalvata) || "";
+        inputInstagram.oninput = function () {
+            localStorage.setItem("instagram_" + emailSalvata, inputInstagram.value);
+        };
+    }
+
+    if (inputFacebook) {
+        inputFacebook.value = localStorage.getItem("facebook_" + emailSalvata) || "";
+        inputFacebook.oninput = function () {
+            localStorage.setItem("facebook_" + emailSalvata, inputFacebook.value);
+        };
+    }
+
+    let immagineSalvata = localStorage.getItem("pic_" + emailSalvata);
+    if (immagineSalvata) {
+        document.querySelectorAll("#profile-pic").forEach(img => {
+            img.src = immagineSalvata;
+        });
     }
 }
 
@@ -67,16 +103,24 @@ function openHome() {
 }
 
 function changePic() {
+    let emailSalvata = sessionStorage.getItem("email") || "";
+    if (emailSalvata === "") return;
+
     let input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'image/png';
+    input.accept = 'image/png, image/jpeg';
     input.onchange = function (e) {
         let file = e.target.files[0];
         if (file) {
-            let url = URL.createObjectURL(file);
-            document.querySelectorAll("#profile-pic").forEach(img => {
-                img.src = url;
-            });
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                let base64Image = event.target.result;
+                localStorage.setItem("pic_" + emailSalvata, base64Image);
+                document.querySelectorAll("#profile-pic").forEach(img => {
+                    img.src = base64Image;
+                });
+            };
+            reader.readAsDataURL(file);
         }
     };
     input.click();
