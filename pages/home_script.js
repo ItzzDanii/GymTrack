@@ -1,12 +1,3 @@
-let login = sessionStorage.getItem("utenteLoggato") === "true";
-
-controllaLogin();
-
-function controllaLogin(){
-    if(!login)
-        window.location.href='../index.html';
-}
-
 function changeTheme() {
     let body = document.body;
 
@@ -23,8 +14,45 @@ function changeTheme() {
     }
 }
 
-function logout(){
-    sessionStorage.removeItem("utenteLoggato");
-    login = false;
-    window.location.href='../index.html';
+function logout() {
+    sessionStorage.removeItem("loggato");
+    window.location.href = '/index.html';
+}
+
+function controllaLoggato() {
+    if (sessionStorage.getItem("loggato") !== "true")
+        window.location.href = '/index.html';
+}
+
+function loadProfile(){
+    document.getElementById("profile-email").value = sessionStorage.getItem("email");
+}
+
+function openProfile() {
+    document.getElementById("main-container").style.display = 'none';
+    document.getElementById("profile-container").style.display = 'block';
+    loadProfile();
+}
+
+function openHome() {
+    document.getElementById("main-container").style.display = 'block';
+    document.getElementById("profile-container").style.display = 'none';
+}
+
+function changePic() {
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/png';
+    
+    input.onchange = function(e) {
+        let file = e.target.files[0];
+        if (file) {
+            let url = URL.createObjectURL(file);
+            document.querySelectorAll("#profile-pic").forEach(img => {
+                img.src = url;
+            });
+        }
+    };
+    
+    input.click();
 }
