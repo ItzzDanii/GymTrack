@@ -57,6 +57,22 @@ function loadProfile() {
 
     document.getElementById("profile-email").value = emailSalvata;
 
+    let workouts = document.getElementById("n-workout");
+    let followers = document.getElementById("n-follower");
+    let follows = document.getElementById("n-follow");
+
+    if (workouts) {
+        workouts.textContent = localStorage.getItem("workouts_" + emailSalvata) || "0";
+    }
+    if (followers) {
+        followers.textContent = localStorage.getItem("followers_" + emailSalvata) || "0";
+    }
+    if (follows) {
+        follows.textContent = localStorage.getItem("follows_" + emailSalvata) || "0";
+    }
+
+    sessionStorage.getItem("workouts_" + emailSalvata) === 0;
+
     let inputUsername = document.getElementById("profile-username");
     let inputInstagram = document.getElementById("profile-instagram");
     let inputFacebook = document.getElementById("profile-facebook");
@@ -124,4 +140,60 @@ function changePic() {
         }
     };
     input.click();
+}
+
+function openInsta() {
+    let username = document.getElementById("profile-instagram").value.trim();
+    
+    if (username !== "") {
+        if (username.startsWith("@")) {
+            username = username.substring(1);
+        }
+        
+        let url = "https://www.instagram.com/" + username;
+        window.open(url, '_blank');
+    } else {
+        alert("Inserisci prima un username di Instagram!");
+    }
+}
+
+// DEBUG
+
+function resetWork() {
+    let emailSalvata = sessionStorage.getItem("email") || "";
+    if (emailSalvata === "") return;
+    
+    let element = document.getElementById("n-workout");
+    if (element) {
+        element.textContent = "0";
+        localStorage.setItem("workouts_" + emailSalvata, "0");
+    }
+}
+
+function resetFlr() {
+    let emailSalvata = sessionStorage.getItem("email") || "";
+    if (emailSalvata === "") return;
+    
+    let element = document.getElementById("n-follower");
+    if (element) {
+        element.textContent = "0";
+        localStorage.setItem("followers_" + emailSalvata, "0");
+    }
+}
+
+function resetFlw() {
+    let emailSalvata = sessionStorage.getItem("email") || "";
+    if (emailSalvata === "") return;
+    
+    let element = document.getElementById("n-follow");
+    if (element) {
+        element.textContent = "0";
+        localStorage.setItem("follows_" + emailSalvata, "0");
+    }
+}
+
+function resetAllCounters() {
+    resetWork();
+    resetFlr();
+    resetFlw();
 }
