@@ -10,7 +10,7 @@
 </head>
 
 <body onload="controllaLoggato()">
-    <div id="main-container">
+    <div id="main-container" style="display: none;">
         <h1>Benvenuto su GymTrack!</h1>
         <p>Il tuo compagno ideale per tenere traccia dei tuoi allenamenti e raggiungere i tuoi obiettivi fitness.</p>
 
@@ -39,11 +39,50 @@
         </ul>
     </div>
 
-    <div id="profile-container">
+    <div id="progress-container"">
+        <div id="nav-bar-progress">
+            <div id="panoramica" onclick="apriPanoramica()">
+                <h2>Panoramica</h2>
+                <div id="workouts" style="display: block;">
+                    <h3>Allenamenti</h3>
+                    <p id="n-workout"></p>
+                </div>
+
+                <div id="volume" style="display: block;">
+                    <h3>Volume</h3>
+                    <p id="n-volume">0</p>
+                </div>
+            </div>
+
+            <div id="misure">
+                <h2>Misure</h2>
+            </div>
+
+            <div id="foto">
+                <h2>Foto</h2>
+            </div>
+        </div>
+    </div>
+
+    <div id="profile-container" style="display: none;">
         <hr>
         <h2>Profilo</h2>
         <img id="profile-pic" src="/img/bg_index1.png" width="100" height="100">
         <br>
+        <div id="more-info">
+            <div class="info-box">
+                <p class="value" id="n-workout"></p>
+                <p class="head" id="head-n-workout">Allenamenti</p>
+            </div>
+            <div class="info-box">
+                <p class="value" id="n-follower"></p>
+                <p class="head" id="head-n-follower">Follower</p>
+            </div>
+            <div class="info-box">
+                <p class="value" id="n-follow"></p>
+                <p class="head" id="head-n-follow">Seguiti</p>
+            </div>
+        </div>
         <button id="btnChangePic" onclick="changePic()">Cambia Immagine Profilo</button>
         <br>
         <i class="fa-solid fa-user"></i><label>Username:</label><input type="text" id="profile-username">
@@ -51,10 +90,20 @@
         <i class="fa-solid fa-envelope"></i><label>E-mail:</label><input type="text" id="profile-email" readonly>
         <hr>
         <h2>Social Media</h2>
-        <i class="fa-brands fa-instagram"></i><label>Instagram:</label><input type="text" id="profile-instagram">
+        <span class="social-trigger" onclick="openInsta()">
+            <i class="fa-brands fa-instagram"></i><label>Instagram:</label>
+        </span>
+        <input type="text" id="profile-instagram">
         <br>
-        <i class="fa-brands fa-facebook"></i><label>Facebook:</label><input type="text" id="profile-facebook">
+        <span class="social-trigger">
+            <i class="fa-brands fa-facebook"></i><label>Facebook:</label>
+        </span>
+        <input type="text" id="profile-facebook">
     </div>
+
+    <!--DEBUG-->
+    <!--<button onclick="resetAllCounters()">Reset valori</button>-->
+
 </body>
 <script src="/pages/home_script.js"></script>
 
