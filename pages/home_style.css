@@ -167,77 +167,104 @@ button {
 }
 
 #change-theme:active {
-    transform: translate(-50(), 2px);
+    transform: translate(-50%, 2px);
 }
 
-/* PROGRESSI */
-/* PROGRESSI */
-#nav-bar-progress {
-    display: flex;
-    gap: 50px;
-    margin-left: 40%;
-    flex-direction: row;
-    justify-content: start;
-    align-items: flex-start;
-    column-gap: 130px;
-    box-sizing: border-box;
-}
+/* ALLENAMENTO */
+#btnStart{
+    position: absolute;
+    top: 50%;
+    left: 50%;
 
-#nav-bar-progress #panoramica h2,
-#nav-bar-progress #misure h2,
-#nav-bar-progress #foto h2 {
-    margin-bottom: 50px;
-    cursor: pointer;
-    transition: 0.1s all ease-in-out;
-}
-
-#nav-bar-progress #panoramica h2:hover,
-#nav-bar-progress #misure h2:hover,
-#nav-bar-progress #foto h2:hover {
-    scale: 1.1;
-}
-
-#nav-bar-progress #workouts,
-#nav-bar-progress #volume {
-    border: 2px solid white;
-    width: 400px;
+    border: transparent;
+    background-color:#000;
+    color:#fff;
     border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; 
-    justify-content: center;
-    padding: 20px; 
-    box-sizing: border-box;
-    margin-bottom: 20px;
-}
 
-#nav-bar-progress #panoramica h3 {
-    color: #aaaaaa;
-    font-size: 0.9rem;
-    margin: 0 0 5px 0; 
-    text-align: left;
-}
-
-#nav-bar-progress #panoramica #n-workout,
-#nav-bar-progress #panoramica #n-volume {
-    margin: 0;
+    padding: 20px;
     font-weight: bold;
-    font-size: 1.5rem;
-    text-align: left;
+
+    transition: 0.1 all ease-in-out;
 }
 
-#nav-bar-progress #panoramica #n-workout::after {
-    content: " allenamenti";
-    margin-left: 10px;
+#btnStart:hover{
+    cursor: pointer;
 }
 
-#nav-bar-progress #panoramica #n-volume::after {
-    content: " kg";
-    margin-left: 10px;
+#btnStart:active{
+    scale: 0.95;
 }
 
+#workout-container{
+    margin-top: 30px;
+}
 
+#workout-container h3{
+    color: #aaaaaa;
+    font-weight: lighter;
+    font-size: 0.9rem;
+}
 
+#workout-container button{
+    cursor: pointer;
+}
+
+#btnClock{
+    color: rgb(0, 92, 255);
+    background-color: transparent;
+    border: transparent;
+    scale: 1.5;
+    margin-left: 10%;
+}
+
+#btnSpotify{
+    color:#5dba5d;
+    background-color: transparent;
+    border: transparent;
+    scale: 1.5;
+    margin-left: 5%;
+}
+
+#btnClock:active,#btnSpotify:active{
+    background-color: #aaaaaaa2;
+    border-radius: 10px;
+}
+
+#btnEnd{
+    background-color: rgba(0, 94, 255, 0.603);
+    border: transparent;
+    padding: 5px 15px;
+    border-radius: 15px;
+    color: #fff;
+    font-weight: bold;
+    margin-left: 1%;
+}
+
+#btnEnd:active{
+    scale: 0.95;
+}
+
+#info-workout{
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    margin-left: 45%;
+    column-gap: 80px;
+    border: 2px solid #aaaaaa;
+    border-radius: 20px;
+    height: 70px;
+    width: 290px;
+    padding: 0px 30px;
+}
+
+#info-workout p{
+    padding: 20px 0px;
+    font-weight: bold;
+}
+
+#info-workout #duration-value{
+    color:rgb(38, 157, 255);
+}
 
 /* PROFILO */
 #profile-container {
@@ -362,6 +389,7 @@ button {
     margin-bottom: 50px;
 }
 
+/* DARK MODE */
 body.dark-mode {
     background-color: #222;
     color: #fff;
@@ -422,6 +450,127 @@ body.dark-mode #logout-button {
 body.dark-mode #logout-button:hover {
     background-color: #fff;
     color: #333;
+}
+
+body.dark-mode #btnStart{
+    color: #000;
+    background-color: #fff;
+}
+
+body.dark-mode #period-selector {
+    border-color: #fff;
+    box-shadow: 2px 2px 0px #fff;
+}
+
+body.dark-mode .period-btn {
+    background-color: #222;
+    color: #fff;
+    border-right-color: #fff;
+}
+
+body.dark-mode .period-btn:hover {
+    background-color: #333;
+}
+
+body.dark-mode .period-btn.active {
+    background-color: #fff;
+    color: #222;
+}
+
+body.dark-mode .stat-card {
+    background-color: #2a2a2a;
+    border-color: #fff;
+    box-shadow: 4px 4px 0px #fff;
+}
+
+body.dark-mode .stat-card:hover {
+    box-shadow: 6px 6px 0px #fff;
+}
+
+body.dark-mode .stat-label {
+    color: #aaa;
+}
+
+body.dark-mode .stat-trend {
+    color: #5dba5d;
+    background-color: #1a2e1a;
+    border-color: #5dba5d;
+}
+
+body.dark-mode .stat-value {
+    color: #fff;
+}
+
+body.dark-mode .stat-sub {
+    color: #666;
+}
+
+body.dark-mode .sparkline-wrap {
+    border-top-color: #444;
+}
+
+body.dark-mode .spark-bar {
+    background-color: #555;
+}
+
+body.dark-mode .spark-bar.active {
+    background-color: #fff;
+}
+
+body.dark-mode #week-section {
+    background-color: #2a2a2a;
+    border-color: #fff;
+    box-shadow: 4px 4px 0px #fff;
+}
+
+body.dark-mode #week-title {
+    color: #aaa;
+}
+
+body.dark-mode .week-count-badge {
+    color: #fff;
+    background-color: #333;
+    border-color: #fff;
+}
+
+body.dark-mode .week-dot {
+    background-color: #333;
+    border-color: #555;
+    color: #666;
+}
+
+body.dark-mode .week-dot:hover {
+    border-color: #aaa;
+}
+
+body.dark-mode .week-dot.done {
+    background-color: #fff;
+    border-color: #fff;
+    color: #222;
+    box-shadow: 2px 2px 0px #aaa;
+}
+
+body.dark-mode .week-dot.today {
+    border-color: #fff;
+}
+
+body.dark-mode .week-day-label {
+    color: #666;
+}
+
+body.dark-mode .tab-empty-state i {
+    color: #555;
+}
+
+body.dark-mode .tab-empty-state p {
+    color: #666;
+}
+
+body.dark-mode .add-data-btn {
+    background-color: #fff;
+    color: #222;
+    border-color: #fff;
+    box-shadow: 3px 3px 0px #aaa;
 }
 
 body.dark-mode #profile-container {

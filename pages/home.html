@@ -4,18 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/pages/home_style.css">
+    <link rel="stylesheet" href="home_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <title>GymTrack - Home</title>
 </head>
 
 <body onload="controllaLoggato()">
-    <div id="main-container" style="display: none;">
+
+    <div id="main-container" style="display: block;">
         <h1>Benvenuto su GymTrack!</h1>
         <p>Il tuo compagno ideale per tenere traccia dei tuoi allenamenti e raggiungere i tuoi obiettivi fitness.</p>
 
         <div class="shortcut-column-bar">
-            <button><i class="fa-solid fa-plus"></i> Nuovo Allenamento</button>
+            <button onclick="openWorkout()"><i class="fa-solid fa-plus"></i> Nuovo Allenamento</button>
             <button onclick="openProfile()"><i class="fa-solid fa-user"></i> Profilo</button>
             <button><i class="fa-solid fa-trophy"></i> Obiettivi Mese</button>
         </div>
@@ -32,34 +33,34 @@
         </div>
         <ul>
             <li><button onclick="openHome()"><i class="fa-solid fa-house"></i> Inizio</button></li>
-            <li><button><i class="fa-solid fa-dumbbell"></i> Allenamento</button></li>
+            <li><button onclick="openWorkout()"><i class="fa-solid fa-dumbbell"></i> Allenamento</button></li>
             <li><button><i class="fa-solid fa-arrow-trend-up"></i> Progressi</button></li>
             <li><button onclick="openProfile()"><i class="fa-solid fa-user"></i> Profilo</button></li>
             <li><i class="fa-solid fa-sun" id="change-theme" onclick="changeTheme()"></i></li>
         </ul>
     </div>
 
-    <div id="progress-container"">
-        <div id="nav-bar-progress">
-            <div id="panoramica" onclick="apriPanoramica()">
-                <h2>Panoramica</h2>
-                <div id="workouts" style="display: block;">
-                    <h3>Allenamenti</h3>
-                    <p id="n-workout"></p>
-                </div>
+    <div id="startworkout-container" style="display: none;">
+        <button id="btnStart" onclick="startWorkout()">Avvia un nuovo allenamento</button>
+    </div>
 
-                <div id="volume" style="display: block;">
-                    <h3>Volume</h3>
-                    <p id="n-volume">0</p>
-                </div>
+    <div id="workout-container" style="display: none;">
+        <button id="btnClock" onclick="openClock()"><i class="fa-solid fa-stopwatch"></i></button>
+        <button id="btnSpotify" onclick="openSpotify()"><i class="fa-brands fa-spotify"></i></button>
+        <button id="btnEnd" onclick="endWorkout()">Termina</button>
+
+        <div id="info-workout">
+            <div id="info-duration">
+                <h3>Durata</h3>
+                <p id="duration-value">0:00:00</p>
             </div>
-
-            <div id="misure">
-                <h2>Misure</h2>
+            <div id="info-volume">
+                <h3>Volume</h3>
+                <p id="volume-value">0kg</p>
             </div>
-
-            <div id="foto">
-                <h2>Foto</h2>
+            <div id="info-set">
+                <h3>Set</h3>
+                <p id="set-value">0</p>
             </div>
         </div>
     </div>
@@ -101,10 +102,7 @@
         <input type="text" id="profile-facebook">
     </div>
 
-    <!--DEBUG-->
-    <!--<button onclick="resetAllCounters()">Reset valori</button>-->
-
 </body>
-<script src="/pages/home_script.js"></script>
+<script src="home_script.js"></script>
 
 </html>
