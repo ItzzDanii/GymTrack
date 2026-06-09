@@ -1,96 +1,88 @@
-﻿Gruppo Muscolare,Esercizio,Attrezzatura,Difficoltà
-Petto,Panca Piana Bilanciere,Bilanciere,Intermedio
-Petto,Panca Inclinata Bilanciere,Bilanciere,Intermedio
-Petto,Panca Declinata Bilanciere,Bilanciere,Avanzato
-Petto,Spinte su Panca Piana Manubri,Manubri,Intermedio
-Petto,Spinte su Panca Inclinata Manubri,Manubri,Intermedio
-Petto,Croci su Panca Piana Manubri,Manubri,Principiante
-Petto,Croci su Panca Inclinata Manubri,Manubri,Principiante
-Petto,Croci ai Cavi Alti,Cavi,Principiante
-Petto,Croci ai Cavi Bassi,Cavi,Intermedio
-Petto,Chest Press Machine,Macchina,Principiante
-Petto,Pectoral Fly Machine,Macchina,Principiante
-Petto,Dip alle Parallele (Focus Petto),Corpo Libero / Zavorra,Avanzato
-Petto,Piegamenti sulle Braccia (Push-up),Corpo Libero,Principiante
-Petto,Pull-over con Manubrio,Manubrio,Intermedio
-Dorso,Trazioni alla Sbarra (Pull-up),Corpo Libero / Zavorra,Avanzato
-Dorso,Trazioni Presa Invertita (Chin-up),Corpo Libero / Zavorra,Intermedio
-Dorso,Lat Machine Avanti Presa Larga,Macchina / Cavi,Principiante
-Dorso,Lat Machine Presa Inversa,Macchina / Cavi,Principiante
-Dorso,Lat Machine Presa Neutra (Pulley),Macchina / Cavi,Principiante
-Dorso,Rematore con Bilanciere,Bilanciere,Intermedio
-Dorso,Rematore con Manubrio,Manubri,Principiante
-Dorso,Pulley Basso,Macchina / Cavi,Principiante
-Dorso,Rematore alla T-Bar,Bilanciere / Macchina,Intermedio
-Dorso,Pull-down alla Lat Machine a Braccia Tese,Cavi,Principiante
-Dorso,Vertical Row Machine,Macchina,Principiante
-Dorso,Iperestensioni (Hyperextension),Corpo Libero / Panca,Principiante
-Dorso,Scrollate con Bilanciere (Trapezi),Bilanciere,Principiante
-Dorso,Scrollate con Manubri (Trapezi),Manubri,Principiante
-Gambe,Squat con Bilanciere,Bilanciere,Intermedio
-Gambe,Front Squat,Bilanciere,Avanzato
-Gambe,Leg Press 45°,Macchina,Principiante
-Gambe,Hack Squat,Macchina,Intermedio
-Gambe,Affondi Camminati con Manubri,Manubri,Intermedio
-Gambe,Squat Bulgaro con Manubri,Manubri / Panca,Intermedio
-Gambe,Leg Extension,Macchina,Principiante
-Gambe,Goblet Squat,Manubrio / Kettlebell,Principiante
-Gambe,Hip Thrust con Bilanciere,Bilanciere / Panca,Intermedio
-Gambe,Glute Bridges,Corpo Libero / Bilanciere,Principiante
-Gambe,Abductor Machine,Macchina,Principiante
-Gambe,Adductor Machine,Macchina,Principiante
-Gambe,Slanci Posteriori al Cavo Basso,Cavi,Principiante
-Gambe,Stacco da Terra Rumeno (RDL),Bilanciere,Intermedio
-Gambe,Stacco Rumeno con Manubri,Manubri,Principiante
-Gambe,Leg Curl Sdraiato,Macchina,Principiante
-Gambe,Leg Curl Seduto,Macchina,Principiante
-Gambe,Calf Raise Seduto,Macchina,Principiante
-Gambe,Calf Raise In Piedi,Macchina / Bilanciere,Principiante
-Gambe,Calf alla Leg Press,Macchina,Principiante
-Spalle,Military Press (Lento Avanti Bilanciere),Bilanciere,Intermedio
-Spalle,Lento Avanti con Manubri,Manubri,Intermedio
-Spalle,Shoulder Press Machine,Macchina,Principiante
-Spalle,Alzate Laterali con Manubri,Manubri,Principiante
-Spalle,Alzate Laterali ai Cavi,Cavi,Principiante
-Spalle,Alzate Frontali con Manubri,Manubri,Principiante
-Spalle,Alzate Frontali con Bilanciere,Bilanciere,Principiante
-Spalle,Alzate Posteriori con Manubri (Deltoidi Post),Manubri,Principiante
-Spalle,Face Pull,Cavi,Principiante
-Spalle,Reverse Fly Machine (Pec Deck Inverso),Macchina,Principiante
-Spalle,Tirate al Mento con Bilanciere,Bilanciere,Intermedio
-Bicipiti,Curl con Bilanciere dritto,Bilanciere,Principiante
-Bicipiti,Curl con Bilanciere Sagomato (EZ),Bilanciere,Principiante
-Bicipiti,Curl Alternato con Manubri,Manubri,Principiante
-Bicipiti,Curl a Martello (Hammer Curl),Manubri,Principiante
-Bicipiti,Curl su Panca Inclinata,Manubri / Panca,Intermedio
-Bicipiti,Curl alla Panca Scott,Bilanciere EZ / Manubrio,Principiante
-Bicipiti,Curl Concentrato,Manubrio,Principiante
-Bicipiti,Curl ai Cavi Bassi,Cavi,Principiante
-Bicipiti,Spider Curl,Bilanciere / Panca,Intermedio
-Tricipiti,Pushdown con Corda,Cavi,Principiante
-Tricipiti,Pushdown con Barra dritta/V,Cavi,Principiante
-Tricipiti,French Press con Bilanciere EZ,Bilanciere,Intermedio
-Tricipiti,Skull Crusher con Manubri,Manubri,Intermedio
-Tricipiti,Estensioni Dietro Nuca con Manubrio,Manubrio,Principiante
-Tricipiti,Estensioni Dietro Nuca al Cavo Alto,Cavi,Principiante
-Tricipiti,Panca Piana Presa Stretta,Bilanciere,Intermedio
-Tricipiti,Dip tra due panche,Corpo Libero / Panca,Principiante
-Tricipiti,Kickback con Manubrio,Manubri,Principiante
-Addominali,Crunch a Terra,Corpo Libero,Principiante
-Addominali,Crunch Inverso,Corpo Libero,Principiante
-Addominali,Plank Statico,Corpo Libero,Principiante
-Addominali,Side Plank (Plank Laterale),Corpo Libero,Principiante
-Addominali,Leg Raise alla Sbarra (Sollevamento Gambe),Corpo Libero,Intermedio
-Addominali,Sollevamento Ginocchia alle Parallele,Corpo Libero,Principiante
-Addominali,Ab Wheel Rollout (Ruota Addominali),Ab Wheel,Avanzato
-Addominali,Cable Crunch (Crunch ai Cavi),Cavi,Principiante
-Addominali,Russian Twist,Corpo Libero / Palla Medica,Principiante
-Addominali,Woodchopper ai Cavi,Cavi,Intermedio
-Full Body,Stacco da Terra Regolare (Deadlift),Bilanciere,Intermedio
-Full Body,Stacco da Terra Sumo,Bilanciere,Intermedio
-Full Body,Clean & Press,Bilanciere / Kettlebell,Avanzato
-Full Body,Snatch (Strappo),Bilanciere / Kettlebell,Avanzato
-Full Body,Kettlebell Swing,Kettlebell,Intermedio
-Full Body,Burpees,Corpo Libero,Principiante
-Full Body,Farmer's Walk (Camminata del Contadino),Manubri / Quad Bar,Principiante
-Full Body,Thruster,Bilanciere / Manubri,Avanzato
+﻿Gruppo_Muscolare,Esercizio,Attrezzatura,Difficoltà
+Petto,Panca_Piana_Bilanciere,Bilanciere,Intermedio
+Petto,Panca_Inclinata_Bilanciere,Bilanciere,Intermedio
+Petto,Panca_Declinata_Bilanciere,Bilanciere,Avanzato
+Petto,Spinte_su_Panca_Piana_Manubri,Manubri,Intermedio
+Petto,Spinte_su_Panca_Inclinata_Manubri,Manubri,Intermedio
+Petto,Croci_su_Panca_Piana_Manubri,Manubri,Principiante
+Petto,Croci_su_Panca_Inclinata_Manubri,Manubri,Principiante
+Petto,Croci_ai_Cavi_Alti,Cavi,Principiante
+Petto,Croci_ai_Cavi_Bassi,Cavi,Intermedio
+Petto,Chest_Press_Machine,Macchina,Principiante
+Petto,Pectoral_Fly_Machine,Macchina,Principiante
+Petto,Dip_alle_Parallele_(Focus_Petto),Corpo_Libero_/_Zavorra,Avanzato
+Petto,Piegamenti_sulle_Braccia_(Push-up),Corpo_Libero,Principiante
+Petto,Pull-over_con_Manubrio,Manubrio,Intermedio
+Schiena,Trazioni_alla_Sbarra_(Pull-up),Corpo_Libero_/_Zavorra,Avanzato
+Schiena,Trazioni_Presa_Invertita_(Chin-up),Corpo_Libero_/_Zavorra,Intermedio
+Schiena,Lat_Machine_Avanti_Presa_Larga,Macchina_/_Cavi,Principiante
+Schiena,Lat_Machine_Presa_Inversa,Macchina_/_Cavi,Principiante
+Schiena,Lat_Machine_Presa_Neutra_(Pulley),Macchina_/_Cavi,Principiante
+Schiena,Rematore_con_Bilanciere,Bilanciere,Intermedio
+Schiena,Rematore_con_Manubrio,Manubri,Principiante
+Schiena,Pulley_Basso,Macchina_/_Cavi,Principiante
+Schiena,Rematore_alla_T-Bar,Bilanciere_/_Macchina,Intermedio
+Schiena,Pull-down_alla_Lat_Machine_a_Braccia_Tese,Cavi,Principiante
+Schiena,Vertical_Row_Machine,Macchina,Principiante
+Schiena,Iperestensioni_(Hyperextension),Corpo_Libero_/_Panca,Principiante
+Schiena,Scrollate_con_Bilanciere_(Trapezi),Bilanciere,Principiante
+Schiena,Scrollate_con_Manubri_(Trapezi),Manubri,Principiante
+Gambe,Squat_con_Bilanciere,Bilanciere,Intermedio
+Gambe,Front_Squat,Bilanciere,Avanzato
+Gambe,Leg_Press_45°,Macchina,Principiante
+Gambe,Hack_Squat,Macchina,Intermedio
+Gambe,Affondi_Camminati_con_Manubri,Manubri,Intermedio
+Gambe,Squat_Bulgaro_con_Manubri,Manubri_/_Panca,Intermedio
+Gambe,Leg_Extension,Macchina,Principiante
+Gambe,Goblet_Squat,Manubrio_/_Kettlebell,Principiante
+Gambe,Hip_Thrust_con_Bilanciere,Bilanciere_/_Panca,Intermedio
+Gambe,Glute_Bridges,Corpo_Libero_/_Bilanciere,Principiante
+Gambe,Abductor_Machine,Macchina,Principiante
+Gambe,Adductor_Machine,Macchina,Principiante
+Gambe,Slanci_Posteriori_al_Cavo_Basso,Cavi,Principiante
+Gambe,Stacco_da_Terra_Rumeno_(RDL),Bilanciere,Intermedio
+Gambe,Stacco_Rumeno_con_Manubri,Manubri,Principiante
+Gambe,Leg_Curl_Sdraiato,Macchina,Principiante
+Gambe,Leg_Curl_Seduto,Macchina,Principiante
+Gambe,Calf_Raise_Seduto,Macchina,Principiante
+Gambe,Calf_Raise_In_Piedi,Macchina_/_Bilanciere,Principiante
+Gambe,Calf_alla_Leg_Press,Macchina,Principiante
+Spalle,Military_Press_(Lento_Avanti_Bilanciere),Bilanciere,Intermedio
+Spalle,Lento_Avanti_con_Manubri,Manubri,Intermedio
+Spalle,Shoulder_Press_Machine,Macchina,Principiante
+Spalle,Alzate_Laterali_con_Manubri,Manubri,Principiante
+Spalle,Alzate_Laterali_ai_Cavi,Cavi,Principiante
+Spalle,Alzate_Frontali_con_Manubri,Manubri,Principiante
+Spalle,Alzate_Frontali_con_Bilanciere,Bilanciere,Principiante
+Spalle,Alzate_Posteriori_con_Manubri_(Deltoidi_Post),Manubri,Principiante
+Spalle,Face_Pull,Cavi,Principiante
+Spalle,Reverse_Fly_Machine_(Pec_Deck_Inverso),Macchina,Principiante
+Spalle,Tirate_al_Mento_con_Bilanciere,Bilanciere,Intermedio
+Bicipiti,Curl_con_Bilanciere_dritto,Bilanciere,Principiante
+Bicipiti,Curl_con_Bilanciere_Sagomato_(EZ),Bilanciere,Principiante
+Bicipiti,Curl_Alternato_con_Manubri,Manubri,Principiante
+Bicipiti,Curl_a_Martello_(Hammer_Curl),Manubri,Principiante
+Bicipiti,Curl_su_Panca_Inclinata,Manubri_/_Panca,Intermedio
+Bicipiti,Curl_alla_Panca_Scott,Bilanciere_EZ_/_Manubrio,Principiante
+Bicipiti,Curl_Concentrato,Manubrio,Principiante
+Bicipiti,Curl_ai_Cavi_Bassi,Cavi,Principiante
+Bicipiti,Spider_Curl,Bilanciere_/_Panca,Intermedio
+Tricipiti,Pushdown_con_Corda,Cavi,Principiante
+Tricipiti,Pushdown_con_Barra_dritta/V,Cavi,Principiante
+Tricipiti,French_Press_con_Bilanciere_EZ,Bilanciere,Intermedio
+Tricipiti,Skull_Crusher_con_Manubri,Manubri,Intermedio
+Tricipiti,Estensioni_Dietro_Nuca_con_Manubrio,Manubrio,Principiante
+Tricipiti,Estensioni_Dietro_Nuca_al_Cavo_Alto,Cavi,Principiante
+Tricipiti,Panca_Piana_Presa_Stretta,Bilanciere,Intermedio
+Tricipiti,Dip_tra_due_panche,Corpo_Libero_/_Panca,Principiante
+Tricipiti,Kickback_con_Manubrio,Manubri,Principiante
+Addominali,Crunch_a_Terra,Corpo_Libero,Principiante
+Addominali,Crunch_Inverso,Corpo_Libero,Principiante
+Addominali,Plank_Statico,Corpo_Libero,Principiante
+Addominali,Side_Plank_(Plank_Laterale),Corpo_Libero,Principiante
+Addominali,Leg_Raise_alla_Sbarra_(Sollevamento_Gambe),Corpo_Libero,Intermedio
+Addominali,Sollevamento_Ginocchia_alle_Parallele,Corpo_Libero,Principiante
+Addominali,Ab_Wheel_Rollout_(Ruota_Addominali),Ab_Wheel,Avanzato
+Addominali,Cable_Crunch_(Crunch_ai_Cavi),Cavi,Principiante
+Addominali,Russian_Twist,Corpo_Libero_/_Palla_Medica,Principiante
+Addominali,Woodchopper_ai_Cavi,Cavi,Intermedio
