@@ -171,14 +171,14 @@ button {
 }
 
 /* ALLENAMENTO */
-#btnStart{
+#btnStart {
     position: absolute;
     top: 50%;
     left: 50%;
 
     border: transparent;
-    background-color:#000;
-    color:#fff;
+    background-color: #000;
+    color: #fff;
     border-radius: 20px;
 
     padding: 20px;
@@ -187,29 +187,29 @@ button {
     transition: 0.1 all ease-in-out;
 }
 
-#btnStart:hover{
+#btnStart:hover {
     cursor: pointer;
 }
 
-#btnStart:active{
+#btnStart:active {
     scale: 0.95;
 }
 
-#workout-container{
+#workout-container {
     margin-top: 30px;
 }
 
-#workout-container h3{
+#workout-container h3 {
     color: #aaaaaa;
     font-weight: lighter;
     font-size: 0.9rem;
 }
 
-#workout-container button{
+#workout-container button {
     cursor: pointer;
 }
 
-#btnClock{
+#btnClock {
     color: rgb(0, 92, 255);
     background-color: transparent;
     border: transparent;
@@ -217,20 +217,21 @@ button {
     margin-left: 10%;
 }
 
-#btnSpotify{
-    color:#5dba5d;
+#btnSpotify {
+    color: #5dba5d;
     background-color: transparent;
     border: transparent;
     scale: 1.5;
     margin-left: 5%;
 }
 
-#btnClock:active,#btnSpotify:active{
+#btnClock:active,
+#btnSpotify:active {
     background-color: #aaaaaaa2;
     border-radius: 10px;
 }
 
-#btnEnd{
+#btnEnd {
     background-color: rgba(0, 94, 255, 0.603);
     border: transparent;
     padding: 5px 15px;
@@ -240,11 +241,11 @@ button {
     margin-left: 1%;
 }
 
-#btnEnd:active{
+#btnEnd:active {
     scale: 0.95;
 }
 
-#info-workout{
+#info-workout {
     display: flex;
     flex-direction: row;
     margin-top: 20px;
@@ -257,13 +258,179 @@ button {
     padding: 0px 30px;
 }
 
-#info-workout p{
+#info-workout p {
     padding: 20px 0px;
     font-weight: bold;
 }
 
-#info-workout #duration-value{
-    color:rgb(38, 157, 255);
+#info-workout #duration-value {
+    color: rgb(38, 157, 255);
+}
+
+/* PROGRESS */
+#progress-nav-bar {
+    display: flex;
+    flex-direction: row;
+    margin-top: 50px;
+    margin-left: 15%;
+    column-gap: 50px;
+}
+
+#progress-nav-bar h2 {
+    background-color: transparent;
+    border: transparent;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#separa-info-progress-statico {
+    width: 85%;
+    margin-top: 1px;
+    margin-left: 13%;
+    height: 4px;
+    background-color: #aaaaaa;
+    border: transparent;
+}
+
+#separa-info-progress-dinamico {
+    width: 6%;
+    margin-left: 14.6%;
+    margin-top: -12px;
+    border: 2px solid rgb(0, 0, 0);
+    transition: 0.5s all ease-out;
+    border-radius: 20px;
+}
+
+#info-workouts-container,
+#info-volume-container,
+#info-duration-container {
+    margin-top: 15%;
+    border: 2px solid #aaaaaa;
+    background-color: transparent;
+    border-radius: 20px;
+    width: 300px;
+    height: 200px;
+    text-align: left;
+    padding-left: 20px;
+}
+
+#info-workouts-container {
+    margin-left: 30%;
+}
+
+#info-volume-container {
+    margin-left: calc(30% + 350px);
+    margin-top: -202px;
+}
+
+#info-duration-container {
+    margin-left: calc(30% + 700px);
+    margin-top: -202px;
+}
+
+#info-workouts-container h3,
+#info-volume-container h3,
+#info-duration-container h3 {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+#info-workouts-container p,
+#info-volume-container p,
+#info-duration-container p {
+    font-size: 1.3rem;
+}
+
+#n-workout-pano,
+#n-volume-pano,
+#n-duration-pano {
+    margin-bottom: 50px;
+    padding-top: 15px;
+    font-weight: bold;
+}
+
+#misure {
+    margin-left: 50%;
+    width: 300px;
+    height: 300px;
+    margin-top: 10%;
+    scale: 1.3;
+}
+
+#misure ul {
+    list-style: none;
+}
+
+#misure ul li {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #aaaaaa;
+}
+
+#misure ul li:hover {
+    cursor: pointer;
+    background-color: #dddddd;
+}
+
+#misure ul:first-child {
+    margin-top: 50px;
+}
+
+#misure #assunzione-calorica h4,
+#misure #assunzione-calorica p {
+    margin-left: 35px;
+}
+
+#misure #n-weight-misure {
+    margin-top: -15px;
+    margin-right: 65px;
+    color: #666;
+}
+
+#misure #n-fat-misure {
+    margin-top: -15px;
+    margin-right: 95px;
+    color: #666;
+}
+
+#misure #n-kcal-misure {
+    margin-top: -15px;
+    margin-right: 35%;
+    color: #666;
+}
+
+.fa-weight-scale {
+    position: absolute;
+    left: 25%;
+    top: 15%;
+    scale: 2;
+}
+
+.fa-ruler {
+    position: absolute;
+    left: 25%;
+    top: 44%;
+    scale: 2;
+    transform: rotateZ(120deg);
+}
+
+.fa-bowl-food {
+    position: absolute;
+    left: 25%;
+    top: 74%;
+    scale: 2;
+}
+
+#txtNewValue {
+    position: fixed;
+    top: 16%;
+    left: 39%;
+    width: 100px;
+    display: none;
+    transition: 0.1 all;
 }
 
 /* PROFILO */
@@ -452,125 +619,33 @@ body.dark-mode #logout-button:hover {
     color: #333;
 }
 
-body.dark-mode #btnStart{
+body.dark-mode #btnStart {
     color: #000;
     background-color: #fff;
 }
 
-body.dark-mode #period-selector {
-    border-color: #fff;
-    box-shadow: 2px 2px 0px #fff;
+body.dark-mode #info-workouts-container h3,
+body.dark-mode #info-volume-container h3,
+body.dark-mode #info-duration-container h3 {
+    color: #aaaaaa;
 }
 
-body.dark-mode .period-btn {
-    background-color: #222;
-    color: #fff;
-    border-right-color: #fff;
+body.dark-mode #separa-info-progress-statico{
+    background-color:#494949;
 }
 
-body.dark-mode .period-btn:hover {
+body.dark-mode #separa-info-progress-dinamico{
+    border: 2px solid #fff;
+}
+
+body.dark-mode #misure #n-weight-misure,
+body.dark-mode #misure #n-fat-misure,
+body.dark-mode #misure #n-kcal-misure {
+    color: #aaaaaa;
+}
+
+body.dark-mode #misure ul li:hover{
     background-color: #333;
-}
-
-body.dark-mode .period-btn.active {
-    background-color: #fff;
-    color: #222;
-}
-
-body.dark-mode .stat-card {
-    background-color: #2a2a2a;
-    border-color: #fff;
-    box-shadow: 4px 4px 0px #fff;
-}
-
-body.dark-mode .stat-card:hover {
-    box-shadow: 6px 6px 0px #fff;
-}
-
-body.dark-mode .stat-label {
-    color: #aaa;
-}
-
-body.dark-mode .stat-trend {
-    color: #5dba5d;
-    background-color: #1a2e1a;
-    border-color: #5dba5d;
-}
-
-body.dark-mode .stat-value {
-    color: #fff;
-}
-
-body.dark-mode .stat-sub {
-    color: #666;
-}
-
-body.dark-mode .sparkline-wrap {
-    border-top-color: #444;
-}
-
-body.dark-mode .spark-bar {
-    background-color: #555;
-}
-
-body.dark-mode .spark-bar.active {
-    background-color: #fff;
-}
-
-body.dark-mode #week-section {
-    background-color: #2a2a2a;
-    border-color: #fff;
-    box-shadow: 4px 4px 0px #fff;
-}
-
-body.dark-mode #week-title {
-    color: #aaa;
-}
-
-body.dark-mode .week-count-badge {
-    color: #fff;
-    background-color: #333;
-    border-color: #fff;
-}
-
-body.dark-mode .week-dot {
-    background-color: #333;
-    border-color: #555;
-    color: #666;
-}
-
-body.dark-mode .week-dot:hover {
-    border-color: #aaa;
-}
-
-body.dark-mode .week-dot.done {
-    background-color: #fff;
-    border-color: #fff;
-    color: #222;
-    box-shadow: 2px 2px 0px #aaa;
-}
-
-body.dark-mode .week-dot.today {
-    border-color: #fff;
-}
-
-body.dark-mode .week-day-label {
-    color: #666;
-}
-
-body.dark-mode .tab-empty-state i {
-    color: #555;
-}
-
-body.dark-mode .tab-empty-state p {
-    color: #666;
-}
-
-body.dark-mode .add-data-btn {
-    background-color: #fff;
-    color: #222;
-    border-color: #fff;
-    box-shadow: 3px 3px 0px #aaa;
 }
 
 body.dark-mode #profile-container {
