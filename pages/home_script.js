@@ -1,4 +1,5 @@
 let scenari = [];
+let scenario_selezionato = "main";
 let workout = false;
 let timerInterval = null;
 let uiInterval = null;
@@ -40,6 +41,7 @@ function controllaLoggato() {
         showUsername();
         setInterval(showUsername, 500);
         setScenario("main-container");
+        scenario_selezionato("main");
     }
 }
 
@@ -123,20 +125,24 @@ function loadProfile() {
 
 function openProfile() {
     setScenario("profile-container");
+    scenario_selezionato = "profile";
     loadProfile();
 }
 
 function openHome() {
     setScenario("main-container");
+    scenario_selezionato = "main";
 }
 
 function openWorkout() {
     resetInfo();
     setScenario("startworkout-container");
+    scenario_selezionato = "start_workout";
 }
 
 function openProgress() {
     setScenario("progress-container");
+    scenario_selezionato = "progress";
     openPanoramica();
 }
 
@@ -226,11 +232,13 @@ function endWorkout() {
     }
 
     setScenario("startworkout-container");
+    scenario_selezionato = "start_workout";
 }
 
 function startWorkout() {
     if (workout === false) {
         setScenario("workout-container");
+        scenario_selezionato = "workout";
         workout = true;
         document.getElementById("btnStart").style.display = 'none';
 
@@ -263,9 +271,14 @@ function startWorkout() {
         uiInterval = setInterval(() => {
             document.getElementById("volume-value").innerText = volume + 'kg';
             document.getElementById("set-value").innerText = set;
+
+            if(scenario_selezionato !== "workout"){
+                endWorkout();
+            }
         }, 200);
     } else {
         setScenario("startworkout-container");
+        scenario_selezionato = "start_workout";
     }
 }
 
@@ -287,6 +300,7 @@ function openMisure() {
 function openFoto() {
     voce_selezionata = voci_progress[2];
     muoviSelezionato();
+    renderFoto();
 }
 
 function muoviSelezionato() {
@@ -321,6 +335,187 @@ function muoviSelezionato() {
         divMisure.style.display = "none";
         divFoto.style.display = "block";
     }
+}
+
+function insertFoto() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.multiple = true;
+    input.onchange = (e) => {
+        const files = Array.from(e.target.files);
+        files.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const oggi = new Date();
+                const gg = String(oggi.getDate()).padStart(2, '0');
+                const mm = String(oggi.getMonth() + 1).padStart(2, '0');
+                const yyyy = oggi.getFullYear();
+                const dataFormattata = `${gg}/${mm}/${yyyy}`;
+                const id = oggi.getTime() + index;
+                salvaFotoLocalStorage(ev.target.result, dataFormattata, id);
+                renderFoto();
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+    input.click();
+}
+
+function salvaFotoLocalStorage(src, data, id) {
+    const emailSalvata = sessionStorage.getItem("email") || "";
+    const chiave = "foto_" + emailSalvata;
+    const esistenti = JSON.parse(localStorage.getItem(chiave) || "[]");
+    const parti = data.split("/");
+    const sortTs = new Date(`${parti[2]}-${parti[1]}-${parti[0]}`).getTime();
+    esistenti.push({ id, src, data, sortTs });
+    localStorage.setItem(chiave, JSON.stringify(esistenti));
+}
+
+function eliminaFotoLocalStorage(id) {
+    const emailSalvata = sessionStorage.getItem("email") || "";
+    const chiave = "foto_" + emailSalvata;
+    let esistenti = JSON.parse(localStorage.getItem(chiave) || "[]");
+    esistenti = esistenti.filter(f => String(f.id) !== String(id));
+    localStorage.setItem(chiave, JSON.stringify(esistenti));
+}
+
+function aggiornDataFotoLocalStorage(id, nuovaData) {
+    const emailSalvata = sessionStorage.getItem("email") || "";
+    const chiave = "foto_" + emailSalvata;
+    let esistenti = JSON.parse(localStorage.getItem(chiave) || "[]");
+    const parti = nuovaData.split("/");
+    const nuovoSortTs = new Date(`${parti[2]}-${parti[1]}-${parti[0]}`).getTime();
+    esistenti = esistenti.map(f => {
+        if (String(f.id) === String(id)) {
+            return { id: f.id, src: f.src, data: nuovaData, sortTs: nuovoSortTs };
+        }
+        return f;
+    });
+    localStorage.setItem(chiave, JSON.stringify(esistenti));
+}
+
+function renderFoto() {
+    const emailSalvata = sessionStorage.getItem("email") || "";
+    const chiave = "foto_" + emailSalvata;
+    const foto = JSON.parse(localStorage.getItem(chiave) || "[]");
+    foto.sort((a, b) => b.sortTs - a.sortTs);
+
+    const container = document.getElementById("foto");
+    const vecchiaGrid = document.querySelector(".foto-grid");
+    if (vecchiaGrid) vecchiaGrid.remove();
+
+    const grid = document.createElement("div");
+    grid.className = "foto-grid";
+
+    foto.forEach(f => {
+        const item = document.createElement("div");
+        item.className = "foto-item";
+        item.dataset.id = f.id;
+        item.dataset.src = f.src;
+        item.dataset.data = f.data;
+
+        const img = document.createElement("img");
+        img.src = f.src;
+
+        const dataLabel = document.createElement("span");
+        dataLabel.className = "foto-data";
+        dataLabel.textContent = f.data;
+
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "remove-foto";
+        removeBtn.textContent = "×";
+        removeBtn.onclick = (e) => {
+            e.stopPropagation();
+            eliminaFotoLocalStorage(f.id);
+            renderFoto();
+        };
+
+        item.onclick = () => openLightbox(item);
+        item.appendChild(img);
+        item.appendChild(dataLabel);
+        item.appendChild(removeBtn);
+        grid.appendChild(item);
+    });
+
+    container.appendChild(grid);
+}
+
+function openLightbox(item) {
+    let overlay = document.getElementById("foto-lightbox");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "foto-lightbox";
+        overlay.innerHTML = `
+            <div id="lightbox-box">
+                <img id="lightbox-img" src="">
+                <div id="lightbox-actions">
+                    <span id="lightbox-data-display"></span>
+                    <div id="lightbox-btns">
+                        <button id="btn-edit-data">✏️ Modifica data</button>
+                        <button id="btn-delete-foto">🗑️ Elimina</button>
+                        <button id="btn-close-lightbox">✕ Chiudi</button>
+                    </div>
+                    <div id="lightbox-edit-data" style="display:none;">
+                        <input type="date" id="input-nuova-data">
+                        <button id="btn-salva-data">Salva</button>
+                        <button id="btn-annulla-data">Annulla</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) closeLightbox();
+        });
+    }
+
+    overlay._currentId = item.dataset.id;
+    document.getElementById("lightbox-img").src = item.dataset.src;
+    document.getElementById("lightbox-data-display").textContent = "📅 " + item.dataset.data;
+    document.getElementById("lightbox-edit-data").style.display = "none";
+
+    document.getElementById("btn-close-lightbox").onclick = closeLightbox;
+
+    document.getElementById("btn-delete-foto").onclick = () => {
+        eliminaFotoLocalStorage(overlay._currentId);
+        closeLightbox();
+        renderFoto();
+    };
+
+    document.getElementById("btn-edit-data").onclick = () => {
+        document.getElementById("lightbox-edit-data").style.display = "flex";
+        const parti = item.dataset.data.split("/");
+        if (parti.length === 3) {
+            document.getElementById("input-nuova-data").value = `${parti[2]}-${parti[1]}-${parti[0]}`;
+        }
+    };
+
+    document.getElementById("btn-salva-data").onclick = () => {
+        const val = document.getElementById("input-nuova-data").value;
+        if (!val) return;
+        const d = new Date(val + "T12:00:00");
+        const gg = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const yyyy = d.getFullYear();
+        const nuovaData = `${gg}/${mm}/${yyyy}`;
+        aggiornDataFotoLocalStorage(overlay._currentId, nuovaData);
+        document.getElementById("lightbox-data-display").textContent = "📅 " + nuovaData;
+        document.getElementById("lightbox-edit-data").style.display = "none";
+        closeLightbox();
+        renderFoto();
+    };
+
+    document.getElementById("btn-annulla-data").onclick = () => {
+        document.getElementById("lightbox-edit-data").style.display = "none";
+    };
+
+    overlay.style.display = "flex";
+}
+
+function closeLightbox() {
+    const overlay = document.getElementById("foto-lightbox");
+    if (overlay) overlay.style.display = "none";
 }
 
 function riempiComboMisure() {
@@ -506,4 +701,5 @@ window.onload = function () {
     aggiornaDatiPanoramica();
 
     muoviSelezionato();
+    renderFoto();
 };

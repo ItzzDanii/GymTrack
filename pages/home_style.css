@@ -92,7 +92,8 @@ button {
     top: 0px;
     left: 0px;
     width: 210px;
-    height: 100vh;
+    height: auto;
+    min-height: 100vh;
     align-items: center;
     padding-top: 30px;
     box-sizing: border-box;
@@ -433,6 +434,230 @@ button {
     transition: 0.1 all;
 }
 
+#foto {
+    padding: 20px;
+    margin-left: 210px;
+}
+
+#foto-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 30px 10px 30px;
+}
+
+#foto-header h3 {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+#drag-foto {
+    text-align: right;
+    padding: 0 30px 20px 30px;
+    border: none;
+    background: none;
+}
+
+#btnInsertFoto {
+    padding: 10px 20px;
+    background-color: #4285f4;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#btnInsertFoto:active {
+    scale: 0.95;
+    transition: 0.1ms all ease-in-out;
+}
+
+.foto-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 0 30px 30px 30px;
+}
+
+.foto-item {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.foto-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.foto-data {
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+}
+
+.foto-item .remove-foto {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    display: none;
+    transition: background 0.2s;
+}
+
+.foto-item:hover .remove-foto {
+    display: block;
+}
+
+#foto-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+#lightbox-box {
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+
+#lightbox-img {
+    max-width: 80vw;
+    max-height: 65vh;
+    object-fit: contain;
+    display: block;
+}
+
+#lightbox-actions {
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f5f5f5;
+}
+
+#lightbox-data-display {
+    font-size: 0.95rem;
+    color: #444;
+    font-weight: bold;
+}
+
+#lightbox-btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#lightbox-btns button {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+#btn-edit-data {
+    background: #4285f4;
+    color: white;
+}
+
+#btn-edit-data:hover {
+    background: #2f6fd8;
+}
+
+#btn-delete-foto {
+    background: #e53935;
+    color: white;
+}
+
+#btn-delete-foto:hover {
+    background: #b71c1c;
+}
+
+#btn-close-lightbox {
+    background: #555;
+    color: white;
+}
+
+#btn-close-lightbox:hover {
+    background: #333;
+}
+
+#lightbox-edit-data {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#lightbox-edit-data input[type="date"] {
+    padding: 6px 10px;
+    border: 2px solid #4285f4;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+#btn-salva-data {
+    background: #43a047;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#btn-salva-data:hover {
+    background: #2e7d32;
+}
+
+#btn-annulla-data {
+    background: #aaa;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#btn-annulla-data:hover {
+    background: #888;
+}
+
 /* PROFILO */
 #profile-container {
     display: none;
@@ -630,11 +855,11 @@ body.dark-mode #info-duration-container h3 {
     color: #aaaaaa;
 }
 
-body.dark-mode #separa-info-progress-statico{
-    background-color:#494949;
+body.dark-mode #separa-info-progress-statico {
+    background-color: #494949;
 }
 
-body.dark-mode #separa-info-progress-dinamico{
+body.dark-mode #separa-info-progress-dinamico {
     border: 2px solid #fff;
 }
 
@@ -644,8 +869,36 @@ body.dark-mode #misure #n-kcal-misure {
     color: #aaaaaa;
 }
 
-body.dark-mode #misure ul li:hover{
+body.dark-mode #misure ul li:hover {
     background-color: #333;
+}
+
+body.dark-mode #drag-foto {
+    background: none;
+    border: none;
+}
+
+body.dark-mode #btnInsertFoto{
+    background-color: #fff;
+    color: #000;
+}
+
+body.dark-mode #lightbox-box {
+    background: #1e1e1e;
+}
+
+body.dark-mode #lightbox-actions {
+    background: #2a2a2a;
+}
+
+body.dark-mode #lightbox-data-display {
+    color: #ddd;
+}
+
+body.dark-mode #lightbox-edit-data input[type="date"] {
+    background: #333;
+    color: #fff;
+    border-color: #4285f4;
 }
 
 body.dark-mode #profile-container {

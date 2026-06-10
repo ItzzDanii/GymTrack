@@ -102,14 +102,14 @@
                     </div>
                 </li>
                 <li>
-                    <div id="grasso-corporeo"  onclick='modifyValue("fat")'>
+                    <div id="grasso-corporeo" onclick='modifyValue("fat")'>
                         <i class="fa-solid fa-ruler"></i>
                         <h4>Grasso corporeo</h4>
                         <p id="n-fat-misure">0%</p>
                     </div>
                 </li>
                 <li>
-                    <div id="assunzione-calorica"  onclick='modifyValue("kcal")'>
+                    <div id="assunzione-calorica" onclick='modifyValue("kcal")'>
                         <i class="fa-solid fa-bowl-food"></i>
                         <h4>Assunzione calorica</h4>
                         <p id="n-kcal-misure">0000kcal</p>
@@ -121,7 +121,12 @@
         </div>
 
         <div id="foto">
-
+            <div id="foto-header">
+                <h3>Foto dei progressi</h3>
+            </div>
+            <div id="drag-foto">
+                <button id="btnInsertFoto" onclick="insertFoto()">Aggiungi Foto</button>
+            </div>
         </div>
     </div>
 
