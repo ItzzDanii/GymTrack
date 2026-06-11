@@ -173,7 +173,7 @@ button {
 
 /* ALLENAMENTO */
 #btnStart {
-    position:absolute;
+    position: absolute;
     top: 200px;
     left: 40px;
 
@@ -492,6 +492,543 @@ button {
 .programma-allenamenti {
     font-size: 0.75rem;
     color: #aaa;
+}
+
+
+
+
+
+
+.btn-popup-icon {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    color: #333;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-popup-icon:hover {
+    background-color: #f0f0f0;
+    border-radius: 50%;
+}
+
+#popup-settings-dropdown {
+    display: none;
+    position: absolute;
+    top: 35px;
+    right: 5px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#popup-settings-dropdown div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+}
+
+#popup-settings-dropdown div:hover {
+    background-color: #f5f5f5;
+}
+
+.dettaglio-icon-centrata {
+    font-size: 3.5rem;
+    color: #333;
+    margin-top: 20px;
+}
+
+#popup-dettaglio-box.modo-visualizza .blocco-modifica-sola {
+    display: none;
+}
+
+#popup-dettaglio-box.modo-modifica .blocco-modifica-sola {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.link-aggiungi-foto {
+    color: rgba(38, 157, 255);
+    font-size: 1rem;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+.divisore-dettaglio {
+    width: 100%;
+    border: none;
+    border-top: 1px solid #eee;
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+.area-foto-programma {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.area-foto-programma:hover {
+    background-color: #f5f5f5;
+}
+
+.area-foto-programma .dettaglio-icon-centrata {
+    margin-top: 0;
+}
+
+.area-foto-programma .link-aggiungi-foto {
+    margin-top: 10px;
+}
+
+#popup-dettaglio-box.modo-visualizza .area-testi-dettaglio {
+    margin-top: 50px;
+}
+
+.fa-pencil {
+    margin-right: 5%;
+}
+
+#popup-dettaglio-programma {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+#popup-dettaglio-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px 30px 0px 30px;
+    width: 500px;
+    max-height: 85vh;
+    margin-top: 50px;
+    box-sizing: border-box;
+    box-shadow: 0 10px 45px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+#popup-dettaglio-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    top: 15px;
+    left: 0;
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 10;
+}
+
+.corpo-scroll-dettaglio {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.corpo-scroll-dettaglio::-webkit-scrollbar {
+    width: 6px;
+}
+
+.corpo-scroll-dettaglio::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 4px;
+}
+
+.area-testi-dettaglio {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-container-dettaglio {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.label-bordo-superiore {
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 4px;
+    align-self: flex-start;
+    padding-left: 5px;
+}
+
+#input-dettaglio-nome {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #ddd;
+    outline: none;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+    background: transparent;
+    padding-bottom: 6px;
+    box-sizing: border-box;
+}
+
+#input-dettaglio-nome:focus {
+    border-bottom-color: #333;
+}
+
+#input-dettaglio-desc {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #eee;
+    outline: none;
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+    background: transparent;
+    padding-bottom: 6px;
+    box-sizing: border-box;
+}
+
+#input-dettaglio-desc:focus {
+    border-bottom-color: #bbb;
+}
+
+.visualizza-header-blocco {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-top: 45px;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.visualizza-icona-sinistra {
+    font-size: 2.2rem;
+    color: #333;
+}
+
+#visualizza-dettaglio-nome {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #000;
+    text-align: left;
+    word-break: break-word;
+}
+
+#visualizza-dettaglio-desc {
+    width: 100%;
+    font-size: 1rem;
+    color: #666;
+    margin-top: 15px;
+    padding: 0 10px;
+    text-align: left;
+    font-style: italic;
+    box-sizing: border-box;
+}
+
+.spaziatore-fine-visualizza {
+    width: 100%;
+    height: 120px;
+}
+
+.sezione-modifica-opzioni {
+    width: 100%;
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-sizing: border-box;
+}
+
+.sezione-titolo-label {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 8px;
+    padding-left: 2px;
+}
+
+.griglia-livelli {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+}
+
+.griglia-obiettivi {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    width: 100%;
+}
+
+.card-opzione {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    background: #fff;
+}
+
+.card-opzione:hover {
+    background-color: #f9f9f9;
+    border-color: #aaa;
+}
+
+.card-opzione.active {
+    border-color: #4285f4 !important;
+    background-color: #f1f5fe !important;
+}
+
+.card-opzione.active i,
+.card-opzione.active span {
+    color: #4285f4 !important;
+}
+
+.btn-piccolo-numero.active {
+    background-color: #4285f4 !important;
+    color: #fff !important;
+    border-color: #4285f4 !important;
+}
+
+.lista-numeri-pulsanti {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 6px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.lista-numeri-pulsanti li {
+    flex: 1;
+}
+
+.btn-piccolo-numero {
+    width: 100%;
+    padding: 8px 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: bold;
+    color: #444;
+}
+
+.btn-piccolo-numero:hover {
+    background-color: #f0f0f0;
+}
+
+.contenitore-salva-sticky {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    padding: 15px 0 20px 0;
+    z-index: 999;
+    box-shadow: 0 -10px 15px rgba(255, 255, 255, 0.9);
+}
+
+#btn-salva-dettaglio {
+    width: 100%;
+    padding: 12px;
+    background-color: #4285f4;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#btn-salva-dettaglio:hover {
+    background-color: #3574de;
+}
+
+.visualizza-top-icona-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 45px;
+    margin-bottom: 25px;
+}
+
+.visualizza-icona-top {
+    font-size: 2.2rem;
+    color: #333;
+}
+
+.trigger-vedi-piu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    user-select: none;
+}
+
+.trigger-vedi-piu span {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #777;
+    letter-spacing: 0.5px;
+}
+
+.trigger-vedi-piu i {
+    font-size: 0.75rem;
+    color: #777;
+}
+
+.trigger-vedi-meno {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    user-select: none;
+    width: 100%;
+}
+
+.trigger-vedi-meno span {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #777;
+    letter-spacing: 0.5px;
+}
+
+.trigger-vedi-meno i {
+    font-size: 0.75rem;
+    color: #777;
+}
+
+#div-dettagli-espandibili {
+    width: 100%;
+    background-color: #fcfcfc;
+    border: 1px solid #f0f0f0;
+    border-radius: 12px;
+    padding: 15px 15px 5px 15px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.griglia-info-2x2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    width: 100%;
+    text-align: left;
+}
+
+.item-info-espanso {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.blocco-descrizione-espanso {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.titolo-info-espanso {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.titolo-info-espanso i {
+    color: #000000;
+    font-size: 0.85rem;
+}
+
+.valore-info-espanso {
+    font-size: 0.9rem;
+    color: #222;
+    padding-left: 2px;
+}
+
+.hr-espansione {
+    border: none;
+    border-top: 1px solid #ececec;
+    margin: 12px 0;
+    width: 100%;
+}
+
+.visualizza-header-blocco {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+#visualizza-dettaglio-nome {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+    word-break: break-word;
+}
+
+#visualizza-dettaglio-desc {
+    width: 100%;
+    font-size: 1rem;
+    color: #666;
+    margin-top: 10px;
+    padding: 0 10px;
+    text-align: center;
+    font-style: italic;
+    box-sizing: border-box;
 }
 
 /* ALLENAMENTO IN CORSO */
@@ -1658,6 +2195,8 @@ button {
 #btn-annulla-data:hover {
     background: #888;
 }
+
+
 
 /* PROFILO */
 #profile-container {

@@ -67,6 +67,7 @@ function controllaLoggato() {
         window.location.href = '/index.html';
     } else {
         inizializzaScenari();
+        renderProgrammi();
         loadProfile();
         showUsername();
         setInterval(showUsername, 500);
@@ -84,6 +85,9 @@ function setScenario(scenario) {
                 scenari[i].style.display = 'block';
             }
         }
+    }
+    if (id === "main-container" || id === "startworkout-container" || id === "workout-container") {
+        renderProgrammi();
     }
 }
 
@@ -167,11 +171,23 @@ function openHome() {
 function openWorkout() {
     resetInfo();
     setScenario("startworkout-container");
+    renderProgrammi();
+
     scenario_selezionato = "start_workout";
+
+    let emailSalvata = sessionStorage.getItem("email") || "";
+    if (emailSalvata !== "") {
+        let nW = parseInt(localStorage.getItem("workouts_" + emailSalvata)) || 0;
+        let element = document.getElementById("n-workout");
+        if (element) element.textContent = nW;
+    }
 }
 
-let programmi = [];
-let programmaId = 0;
+let emailUtenteProgrammi = sessionStorage.getItem("email") || "default";
+
+let programmi = JSON.parse(localStorage.getItem("programmi_" + emailUtenteProgrammi)) || [];
+
+let programmaId = parseInt(localStorage.getItem("programmaId_max_" + emailUtenteProgrammi)) || 0;
 let maxProgrammi = 7;
 
 function addWorkout() {
@@ -209,14 +225,25 @@ function creaProgramma() {
 
     const nome = input.value.trim() !== "" ? input.value.trim() : `Il Mio Programma #${programmaId}`;
 
-    if(programmaId>maxProgrammi-1){
+    if (programmaId > maxProgrammi - 1) {
         input.value = "Max. numero di programmi raggiunto!";
         return;
     }
-    const programma = { id: programmaId, nome, allenamenti: 0 };
+    const programma = {
+        id: programmaId,
+        nome,
+        allenamenti: 0,
+        descrizione: "",
+        livello: "",
+        obiettivo: "",
+        giorni: "",
+        durata: ""
+    };
+
     programmi.push(programma);
     programmaId++;
 
+    salvaProgrammiSuLocalStorage();
     chiudiPopupProgramma();
     renderProgrammi();
 }
@@ -228,6 +255,7 @@ function renderProgrammi() {
     programmi.forEach(p => {
         const li = document.createElement("li");
         li.className = "programma-item";
+        li.onclick = () => apriDettaglioProgramma(p.id, false);
         li.innerHTML = `
             <i class="fa-solid fa-receipt programma-icon"></i>
             <div class="programma-info">
@@ -237,6 +265,328 @@ function renderProgrammi() {
         `;
         lista.appendChild(li);
     });
+}
+
+function salvaProgrammiSuLocalStorage() {
+    let emailUtenteProgrammi = sessionStorage.getItem("email") || "default";
+    localStorage.setItem("programmi_" + emailUtenteProgrammi, JSON.stringify(programmi));
+    localStorage.setItem("programmaId_max_" + emailUtenteProgrammi, programmaId);
+}
+
+function apriDettaglioProgramma(id, inModalitaModifica = false) {
+    const programma = programmi.find(p => p.id === id);
+    if (!programma) return;
+
+    let overlay = document.getElementById("popup-dettaglio-programma");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "popup-dettaglio-programma";
+        document.body.appendChild(overlay);
+    }
+
+    const descrizioneValore = programma.descrizione || "";
+    const livelloValore = programma.livello || "Non specificato";
+    const obiettivoValore = programma.obiettivo || "Non specificato";
+    const giorniValore = programma.giorni || "Non specificato";
+    const durataValore = programma.durata ? `${programma.durata} mesi` : "Non specificato";
+
+    overlay.innerHTML = `
+        <div id="popup-dettaglio-box" class="${inModalitaModifica ? 'modo-modifica' : 'modo-visualizza'}">
+            <div id="popup-dettaglio-header">
+                ${inModalitaModifica ? `
+                    <button class="btn-popup-icon" onclick="apriDettaglioProgramma(${programma.id}, false)">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <div></div>
+                ` : `
+                    <button class="btn-popup-icon" onclick="chiudiDettaglioProgramma()">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <div style="position: relative; display: flex; gap: 10px;">
+                        <button class="btn-popup-icon">
+                            <i class="fa-solid fa-share-nodes"></i>
+                        </button>
+                        <button class="btn-popup-icon" onclick="togglePopupSettings(event)">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <div id="popup-settings-dropdown">
+                            <div onclick="apriDettaglioProgramma(${programma.id}, true)">
+                                <i class="fa-solid fa-pencil"></i>
+                                <span>Modifica Programma</span>
+                            </div>
+                        </div>
+                    </div>
+                `}
+            </div>
+            
+            ${inModalitaModifica ? `
+                <div class="area-foto-programma" onclick="cambiaFotoProgramma(${programma.id})">
+                    <i class="fa-solid fa-receipt dettaglio-icon-centrata"></i>
+                    <span class="link-aggiungi-foto">Aggiungi Foto</span>
+                </div>
+                <hr class="divisore-dettaglio">
+            ` : ''}
+            
+            <div class="corpo-scroll-dettaglio">
+                <div class="area-testi-dettaglio">
+                    ${inModalitaModifica ? `
+                        <div class="input-container-dettaglio" style="margin-top: 50px;">
+                            <label class="label-bordo-superiore">Titolo del programma</label>
+                            <input type="text" id="input-dettaglio-nome" value="${programma.nome}" oninput="aggiornaNomeProgramma(${programma.id}, this.value)">
+                        </div>
+                        <div class="input-container-dettaglio" style="margin-top: 25px;">
+                            <label class="label-bordo-superiore">Descrizione</label>
+                            <input type="text" id="input-dettaglio-desc" placeholder="Descrizione (Opzionale)" value="${descrizioneValore}" oninput="aggiornaDescrizioneProgramma(${programma.id}, this.value)">
+                        </div>
+
+                        <div class="sezione-modifica-opzioni">
+                            <label class="sezione-titolo-label">Livello</label>
+                            <div class="griglia-livelli">
+                                <div class="card-opzione ${programma.livello === 'Principiante' ? 'active' : ''}" onclick="selezionaLivello(this, ${programma.id}, 'Principiante')">
+                                    <i class="fa-solid fa-battery-full"></i>
+                                    <span>Principiante</span>
+                                </div>
+                                <div class="card-opzione ${programma.livello === 'Intermedio' ? 'active' : ''}" onclick="selezionaLivello(this, ${programma.id}, 'Intermedio')">
+                                    <i class="fa-solid fa-battery-half"></i>
+                                    <span>Intermedio</span>
+                                </div>
+                                <div class="card-opzione ${programma.livello === 'Avanzato' ? 'active' : ''}" onclick="selezionaLivello(this, ${programma.id}, 'Avanzato')">
+                                    <i class="fa-solid fa-battery-quarter"></i>
+                                    <span>Avanzato</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sezione-modifica-opzioni">
+                            <label class="sezione-titolo-label">Giorni per settimana</label>
+                            <ul class="lista-numeri-pulsanti" id="gruppo-giorni">
+                                ${[1, 2, 3, 4, 5, 6, 7, '8+'].map(g => `
+                                    <li>
+                                        <button class="btn-piccolo-numero ${programma.giorni == g ? 'active' : ''}" onclick="selezionaGiorni(this, ${programma.id}, '${g}')">
+                                            ${g}
+                                        </button>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+
+                        <div class="sezione-modifica-opzioni">
+                            <label class="sezione-titolo-label">Durata (mesi)</label>
+                            <ul class="lista-numeri-pulsanti" id="gruppo-durata">
+                                ${[1, 2, 3, 4, 5, 6, 7, '8+'].map(m => `
+                                    <li>
+                                        <button class="btn-piccolo-numero ${programma.durata == m ? 'active' : ''}" onclick="selezionaDurata(this, ${programma.id}, '${m}')">
+                                            ${m}
+                                        </button>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+
+                        <div class="sezione-modifica-opzioni" style="margin-bottom: 20px;">
+                            <label class="sezione-titolo-label">Obiettivo</label>
+                            <div class="griglia-obiettivi">
+                                <div class="card-opzione ${programma.obiettivo === 'Costruire muscoli' ? 'active' : ''}" onclick="selezionaObiettivo(this, ${programma.id}, 'Costruire muscoli')">
+                                    <i class="fa-solid fa-dumbbell"></i>
+                                    <span>Costruire muscoli</span>
+                                </div>
+                                <div class="card-opzione ${programma.obiettivo === 'Diventa più forte' ? 'active' : ''}" onclick="selezionaObiettivo(this, ${programma.id}, 'Diventa più forte')">
+                                    <i class="fa-solid fa-hand-fist"></i>
+                                    <span>Diventa più forte</span>
+                                </div>
+                                <div class="card-opzione ${programma.obiettivo === 'Definizione' ? 'active' : ''}" onclick="selezionaObiettivo(this, ${programma.id}, 'Definizione')">
+                                    <i class="fa-brands fa-apple"></i>
+                                    <span>Definizione</span>
+                                </div>
+                                <div class="card-opzione ${programma.obiettivo === 'Fondamenti' ? 'active' : ''}" onclick="selezionaObiettivo(this, ${programma.id}, 'Fondamenti')">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                    <span>Fondamenti</span>
+                                </div>
+                                <div class="card-opzione ${programma.obiettivo === 'Condizionamento' ? 'active' : ''}" onclick="selezionaObiettivo(this, ${programma.id}, 'Condizionamento')">
+                                    <i class="fa-solid fa-person-running"></i>
+                                    <span>Condizionamento</span>
+                                </div>
+                                <div class="card-opzione ${programma.obiettivo === 'Sport' ? 'active' : ''}" onclick="selezionaObiettivo(this, ${programma.id}, 'Sport')">
+                                    <i class="fa-solid fa-futbol"></i>
+                                    <span>Sport</span>
+                                </div>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="visualizza-top-icona-box">
+                            <i class="fa-solid fa-receipt visualizza-icona-top"></i>
+                        </div>
+
+                        <div class="trigger-vedi-piu" id="trigger-espandi" onclick="espandiDettagli()">
+                            <span>VEDI DI PIÙ</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+
+                        <div id="div-dettagli-espandibili" style="display: none;">
+                            <div class="griglia-info-2x2">
+                                <div class="item-info-espanso">
+                                    <div class="titolo-info-espanso"><i class="fa-solid fa-bolt"></i> Livello</div>
+                                    <div class="valore-info-espanso">${livelloValore}</div>
+                                </div>
+                                <div class="item-info-espanso">
+                                    <div class="titolo-info-espanso"><i class="fa-solid fa-bullseye"></i> Obiettivo Principale</div>
+                                    <div class="valore-info-espanso">${obiettivoValore}</div>
+                                </div>
+                            </div>
+                            <hr class="hr-espansione">
+                            <div class="griglia-info-2x2">
+                                <div class="item-info-espanso">
+                                    <div class="titolo-info-espanso"><i class="fa-regular fa-calendar"></i> Giorni x settimana</div>
+                                    <div class="valore-info-espanso">${giorniValore}</div>
+                                </div>
+                                <div class="item-info-espanso">
+                                    <div class="titolo-info-espanso"><i class="fa-solid fa-hourglass-start"></i> Durata</div>
+                                    <div class="valore-info-espanso">${durataValore}</div>
+                                </div>
+                            </div>
+                            <hr class="hr-espansione">
+                            <div class="blocco-descrizione-espanso">
+                                <div class="titolo-info-espanso">Descrizione</div>
+                                <div class="valore-info-espanso">${descrizioneValore !== "" ? descrizioneValore : "Non specificata"}</div>
+                            </div>
+
+                            <div class="trigger-vedi-meno" id="trigger-riduci" onclick="riduciDettagli()">
+                                <span>VEDI MENO</span>
+                                <i class="fa-solid fa-chevron-up"></i>
+                            </div>
+                        </div>
+
+                        <div class="visualizza-header-blocco">
+                            <div id="visualizza-dettaglio-nome">${programma.nome}</div>
+                        </div>
+                        <div id="visualizza-dettaglio-desc">${descrizioneValore !== "" ? descrizioneValore : "Nessuna descrizione"}</div>
+                        
+                        <div class="spaziatore-fine-visualizza"></div>
+                    `}
+                </div>
+            </div>
+
+            ${inModalitaModifica ? `
+                <div class="contenitore-salva-sticky">
+                    <button id="btn-salva-dettaglio" onclick="renderProgrammi(); apriDettaglioProgramma(${programma.id}, false)">Salva</button>
+                </div>
+            ` : ''}
+        </div>
+    `;
+
+    overlay.style.display = "flex";
+}
+
+function espandiDettagli() {
+    document.getElementById("div-dettagli-espandibili").style.display = "block";
+    document.getElementById("trigger-espandi").style.display = "none";
+}
+
+function riduciDettagli() {
+    document.getElementById("div-dettagli-espandibili").style.display = "none";
+    document.getElementById("trigger-espandi").style.display = "flex";
+}
+
+
+function selezionaLivello(elemento, id, valore) {
+    const p = programmi.find(x => x.id === id);
+    if (!p) return;
+    p.livello = valore;
+
+    const contenitore = elemento.closest('.griglia-livelli');
+    contenitore.querySelectorAll('.card-opzione').forEach(el => el.classList.remove('active'));
+    elemento.classList.add('active');
+
+    salvaProgrammiSuLocalStorage();
+}
+
+function selezionaGiorni(elemento, id, valore) {
+    const p = programmi.find(x => x.id === id);
+    if (!p) return;
+    p.giorni = valore;
+
+    const contenitore = elemento.closest('#gruppo-giorni');
+    contenitore.querySelectorAll('.btn-piccolo-numero').forEach(el => el.classList.remove('active'));
+    elemento.classList.add('active');
+
+    salvaProgrammiSuLocalStorage();
+}
+
+function selezionaDurata(elemento, id, valore) {
+    const p = programmi.find(x => x.id === id);
+    if (!p) return;
+    p.durata = valore;
+
+    const contenitore = elemento.closest('#gruppo-durata');
+    contenitore.querySelectorAll('.btn-piccolo-numero').forEach(el => el.classList.remove('active'));
+    elemento.classList.add('active');
+
+    salvaProgrammiSuLocalStorage();
+}
+
+function selezionaObiettivo(elemento, id, valore) {
+    const p = programmi.find(x => x.id === id);
+    if (!p) return;
+    p.obiettivo = valore;
+
+    const contenitore = elemento.closest('.griglia-obiettivi');
+    contenitore.querySelectorAll('.card-opzione').forEach(el => el.classList.remove('active'));
+    elemento.classList.add('active');
+
+    salvaProgrammiSuLocalStorage();
+}
+
+function toggleDettagliEspandibili() {
+    const divInfo = document.getElementById("div-dettagli-espandibili");
+    const testo = document.getElementById("testo-trigger-espandi");
+    const icona = document.getElementById("icona-trigger-espandi");
+
+    if (!divInfo) return;
+
+    if (divInfo.style.display === "block") {
+        divInfo.style.display = "none";
+        testo.textContent = "VEDI DI PIÙ";
+        icona.className = "fa-solid fa-chevron-down";
+    } else {
+        divInfo.style.display = "block";
+        testo.textContent = "VEDI MENO";
+        icona.className = "fa-solid fa-chevron-up";
+    }
+}
+
+function chiudiDettaglioProgramma() {
+    const overlay = document.getElementById("popup-dettaglio-programma");
+    if (overlay) overlay.style.display = "none";
+}
+
+function togglePopupSettings(event) {
+    event.stopPropagation();
+    const menu = document.getElementById("popup-settings-dropdown");
+    if (menu) {
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+}
+
+document.addEventListener("click", () => {
+    const menu = document.getElementById("popup-settings-dropdown");
+    if (menu) menu.style.display = "none";
+});
+
+function aggiornaNomeProgramma(id, nuovoNome) {
+    const programma = programmi.find(p => p.id === id);
+    if (programma) {
+        programma.nome = nuovoNome.trim() !== "" ? nuovoNome : `Il Mio Programma #${id}`;
+        renderProgrammi();
+        salvaProgrammiSuLocalStorage();
+    }
+}
+
+function aggiornaDescrizioneProgramma(id, nuovaDesc) {
+    const programma = programmi.find(p => p.id === id);
+    if (programma) {
+        programma.descrizione = nuovaDesc;
+        salvaProgrammiSuLocalStorage();
+    }
 }
 
 function openProgress() {
