@@ -173,9 +173,9 @@ button {
 
 /* ALLENAMENTO */
 #btnStart {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    position:absolute;
+    top: 200px;
+    left: 40px;
 
     border: transparent;
     background-color: #000;
@@ -196,6 +196,305 @@ button {
     scale: 0.95;
 }
 
+/* LIBRERIA E ALLENATI ORA */
+#workout-nav-bar {
+    margin-top: 1%;
+    margin-left: 14%;
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    column-gap: 30px;
+    position: sticky;
+    z-index: 1000;
+}
+
+#workout-nav-bar h3 {
+    background-color: transparent;
+    border: transparent;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#separa-info-workout-statico {
+    width: 85%;
+    margin-top: -.2%;
+    margin-left: 13%;
+    height: 4px;
+    background-color: #aaaaaa;
+    border: transparent;
+}
+
+#separa-info-workout-dinamico {
+    width: 6%;
+    margin-left: 14.6%;
+    margin-top: -.65%;
+    margin-bottom: 6%;
+    border: 2px solid rgb(0, 0, 0);
+    transition: 0.5s all ease-out;
+    border-radius: 20px;
+}
+
+/* ALLENATI ORA */
+#btn-new-workout {
+    width: 300px;
+    height: 60px;
+    transform: translateY(-90%);
+    background-color: #e6e1eb;
+    border: transparent;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#btn-new-workout .fa-circle-play {
+    position: absolute;
+    top: 40%;
+    left: 8%;
+    scale: 1.8;
+}
+
+#btn-new-workout h4 {
+    margin-top: 5%;
+}
+
+#btn-new-workout h5 {
+    margin-right: 20%;
+    margin-top: -5%;
+    color: #7c7a7a;
+    font-weight: normal;
+}
+
+#btn-new-workout:hover,
+#btn-add-workout2:hover {
+    scale: 1.02;
+    transition: 0.1s all;
+}
+
+#btn-new-workout:active {
+    scale: 0.95;
+    transition: 0.1s all;
+}
+
+#btn-add-workout2:active {
+    scale: 0.99;
+    transition: 0.1s all;
+}
+
+#btn-add-workout2 {
+    width: 300px;
+    height: 60px;
+    transform: translateY(500%);
+    background-color: #e6e1eb;
+    border: transparent;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#btn-add-workout2 .fa-plus {
+    position: absolute;
+    top: 40%;
+    left: 8%;
+    scale: 1.8;
+}
+
+#btn-add-workout2 h4 {
+    margin-top: 2.5%;
+    margin-right: 35%;
+}
+
+#btn-add-workout2 h5 {
+    width: 200px;
+    text-align: left;
+    margin-left: 20%;
+    margin-top: -5%;
+    color: #7c7a7a;
+    font-weight: normal;
+}
+
+
+/* BIBLIOTECA */
+#workouts-library {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 50%;
+    margin-top: -2%;
+    gap: 6px;
+}
+
+#btnAddWorkout {
+    display: flex;
+    align-items: end;
+    gap: 20px;
+    padding: 25px 30px;
+    background-color: transparent;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    margin-bottom: 1%;
+}
+
+#btnAddWorkout:hover {
+    background-color: #aaaaaa57;
+}
+
+#btnAddWorkout .fa-plus {
+    scale: 2.2;
+    background-color: #aaaaaa33;
+    border-radius: 20px;
+    padding: 6px 8px;
+}
+
+#textAddWorkout {
+    margin-left: 7px;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+#popup-nuovo-programma {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+#popup-nuovo-programma-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+}
+
+#popup-nuovo-programma-box h3 {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 20px;
+}
+
+#popup-programma-input-wrap {
+    margin-bottom: 24px;
+}
+
+#input-nome-programma {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 0.95rem;
+    color: #000;
+    text-align: center;
+    background: transparent;
+    padding-bottom: 6px;
+    box-sizing: border-box;
+}
+
+#input-programma-linea {
+    margin: 0;
+    border: none;
+    border-top: 1px solid #ddd;
+}
+
+#popup-programma-btns {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+#btn-annulla-programma {
+    padding: 8px 20px;
+    background-color: #fff;
+    color: #000;
+    border: 2px solid #aaaaaa;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#btn-annulla-programma:hover {
+    background-color: #f0f0f0;
+}
+
+#btn-crea-programma {
+    padding: 8px 20px;
+    background-color: rgb(31, 152, 252);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#btn-crea-programma:active {
+    scale: 0.95;
+}
+
+#list-workouts {
+    list-style: none;
+    display: flex;
+    margin-left: -4%;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.programma-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 32%;
+    box-sizing: border-box;
+}
+
+.programma-item:hover {
+    background-color: #aaaaaa57;
+}
+
+.programma-icon {
+    font-size: 1.8rem;
+    color: #333;
+    background-color: #aaaaaa33;
+    padding: 18px 20px;
+    border-radius: 5px;
+}
+
+.programma-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-left: 3px;
+}
+
+.programma-nome {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #000;
+    font-size: 1rem;
+}
+
+.programma-allenamenti {
+    font-size: 0.75rem;
+    color: #aaa;
+}
+
+/* ALLENAMENTO IN CORSO */
 #workout-container {
     margin-top: 30px;
 }
@@ -1689,6 +1988,14 @@ body.dark-mode #separa-info-progress-statico {
 }
 
 body.dark-mode #separa-info-progress-dinamico {
+    border: 2px solid #fff;
+}
+
+body.dark-mode #separa-info-workout-statico {
+    background-color: #494949;
+}
+
+body.dark-mode #separa-info-workout-dinamico {
     border: 2px solid #fff;
 }
 

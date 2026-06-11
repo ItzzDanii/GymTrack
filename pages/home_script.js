@@ -170,6 +170,75 @@ function openWorkout() {
     scenario_selezionato = "start_workout";
 }
 
+let programmi = [];
+let programmaId = 0;
+let maxProgrammi = 7;
+
+function addWorkout() {
+    let overlay = document.getElementById("popup-nuovo-programma");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "popup-nuovo-programma";
+        document.body.appendChild(overlay);
+    }
+
+    overlay.innerHTML = `
+        <div id="popup-nuovo-programma-box">
+            <h3>Dai un nome al tuo<br>programma</h3>
+            <div id="popup-programma-input-wrap">
+                <input type="text" id="input-nome-programma" value="Il Mio Programma #${programmaId}">
+                <hr id="input-programma-linea">
+            </div>
+            <div id="popup-programma-btns">
+                <button id="btn-annulla-programma" onclick="chiudiPopupProgramma()">Annulla</button>
+                <button id="btn-crea-programma" onclick="creaProgramma()">Crea</button>
+            </div>
+        </div>
+    `;
+
+    overlay.style.display = "flex";
+}
+
+function chiudiPopupProgramma() {
+    const overlay = document.getElementById("popup-nuovo-programma");
+    if (overlay) overlay.style.display = "none";
+}
+
+function creaProgramma() {
+    const input = document.getElementById("input-nome-programma");
+
+    const nome = input.value.trim() !== "" ? input.value.trim() : `Il Mio Programma #${programmaId}`;
+
+    if(programmaId>maxProgrammi-1){
+        input.value = "Max. numero di programmi raggiunto!";
+        return;
+    }
+    const programma = { id: programmaId, nome, allenamenti: 0 };
+    programmi.push(programma);
+    programmaId++;
+
+    chiudiPopupProgramma();
+    renderProgrammi();
+}
+
+function renderProgrammi() {
+    const lista = document.getElementById("list-workouts");
+    lista.innerHTML = "";
+
+    programmi.forEach(p => {
+        const li = document.createElement("li");
+        li.className = "programma-item";
+        li.innerHTML = `
+            <i class="fa-solid fa-receipt programma-icon"></i>
+            <div class="programma-info">
+                <span class="programma-nome">${p.nome}</span>
+                <span class="programma-allenamenti">${p.allenamenti} allenamenti</span>
+            </div>
+        `;
+        lista.appendChild(li);
+    });
+}
+
 function openProgress() {
     setScenario("progress-container");
     scenario_selezionato = "progress";
@@ -782,23 +851,70 @@ function toggleCheck(btn) {
 }
 
 let voci_progress = ["Panoramica", "Misure", "Foto"];
-let voce_selezionata = voci_progress[1];
+let voce_progress_selezionata = voci_progress[0];
 
 function openPanoramica() {
-    voce_selezionata = voci_progress[0];
-    muoviSelezionato();
+    voce_progress_selezionata = voci_progress[0];
+    muoviProgressSelezionato();
     aggiornaDatiPanoramica();
 }
 
+let voci_workout = ["Allenati ora", "Biblioteca"];
+let voce_workout_selezionata = voci_workout[1];
+
+function openWorkoutNow() {
+    voce_workout_selezionata = voci_workout[0];
+    muoviWorkoutSelezionato();
+}
+
+function openLibrary() {
+    voce_workout_selezionata = voci_workout[1];
+    muoviWorkoutSelezionato();
+}
+
+function muoviWorkoutSelezionato() {
+    let lineaDinamica = document.getElementById("separa-info-workout-dinamico");
+    let divLibrary = document.getElementById("workouts-library");
+    let divAllentiOra = document.getElementById("workout-now");
+    let btnStart = document.getElementById("btnStart");
+
+    btnStart.style.transition = "none";
+    btnStart.value = "";
+
+    if (!lineaDinamica || !divLibrary || !divAllentiOra) return;
+
+    if (voce_workout_selezionata === "Allenati ora") {
+        btnStart.style.marginTop = "26%";
+        btnStart.style.marginLeft = "85%";
+        lineaDinamica.style.width = '5%';
+        lineaDinamica.style.marginLeft = '13.7%';
+
+        divAllentiOra.style.display = "block";
+        divLibrary.style.display = "none";
+    }
+    else if (voce_workout_selezionata == "Biblioteca") {
+        btnStart.style.marginTop = "35%";
+        btnStart.style.marginLeft = "85%";
+        lineaDinamica.style.width = '5%';
+        lineaDinamica.style.marginLeft = '19.6%';
+
+        divAllentiOra.style.display = "none";
+        divLibrary.style.display = "block";
+    }
+
+    btnStart.style.display = "block";
+    btnStart.focus();
+}
+
 function openMisure() {
-    voce_selezionata = voci_progress[1];
-    muoviSelezionato();
+    voce_progress_selezionata = voci_progress[1];
+    muoviProgressSelezionato();
     loadMisure();
 }
 
 function openFoto() {
-    voce_selezionata = voci_progress[2];
-    muoviSelezionato();
+    voce_progress_selezionata = voci_progress[2];
+    muoviProgressSelezionato();
     renderFoto();
 }
 
@@ -986,7 +1102,7 @@ function setGoal() {
     }
 }
 
-function muoviSelezionato() {
+function muoviProgressSelezionato() {
     let lineaDinamica = document.getElementById("separa-info-progress-dinamico");
     let divPanoramica = document.getElementById("panoramica");
     let divMisure = document.getElementById("misure");
@@ -994,7 +1110,7 @@ function muoviSelezionato() {
 
     if (!lineaDinamica || !divPanoramica || !divMisure || !divFoto) return;
 
-    if (voce_selezionata === "Panoramica") {
+    if (voce_progress_selezionata === "Panoramica") {
         lineaDinamica.style.width = '6%';
         lineaDinamica.style.marginLeft = '14.3%';
 
@@ -1002,7 +1118,7 @@ function muoviSelezionato() {
         divMisure.style.display = "none";
         divFoto.style.display = "none";
     }
-    else if (voce_selezionata == "Misure") {
+    else if (voce_progress_selezionata == "Misure") {
         lineaDinamica.style.width = '4%';
         lineaDinamica.style.marginLeft = '21.6%';
 
@@ -1010,7 +1126,7 @@ function muoviSelezionato() {
         divMisure.style.display = "block";
         divFoto.style.display = "none";
     }
-    else if (voce_selezionata == "Foto") {
+    else if (voce_progress_selezionata == "Foto") {
         lineaDinamica.style.width = '3%';
         lineaDinamica.style.marginLeft = '27.2%';
 
@@ -1385,6 +1501,7 @@ window.onload = function () {
     loadMisure();
     aggiornaDatiPanoramica();
 
-    muoviSelezionato();
+    muoviProgressSelezionato();
+    muoviWorkoutSelezionato();
     renderFoto();
 };

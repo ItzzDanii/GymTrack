@@ -11,7 +11,7 @@
 
 <body onload="controllaLoggato()">
 
-    <div id="main-container" style="display: block;">
+    <div id="main-container" style="display: none;">
         <h1>Benvenuto su GymTrack!</h1>
         <p>Il tuo compagno ideale per tenere traccia dei tuoi allenamenti e raggiungere i tuoi obiettivi fitness.</p>
 
@@ -40,7 +40,41 @@
         </ul>
     </div>
 
-    <div id="startworkout-container" style="display: none;">
+    <div id="startworkout-container" style="display: block;">
+        <div id="workout-nav-bar">
+            <h3 onclick="openWorkoutNow()">Allenati ora</h3>
+            <h3 onclick="openLibrary()">Biblioteca</h3>
+        </div>
+
+        <hr id="separa-info-workout-statico">
+        <hr id="separa-info-workout-dinamico">
+
+        <div id="workouts-library">
+            <button id="btnAddWorkout" onclick="addWorkout()">
+                <i class="fa-regular fa-plus"></i>
+                <p id="textAddWorkout">Aggiungi nuovo programma</p>
+            </button>
+            <ul id="list-workouts"></ul>
+        </div>
+
+        <div id="workout-now">
+            <button id="btn-new-workout" onclick="startWorkout()">
+                <i class="fa-solid fa-circle-play"></i>
+                <h4>Avvia un nuovo allenamento</h4>
+                <h5>Registra senza un piano</h5>
+            </button>
+
+            <div id="suggested-workouts-container">
+                <h4>Allenamenti suggeriti</h4>
+                <ul id="suggested-workouts"></ul>
+            </div>
+
+            <button id="btn-add-workout2" onclick="openLibrary(); addWorkout()">
+                <i class="fa-regular fa-plus"></i>
+                <h4>Crea Piano</h4>
+                <h5>Progetta il tuo piano di allenamento personalizzato</h5>
+            </button>
+        </div>
         <button id="btnStart" onclick="startWorkout()">Avvia un nuovo allenamento</button>
     </div>
 
@@ -184,7 +218,7 @@
         </span>
         <input type="text" id="profile-facebook">
     </div>
-
+    <div id="popup-nuovo-programma" style="display:none;"></div>
 </body>
 <script src="../pages/home_script.js"></script>
 
