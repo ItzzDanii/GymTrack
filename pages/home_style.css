@@ -306,7 +306,7 @@ button {
 #info-workouts-container,
 #info-volume-container,
 #info-duration-container {
-    margin-top: 15%;
+    margin-top: 5%;
     border: 2px solid #aaaaaa;
     background-color: transparent;
     border-radius: 20px;
@@ -352,6 +352,185 @@ button {
     padding-top: 15px;
     font-weight: bold;
 }
+
+/* OBIETTIVI */
+#goals {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 50%;
+    width: 320px;
+}
+
+#goals h3 {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+#goal-count {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin: 0 0 10px;
+}
+
+#goal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 320px;
+}
+
+#goals select {
+    margin-bottom: 10px;
+}
+
+#goal-list li {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    padding: 10px 14px;
+    transition: background-color 0.2s ease;
+}
+
+#goal-list li:hover {
+    background-color: #f0f0f0;
+}
+
+.goal-item-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.goal-circle-wrap {
+    flex-shrink: 0;
+}
+
+.goal-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    text-align: left;
+    gap: 2px;
+}
+
+.goal-nome {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.goal-valore {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.goal-remove {
+    background: none;
+    border: none;
+    color: #e53935;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: transform 0.1s ease, color 0.2s ease;
+}
+
+.goal-remove:hover {
+    color: #b71c1c;
+    transform: scale(1.2);
+}
+
+
+#goal-list li span {
+    flex: 1;
+    text-align: left;
+}
+
+#goal-list li button {
+    background: none;
+    border: none;
+    color: #e53935;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0 0 10px;
+    transition: transform 0.1s ease, color 0.2s ease;
+}
+
+#goal-list li button:hover {
+    color: #b71c1c;
+    transform: scale(1.2);
+}
+
+#goal-list li button:active {
+    transform: scale(0.95);
+}
+
+#btnSetGoal {
+    padding: 8px 20px;
+    background-color: #fff;
+    border: 2px solid #333;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px #333;
+    transition: all 0.2s ease;
+}
+
+#btnSetGoal:hover {
+    background-color: #333;
+    color: #fff;
+    scale: 1.05;
+}
+
+#btnSetGoal:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #333;
+}
+
+#btnSetGoal:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+    scale: 1;
+}
+
+#insert-goal-container {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+#comboGoals,
+#comboValueGoals {
+    padding: 8px 12px;
+    border: 2px solid #333;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    width: 100%;
+    max-width: 280px;
+}
+
+#comboGoals:focus,
+#comboValueGoals:focus {
+    outline: none;
+    border-color: #555;
+}
+
 
 #misure {
     margin-left: 50%;
@@ -863,6 +1042,72 @@ body.dark-mode #separa-info-progress-dinamico {
     border: 2px solid #fff;
 }
 
+body.dark-mode #goals h3 {
+    color: #aaa;
+}
+
+body.dark-mode #goal-count {
+    color: #666;
+}
+
+body.dark-mode #goal-list li {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #fff;
+}
+
+body.dark-mode #goal-list li:hover {
+    background-color: #333;
+}
+
+body.dark-mode #goal-list li button {
+    color: #ef9f9f;
+}
+
+body.dark-mode #goal-list li button:hover {
+    color: #f09595;
+}
+
+body.dark-mode #btnSetGoal {
+    background-color: #222;
+    border-color: #fff;
+    color: #fff;
+    box-shadow: 3px 3px 0px #fff;
+}
+
+body.dark-mode #btnSetGoal:hover {
+    background-color: #fff;
+    color: #222;
+}
+
+body.dark-mode #btnSetGoal:active {
+    box-shadow: 1px 1px 0px #fff;
+}
+
+body.dark-mode #goal-list li {
+    background-color: #2a2a2a;
+    border-color: #444;
+}
+
+body.dark-mode #goal-list li:hover {
+    background-color: #333;
+}
+
+body.dark-mode .goal-nome {
+    color: #fff;
+}
+
+body.dark-mode .goal-valore {
+    color: #888;
+}
+
+body.dark-mode #comboGoals,
+body.dark-mode #comboValueGoals {
+    background-color: #2a2a2a;
+    border-color: #fff;
+    color: #fff;
+}
+
 body.dark-mode #misure #n-weight-misure,
 body.dark-mode #misure #n-fat-misure,
 body.dark-mode #misure #n-kcal-misure {
@@ -878,7 +1123,7 @@ body.dark-mode #drag-foto {
     border: none;
 }
 
-body.dark-mode #btnInsertFoto{
+body.dark-mode #btnInsertFoto {
     background-color: #fff;
     color: #000;
 }

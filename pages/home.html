@@ -11,7 +11,7 @@
 
 <body onload="controllaLoggato()">
 
-    <div id="main-container" style="display: block;">
+    <div id="main-container" style="display: none;">
         <h1>Benvenuto su GymTrack!</h1>
         <p>Il tuo compagno ideale per tenere traccia dei tuoi allenamenti e raggiungere i tuoi obiettivi fitness.</p>
 
@@ -65,7 +65,7 @@
         </div>
     </div>
 
-    <div id="progress-container" style="display: none;">
+    <div id="progress-container" style="display: block;">
         <div id="progress-nav-bar">
             <h2 onclick="openPanoramica()">Panoramica</h2>
             <h2 onclick="openMisure()">Misure</h2>
@@ -89,6 +89,17 @@
             <div id="info-duration-container">
                 <h3>Durata</h3>
                 <p id="n-duration-pano"></p>
+            </div>
+
+            <div id="goals">
+                <h3>Obiettivi</h3>
+                <p id="goal-count" style="font-size:0.85rem; color:#888; margin:0 0 8px;"></p>
+                <ul id="goal-list" style="list-style:none; padding:0; margin:0 0 10px;"></ul>
+                <button id="btnSetGoal" onclick="setGoal()">Imposta Obiettivo</button>
+                <div id="insert-goal-container" style="display: none;">
+                    <select id="comboGoals"></select>
+                    <select id="comboValueGoals"></select>
+                </div>
             </div>
         </div>
         <div id="misure">
@@ -116,7 +127,6 @@
                     </div>
                 </li>
             </ul>
-
             <input type="text" id="txtNewValue">
         </div>
 

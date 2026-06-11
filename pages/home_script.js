@@ -4,6 +4,8 @@ let workout = false;
 let timerInterval = null;
 let uiInterval = null;
 
+let esercizi = [];
+
 function inizializzaScenari() {
     scenari = [
         document.getElementById("main-container"),
@@ -12,6 +14,32 @@ function inizializzaScenari() {
         document.getElementById("workout-container"),
         document.getElementById("progress-container")
     ];
+}
+
+async function inizializzaEsercizi() {
+    try {
+        const risposta = await fetch('../es_gym.csv');
+        const datiCsv = await risposta.text();
+
+        const righe = datiCsv.split(/\r?\n/);
+
+        for (let i = 1; i < righe.length; i++) {
+            const riga = righe[i].trim();
+            if (riga === '') continue;
+
+            const colonne = riga.split(',');
+            let nomeEsercizio = colonne[1];
+
+            if (nomeEsercizio) {
+                nomeEsercizio = nomeEsercizio.replace(/_/g, ' ');
+                esercizi.push(nomeEsercizio);
+            }
+        }
+
+        console.log("Esercizi caricati nel browser:", esercizi);
+    } catch (errore) {
+        console.error("Errore nel caricamento del file:", errore);
+    }
 }
 
 function changeTheme() {
@@ -272,7 +300,7 @@ function startWorkout() {
             document.getElementById("volume-value").innerText = volume + 'kg';
             document.getElementById("set-value").innerText = set;
 
-            if(scenario_selezionato !== "workout"){
+            if (scenario_selezionato !== "workout") {
                 endWorkout();
             }
         }, 200);
@@ -303,11 +331,196 @@ function openFoto() {
     renderFoto();
 }
 
+function riempiComboGoals() {
+    let num_goals = 4;
+    let goals = [
+        "Allenamenti a settimana",
+        "Sollevamento settimanale di",
+        "Record su",
+        "Raggiungere peso di"
+    ];
+
+    let s = "";
+    for (let i = 0; i < num_goals; i++) {
+        s += '<option id="goal_' + i + '">' + goals[i] + '</option>';
+    }
+    document.getElementById("comboGoals").innerHTML = s;
+
+    document.getElementById("comboGoals").addEventListener("change", aggiornaValoriGoal);
+
+    aggiornaValoriGoal();
+}
+
+function aggiornaValoriGoal() {
+    let goalSelezionato = document.getElementById("comboGoals").value;
+    let comboValori = document.getElementById("comboValueGoals");
+    let contenuto = "";
+
+    if (goalSelezionato === "Allenamenti a settimana") {
+        for (let j = 1; j <= 7; j++) {
+            contenuto += '<option id="value_goal_' + j + '">' + j + '</option>';
+        }
+
+    } else if (goalSelezionato === "Sollevamento settimanale di") {
+        for (let kg = 500; kg <= 10000; kg += 500) {
+            contenuto += '<option id="value_goal_' + kg + '">' + kg + ' kg</option>';
+        }
+
+    } else if (goalSelezionato === "Record su") {
+        for (let k = 0; k < esercizi.length; k++) {
+            contenuto += '<option id="es_' + k + '">' + esercizi[k] + '</option>';
+        }
+
+    } else if (goalSelezionato === "Raggiungere peso di") {
+        for (let peso = 50; peso <= 120; peso++) {
+            contenuto += '<option id="value_goal_' + peso + '">' + peso + ' kg</option>';
+        }
+    }
+
+    comboValori.innerHTML = contenuto;
+}
+
+let show_goals = false;
+let set_goals = [];
+const MAX_GOALS = 3;
+
+function renderGoals() {
+    const lista = document.getElementById("goal-list");
+    const counter = document.getElementById("goal-count");
+    const btnSet = document.getElementById("btnSetGoal");
+
+    if (!lista) return;
+
+    lista.innerHTML = "";
+
+    const emailSalvata = sessionStorage.getItem("email") || "";
+
+    set_goals.forEach((g, i) => {
+        const { percentuale, corrente, target } = calcolaProgresso(g, emailSalvata);
+
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <div class="goal-item-content">
+                <div class="goal-circle-wrap">
+                    ${cerchioSVG(percentuale)}
+                </div>
+                <div class="goal-text">
+                    <span class="goal-nome">${g.nome}: ${g.valore}</span>
+                    <span class="goal-valore">${corrente} / ${target}</span>
+                </div>
+                <button class="goal-remove" onclick="removeGoal(${i})">×</button>
+            </div>
+        `;
+        lista.appendChild(li);
+    });
+
+    if (counter) counter.textContent = set_goals.length + " / " + MAX_GOALS + " obiettivi impostati";
+    if (btnSet) btnSet.disabled = set_goals.length >= MAX_GOALS;
+}
+
+function calcolaProgresso(g, email) {
+    let corrente = 0;
+    let target = 1;
+
+    if (g.nome === "Raggiungere peso di") {
+        const pesoSalvato = localStorage.getItem("peso_" + email) || "0kg";
+        corrente = parseFloat(pesoSalvato) || 0;
+        target = parseFloat(g.valore) || 1;
+
+    } else if (g.nome === "Allenamenti a settimana") {
+        const totale = parseInt(localStorage.getItem("workouts_" + email)) || 0;
+        target = parseInt(g.valore) || 1;
+        corrente = Math.min(totale % 7, target);
+
+    } else if (g.nome === "Sollevamento settimanale di") {
+        const ultimoId = parseInt(sessionStorage.getItem("id_workout")) - 1;
+        if (ultimoId > 0) {
+            const dati = sessionStorage.getItem(email + "_workout_" + ultimoId) || "";
+            const match = dati.match(/volume:([\d.]+)/);
+            corrente = match ? parseFloat(match[1]) : 0;
+        }
+        target = parseFloat(g.valore) || 1;
+
+    } else if (g.nome === "Record su") {
+        // binario: 0% o 100% — l'utente lo segna manualmente
+        corrente = 0;
+        target = 1;
+    }
+
+    const percentuale = Math.min(Math.round((corrente / target) * 100), 100);
+    return { percentuale, corrente, target };
+}
+
+function cerchioSVG(pct) {
+    const r = 22;
+    const cx = 28;
+    const cy = 28;
+    const circonferenza = 2 * Math.PI * r;
+    const offset = circonferenza - (pct / 100) * circonferenza;
+
+    const colore = pct >= 100 ? "#43a047" : pct >= 50 ? "#4285f4" : "#e53935";
+
+    return `
+        <svg width="56" height="56" viewBox="0 0 56 56">
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#e0e0e0" stroke-width="5"/>
+            <circle
+                cx="${cx}" cy="${cy}" r="${r}"
+                fill="none"
+                stroke="${colore}"
+                stroke-width="5"
+                stroke-dasharray="${circonferenza}"
+                stroke-dashoffset="${offset}"
+                stroke-linecap="round"
+                transform="rotate(-90 ${cx} ${cy})"
+                style="transition: stroke-dashoffset 0.8s ease;"
+            />
+            <text x="${cx}" y="${cy + 5}" text-anchor="middle" font-size="11" font-weight="bold" fill="${colore}">${pct}%</text>
+        </svg>
+    `;
+}
+
+function removeGoal(index) {
+    set_goals.splice(index, 1);
+    renderGoals();
+}
+
+function setGoal() {
+    if (show_goals) {
+        if (set_goals.length >= MAX_GOALS) {
+            alert("Hai già raggiunto il massimo di " + MAX_GOALS + " obiettivi!");
+            return;
+        }
+
+        const nome = document.getElementById("comboGoals").value;
+        const valore = document.getElementById("comboValueGoals").value;
+
+        set_goals.push({ nome, valore });
+
+        document.getElementById("insert-goal-container").style.display = "none";
+        document.getElementById("btnSetGoal").textContent = "Imposta Obiettivo";
+        show_goals = false;
+
+        renderGoals();
+
+    } else {
+        if (set_goals.length >= MAX_GOALS) {
+            alert("Massimo " + MAX_GOALS + " obiettivi raggiunto. Rimuovine uno prima.");
+            return;
+        }
+
+        document.getElementById("insert-goal-container").style.display = "block";
+        document.getElementById("btnSetGoal").textContent = "Conferma Obiettivo";
+        show_goals = true;
+    }
+}
+
 function muoviSelezionato() {
     let lineaDinamica = document.getElementById("separa-info-progress-dinamico");
     let divPanoramica = document.getElementById("panoramica");
     let divMisure = document.getElementById("misure");
     let divFoto = document.getElementById("foto");
+
+    voce_selezionata = "Panoramica";
 
     if (!lineaDinamica || !divPanoramica || !divMisure || !divFoto) return;
 
@@ -678,6 +891,8 @@ function aggiornaDatiPanoramica() {
         if (nDurationPano) nDurationPano.textContent = "0h 0m";
         if (nVolumePano) nVolumePano.textContent = "0kg";
     }
+
+    renderGoals();
 }
 
 // DEBUG
@@ -695,7 +910,9 @@ function resetWork() {
 window.onload = function () {
     loadProfile();
     inizializzaScenari();
+    inizializzaEsercizi();
     riempiComboMisure();
+    riempiComboGoals();
 
     loadMisure();
     aggiornaDatiPanoramica();
