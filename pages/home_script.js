@@ -230,27 +230,17 @@ function resetInfo() {
 }
 
 function endWorkout() {
-    const totale = document.querySelectorAll(".es-set-row.es-set-done").length;
-    const totaleSet = document.querySelectorAll(".es-set-row").length;
-
-    if (totaleSet > 0 && totale < totaleSet) {
-        mostraPopupTermina();
-        return;
-    }
-
-    terminaComunque();
-}
-
-function endWorkout() {
     const totaleSet = document.querySelectorAll(".es-set-row").length;
 
     if (totaleSet === 0) {
+        popupApertoWorkout = true;
         mostraPopupNessunEsercizio();
         return;
     }
 
     const totale = document.querySelectorAll(".es-set-row.es-set-done").length;
     if (totale < totaleSet) {
+        popupApertoWorkout = true;
         mostraPopupTermina();
         return;
     }
@@ -373,6 +363,39 @@ function terminaComunque() {
     const volumeCorrente = parseFloat(document.getElementById("volume-value").innerText) || 0;
     const setCorrenti = document.getElementById("set-value").innerText;
 
+    if (sessionStorage.getItem("id_workout") == null) {
+        sessionStorage.setItem("id_workout", 1);
+    }
+    const currentId = sessionStorage.getItem("id_workout");
+
+    const esItems = document.querySelectorAll(".es-item");
+    const esDettaglio = [];
+    esItems.forEach(item => {
+        const nome = item.querySelector(".es-nome").textContent;
+        const sets = [];
+        item.querySelectorAll(".es-set-row").forEach(riga => {
+            const kg = parseFloat(riga.querySelector(".es-set-kg").value) || 0;
+            const reps = parseFloat(riga.querySelector(".es-set-reps").value) || 0;
+            const completato = riga.classList.contains("es-set-done");
+            sets.push({ kg, reps, completato });
+        });
+        esDettaglio.push({ nome, sets });
+    });
+
+    const workoutCompleto = {
+        id: currentId,
+        data: new Date().toLocaleDateString("it-IT"),
+        durata: durataCorrente,
+        volume: volumeCorrente,
+        set: setCorrenti,
+        esercizi: esDettaglio
+    };
+
+    const storicoKey = "storico_workout_" + emailSalvata;
+    const storico = JSON.parse(localStorage.getItem(storicoKey) || "[]");
+    storico.push(workoutCompleto);
+    localStorage.setItem(storicoKey, JSON.stringify(storico));
+
     const secondiCorrente = durataInSecondi(durataCorrente);
     if (secondiCorrente > 0) {
         let secondiTotali = parseInt(localStorage.getItem("durata_totale_" + emailSalvata)) || 0;
@@ -386,10 +409,6 @@ function terminaComunque() {
         localStorage.setItem("volume_totale_" + emailSalvata, volumeTotale);
     }
 
-    if (sessionStorage.getItem("id_workout") == null) {
-        sessionStorage.setItem("id_workout", 1);
-    }
-    const currentId = sessionStorage.getItem("id_workout");
     const datiWorkout = `set:${setCorrenti}_duration:${durataCorrente}_volume:${volumeCorrente}`;
     sessionStorage.setItem(emailSalvata + "_workout_" + currentId, datiWorkout);
     localStorage.setItem("workouts_" + emailSalvata, currentId);
@@ -468,6 +487,62 @@ function startWorkout() {
 
 let show_combo_es = false;
 
+function calcolaMassimale(kg, reps) {
+    if (reps === 1) return kg;
+    return Math.round(kg * (1 + reps / 30));
+}
+
+function controllaMassimale(nomeEsercizio, kg, reps) {
+    if (kg <= 0 || reps <= 0) return;
+
+    const emailSalvata = sessionStorage.getItem("email") || "";
+    const chiaveMassimali = "massimali_" + emailSalvata;
+    const massimali = JSON.parse(localStorage.getItem(chiaveMassimali) || "{}");
+
+    const nuovoMax = calcolaMassimale(kg, reps);
+    const vecchioMax = massimali[nomeEsercizio] || 0;
+
+    if (nuovoMax > vecchioMax) {
+        massimali[nomeEsercizio] = nuovoMax;
+        localStorage.setItem(chiaveMassimali, JSON.stringify(massimali));
+        mostraNotificaMassimale(nomeEsercizio, nuovoMax, vecchioMax);
+        aggiornaObiettivoRecord(nomeEsercizio);
+    }
+}
+
+function mostraNotificaMassimale(nome, nuovo, vecchio) {
+    let notifica = document.getElementById("notifica-massimale");
+    if (!notifica) {
+        notifica = document.createElement("div");
+        notifica.id = "notifica-massimale";
+        document.body.appendChild(notifica);
+    }
+
+    const testo = vecchio === 0
+        ? `Primo massimale su ${nome}: ${nuovo}kg!`
+        : `Nuovo massimale su ${nome}: ${nuovo}kg (prima: ${vecchio}kg)!`;
+
+    notifica.innerHTML = `
+        <i class="fa-solid fa-trophy"></i>
+        <span>${testo}</span>
+    `;
+
+    notifica.classList.add("show");
+    clearTimeout(notifica._timeout);
+    notifica._timeout = setTimeout(() => {
+        notifica.classList.remove("show");
+    }, 4000);
+}
+
+function aggiornaObiettivoRecord(nomeEsercizio) {
+    set_goals.forEach((g, i) => {
+        if (g.nome === "Record su" && g.valore === nomeEsercizio) {
+            set_goals[i].completato = true;
+        }
+    });
+    renderGoals();
+}
+
 function addEs() {
     const combo = document.getElementById("comboEs");
     const btn = document.getElementById("btnAddEs");
@@ -540,6 +615,10 @@ function aggiungiEsercizioAllaLista(nome) {
     lista.appendChild(li);
     aggiornaSummary(li);
 
+    li.querySelector(".es-note").addEventListener("input", () => {
+        aggiornaSummary(li);
+    });
+
     li.querySelectorAll(".es-set-kg, .es-set-reps").forEach(input => {
         input.addEventListener("input", () => {
             aggiornaSummary(li);
@@ -606,7 +685,13 @@ function aggiornaSummary(li) {
 
     if (li.dataset.expanded === "true") return;
 
+    const nota = li.querySelector(".es-note").value.trim();
+
     let html = "";
+
+    if (nota) {
+        html += `<span class="es-summary-nota">${nota}</span>`;
+    }
 
     righe.forEach((riga, i) => {
         const kg = riga.querySelector(".es-set-kg").value.trim();
@@ -684,6 +769,14 @@ function aggiornaSetsCompletati() {
 function toggleCheck(btn) {
     const row = btn.closest(".es-set-row");
     row.classList.toggle("es-set-done");
+
+    if (row.classList.contains("es-set-done")) {
+        const kg = parseFloat(row.querySelector(".es-set-kg").value) || 0;
+        const reps = parseFloat(row.querySelector(".es-set-reps").value) || 0;
+        const nomeEsercizio = row.closest(".es-item").querySelector(".es-nome").textContent;
+        controllaMassimale(nomeEsercizio, kg, reps);
+    }
+
     calcolaVolumeTotale();
     aggiornaSetsCompletati();
 }
@@ -820,7 +913,9 @@ function calcolaProgresso(g, email) {
         target = parseFloat(g.valore) || 1;
 
     } else if (g.nome === "Record su") {
-        corrente = 0;
+        const emailSalvata = sessionStorage.getItem("email") || "";
+        const massimali = JSON.parse(localStorage.getItem("massimali_" + emailSalvata) || "{}");
+        corrente = massimali[g.valore] ? 1 : 0;
         target = 1;
     }
 

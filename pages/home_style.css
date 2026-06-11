@@ -340,8 +340,8 @@ button {
 .es-item {
     display: flex;
     flex-direction: column;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
+    background-color: transparent;
+    border: 1px solid transparent;
     border-radius: 12px;
     overflow: hidden;
     font-size: 0.85rem;
@@ -558,7 +558,8 @@ button {
     padding: 6px 14px 10px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    align-items: flex-start;
+    gap: 0;
 }
 
 .es-summary-row {
@@ -566,6 +567,7 @@ button {
     align-items: center;
     font-size: 0.8rem;
     margin-bottom: 10px;
+    width: 100%;
 }
 
 .es-summary-num {
@@ -604,6 +606,15 @@ button {
 
 .es-summary-num-done {
     color: #36eb09;
+}
+
+.es-summary-nota {
+    display: block;
+    font-size: 0.78rem;
+    color: #000;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 5%;
 }
 
 #popup-termina {
@@ -750,6 +761,35 @@ button {
 #btn-riprendi-nessun-es:hover {
     background-color: #f0f0f0;
 }
+
+#notifica-massimale {
+    position: fixed;
+    bottom: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 99999;
+    transition: bottom 0.4s ease !important;
+    white-space: nowrap;
+}
+
+#notifica-massimale .fa-trophy {
+    color: #ffcc00;
+    font-size: 1.1rem;
+}
+
+#notifica-massimale.show {
+    bottom: 30px;
+}
+
 
 /* PROGRESS */
 #progress-nav-bar {
@@ -1548,11 +1588,6 @@ body.dark-mode .es-set-reps {
     color: #aaaaaa;
 }
 
-body.dark-mode .es-item {
-    background-color: #2a2a2a;
-    border-color: #444;
-}
-
 body.dark-mode .es-header:hover {
     background-color: #333;
 }
@@ -1581,8 +1616,8 @@ body.dark-mode .es-set-check {
 }
 
 body.dark-mode .es-add-set {
-    border-color: #555;
-    color: #666;
+    background-color: #333;
+    color: #fff;
 }
 
 body.dark-mode .es-add-set:hover {
@@ -1596,6 +1631,10 @@ body.dark-mode .es-summary-kg {
 
 body.dark-mode .es-summary-reps {
     color: #666;
+}
+
+body.dark-mode .es-summary-nota {
+    color: #fff;
 }
 
 body.dark-mode #popup-termina-box {
@@ -1634,6 +1673,15 @@ body.dark-mode #btn-riprendi {
 
 body.dark-mode #btn-riprendi:hover {
     background-color: #333;
+}
+
+body.dark-mode #notifica-massimale {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+body.dark-mode #notifica-massimale .fa-trophy {
+    color: #f5a623;
 }
 
 body.dark-mode #separa-info-progress-statico {

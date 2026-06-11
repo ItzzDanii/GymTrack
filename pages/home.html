@@ -18,7 +18,7 @@
         <div class="shortcut-column-bar">
             <button onclick="openWorkout()"><i class="fa-solid fa-plus"></i> Nuovo Allenamento</button>
             <button onclick="openProfile()"><i class="fa-solid fa-user"></i> Profilo</button>
-            <button><i class="fa-solid fa-trophy"></i> Obiettivi Mese</button>
+            <button onclick="openProgress()"><i class="fa-solid fa-trophy"></i> Obiettivi Mese</button>
         </div>
     </div>
 
@@ -111,7 +111,7 @@
         </div>
         <div id="misure">
 
-            <ul style="display: none;">
+            <ul style="display: block;">
                 <li>
                     <div id="peso-corporeo" onclick='modifyValue("peso")'>
                         <i class="fa-solid fa-weight-scale"></i>
