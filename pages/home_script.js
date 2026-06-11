@@ -3,6 +3,8 @@ let scenario_selezionato = "main";
 let workout = false;
 let timerInterval = null;
 let uiInterval = null;
+let popupApertoWorkout = false;
+
 
 let esercizi = [];
 
@@ -228,36 +230,189 @@ function resetInfo() {
 }
 
 function endWorkout() {
-    workout = false;
+    const totale = document.querySelectorAll(".es-set-row.es-set-done").length;
+    const totaleSet = document.querySelectorAll(".es-set-row").length;
 
-    let emailSalvata = sessionStorage.getItem("email") || "";
-    let setCorrenti = document.getElementById("set-value").innerText;
-
-    if (parseInt(setCorrenti) > 0 && setCorrenti.trim() !== "") {
-        if (sessionStorage.getItem("id_workout") == null) {
-            sessionStorage.setItem("id_workout", 1);
-        }
-        let currentId = sessionStorage.getItem("id_workout");
-
-        let durataCorrente = document.getElementById("duration-value").textContent;
-        let volumeCorrente = document.getElementById("volume-value").innerText;
-
-        let datiWorkout = `set:${setCorrenti}_duration:${durataCorrente}_volume:${volumeCorrente}`;
-
-        sessionStorage.setItem(emailSalvata + "_workout_" + currentId, datiWorkout);
-        localStorage.setItem("workouts_" + emailSalvata, currentId);
-        sessionStorage.setItem("id_workout", parseInt(currentId) + 1);
+    if (totaleSet > 0 && totale < totaleSet) {
+        mostraPopupTermina();
+        return;
     }
+
+    terminaComunque();
+}
+
+function endWorkout() {
+    const totaleSet = document.querySelectorAll(".es-set-row").length;
+
+    if (totaleSet === 0) {
+        mostraPopupNessunEsercizio();
+        return;
+    }
+
+    const totale = document.querySelectorAll(".es-set-row.es-set-done").length;
+    if (totale < totaleSet) {
+        mostraPopupTermina();
+        return;
+    }
+
+    terminaComunque();
+}
+
+function mostraPopupNessunEsercizio() {
+    let overlay = document.getElementById("popup-nessun-es");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "popup-nessun-es";
+        document.body.appendChild(overlay);
+    }
+
+    overlay.innerHTML = `
+        <div id="popup-nessun-es-box">
+            <h3>Si prega di aggiungere alcuni esercizi prima di terminare l'allenamento.</h3>
+            <div id="popup-nessun-es-btns">
+                <button id="btn-elimina-allenamento" onclick="eliminaAllenamento()">Elimina Allenamento</button>
+                <button id="btn-riprendi-nessun-es" onclick="chiudiPopupNessunEs()">Riprendi allenamento</button>
+            </div>
+        </div>
+    `;
+
+    overlay.style.display = "flex";
+}
+
+function chiudiPopupNessunEs() {
+    const overlay = document.getElementById("popup-nessun-es");
+    if (overlay) overlay.style.display = "none";
+    popupApertoWorkout = false;
+    setScenario("workout-container");
+    scenario_selezionato = "workout";
+}
+
+function eliminaAllenamento() {
+    chiudiPopupNessunEs();
+    workout = false;
 
     if (timerInterval) clearInterval(timerInterval);
     if (uiInterval) clearInterval(uiInterval);
 
     resetInfo();
+    document.getElementById("list-es-workout").innerHTML = "";
 
-    let btnStart = document.getElementById("btnStart");
-    if (btnStart) {
-        btnStart.style.display = 'block';
+    const btnEnd = document.getElementById("btnEnd");
+    if (btnEnd) {
+        btnEnd.style.backgroundColor = "rgba(0, 94, 255, 0.603)";
+        btnEnd.style.opacity = "1";
+        btnEnd.style.color = "#fff";
     }
+
+    const btnStart = document.getElementById("btnStart");
+    if (btnStart) btnStart.style.display = "block";
+
+    setScenario("startworkout-container");
+    scenario_selezionato = "start_workout";
+}
+
+function mostraPopupTermina() {
+    popupApertoWorkout = true;
+    const esIncompleti = [];
+    document.querySelectorAll(".es-item").forEach(item => {
+        const nome = item.querySelector(".es-nome").textContent;
+        const righe = item.querySelectorAll(".es-set-row");
+        const completate = item.querySelectorAll(".es-set-row.es-set-done");
+        if (completate.length < righe.length) {
+            esIncompleti.push(`• ${nome} (${completate.length}/${righe.length} set)`);
+        }
+    });
+
+    let overlay = document.getElementById("popup-termina");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "popup-termina";
+        document.body.appendChild(overlay);
+    }
+
+    overlay.innerHTML = `
+        <div id="popup-termina-box">
+            <h3>Non hai completato tutti i set per:</h3>
+            <ul id="popup-es-list">
+                ${esIncompleti.map(e => `<li>${e}</li>`).join("")}
+            </ul>
+            <div id="popup-termina-btns">
+                <button id="btn-termina-comunque" onclick="terminaComunque()">Termina comunque</button>
+                <button id="btn-riprendi" onclick="chiudiPopupTermina()">Riprendi allenamento</button>
+            </div>
+        </div>
+    `;
+
+    overlay.style.display = "flex";
+}
+
+function chiudiPopupTermina() {
+    const overlay = document.getElementById("popup-termina");
+    if (overlay) overlay.style.display = "none";
+    popupApertoWorkout = false;
+    setScenario("workout-container");
+    scenario_selezionato = "workout";
+}
+
+function durataInSecondi(str) {
+    const parti = str.split(":");
+    if (parti.length !== 3) return 0;
+    const h = parseInt(parti[0]) || 0;
+    const m = parseInt(parti[1]) || 0;
+    const s = parseInt(parti[2]) || 0;
+    return h * 3600 + m * 60 + s;
+}
+
+function terminaComunque() {
+    popupApertoWorkout = false;
+    chiudiPopupTermina();
+    workout = false;
+
+    const emailSalvata = sessionStorage.getItem("email") || "";
+    const durataCorrente = document.getElementById("duration-value").textContent;
+    const volumeCorrente = parseFloat(document.getElementById("volume-value").innerText) || 0;
+    const setCorrenti = document.getElementById("set-value").innerText;
+
+    // Accumula durata sempre, se maggiore di 0
+    const secondiCorrente = durataInSecondi(durataCorrente);
+    if (secondiCorrente > 0) {
+        let secondiTotali = parseInt(localStorage.getItem("durata_totale_" + emailSalvata)) || 0;
+        secondiTotali += secondiCorrente;
+        localStorage.setItem("durata_totale_" + emailSalvata, secondiTotali);
+    }
+
+    // Accumula volume se maggiore di 0
+    if (volumeCorrente > 0) {
+        let volumeTotale = parseFloat(localStorage.getItem("volume_totale_" + emailSalvata)) || 0;
+        volumeTotale += volumeCorrente;
+        localStorage.setItem("volume_totale_" + emailSalvata, volumeTotale);
+    }
+
+    // Salva il workout
+    if (sessionStorage.getItem("id_workout") == null) {
+        sessionStorage.setItem("id_workout", 1);
+    }
+    const currentId = sessionStorage.getItem("id_workout");
+    const datiWorkout = `set:${setCorrenti}_duration:${durataCorrente}_volume:${volumeCorrente}`;
+    sessionStorage.setItem(emailSalvata + "_workout_" + currentId, datiWorkout);
+    localStorage.setItem("workouts_" + emailSalvata, currentId);
+    sessionStorage.setItem("id_workout", parseInt(currentId) + 1);
+
+    if (timerInterval) clearInterval(timerInterval);
+    if (uiInterval) clearInterval(uiInterval);
+
+    resetInfo();
+    document.getElementById("list-es-workout").innerHTML = "";
+
+    const btnEnd = document.getElementById("btnEnd");
+    if (btnEnd) {
+        btnEnd.style.backgroundColor = "rgba(0, 94, 255, 0.603)";
+        btnEnd.style.opacity = "1";
+        btnEnd.style.color = "#fff";
+    }
+
+    const btnStart = document.getElementById("btnStart");
+    if (btnStart) btnStart.style.display = "block";
 
     setScenario("startworkout-container");
     scenario_selezionato = "start_workout";
@@ -297,17 +452,244 @@ function startWorkout() {
         let set = 0;
 
         uiInterval = setInterval(() => {
-            document.getElementById("volume-value").innerText = volume + 'kg';
-            document.getElementById("set-value").innerText = set;
-
-            if (scenario_selezionato !== "workout") {
-                endWorkout();
+            if (scenario_selezionato !== "workout" && !popupApertoWorkout) {
+                popupApertoWorkout = true;
+                const totaleSet = document.querySelectorAll(".es-set-row").length;
+                if (totaleSet === 0) {
+                    mostraPopupNessunEsercizio();
+                } else {
+                    mostraPopupTermina();
+                }
             }
         }, 200);
+
     } else {
         setScenario("startworkout-container");
         scenario_selezionato = "start_workout";
     }
+}
+
+let show_combo_es = false;
+
+function addEs() {
+    const combo = document.getElementById("comboEs");
+    const btn = document.getElementById("btnAddEs");
+
+    if (!show_combo_es) {
+        // Popola la select se vuota
+        if (combo.innerHTML.trim() === "") {
+            let s = "";
+            esercizi.forEach((es, i) => {
+                s += `<option value="${i}">${es}</option>`;
+            });
+            combo.innerHTML = s;
+        }
+
+        combo.style.display = "block";
+        btn.textContent = "Aggiungi esercizio";
+        show_combo_es = true;
+
+        combo.onchange = function () {
+            const selezionati = Array.from(combo.selectedOptions).length;
+            if (selezionati > 0) {
+                btn.textContent = `Aggiungi ${selezionati} esercizi${selezionati === 1 ? "o" : ""}`;
+            }
+        };
+
+    } else {
+        const selezionati = Array.from(combo.selectedOptions);
+        selezionati.forEach(opt => {
+            aggiungiEsercizioAllaLista(opt.text);
+        });
+
+        combo.style.display = "none";
+        combo.selectedIndex = -1;
+        btn.textContent = "Aggiungi Esercizi";
+        show_combo_es = false;
+    }
+}
+
+function aggiungiEsercizioAllaLista(nome) {
+    const lista = document.getElementById("list-es-workout");
+
+    const esistente = Array.from(lista.querySelectorAll(".es-nome")).find(el => el.textContent === nome);
+    if (esistente) return;
+
+    const li = document.createElement("li");
+    li.className = "es-item";
+    li.dataset.expanded = "false";
+
+    li.innerHTML = `
+    <div class="es-header" onclick="toggleEs(this)">
+        <span class="es-nome">${nome}</span>
+        <div class="es-header-right">
+            <button class="es-remove" onclick="event.stopPropagation(); this.closest('li').remove(); calcolaVolumeTotale(); aggiornaSetsCompletati()">×</button>
+        </div>
+    </div>
+    <div class="es-summary"></div>
+    <div class="es-body" style="display:none;">
+        <input type="text" class="es-note" placeholder="Note...">
+        <div class="es-table-header">
+            <span>Set</span>
+            <span><i class="fa-solid fa-dumbbell es-dumbbell-icon"></i> Kg</span>
+            <span>Reps</span>
+            <span></span>
+        </div>
+        <ul class="es-set-list">
+            ${[1, 2, 3].map(n => creaRigaSet(n)).join("")}
+        </ul>
+        <button class="es-add-set" onclick="aggiungiSet(this)">+ Aggiungi Serie</button>
+    </div>
+`;
+    lista.appendChild(li);
+    aggiornaSummary(li);
+
+    li.querySelectorAll(".es-set-kg, .es-set-reps").forEach(input => {
+        input.addEventListener("input", () => {
+            aggiornaSummary(li);
+            calcolaVolumeTotale();
+        });
+    });
+}
+
+function creaRigaSet(n) {
+    return `
+        <li class="es-set-row">
+            <span class="es-set-num">${n}</span>
+            <input type="number" class="es-set-kg" placeholder="-" min="0">
+            <input type="number" class="es-set-reps" placeholder="-" min="0">
+            <button class="es-set-check" onclick="toggleCheck(this)"><i class="fa-solid fa-check"></i></button>
+        </li>
+    `;
+}
+
+function toggleEs(header) {
+    const li = header.closest("li");
+    const body = li.querySelector(".es-body");
+    const summary = li.querySelector(".es-summary");
+    const expanded = li.dataset.expanded === "true";
+
+    li.dataset.expanded = !expanded;
+
+    if (expanded) {
+        body.style.display = "none";
+        aggiornaSummary(li);
+    } else {
+        summary.style.display = "none";
+        body.style.display = "block";
+    }
+}
+
+function aggiungiSet(btn) {
+    const lista = btn.previousElementSibling;
+    const n = lista.querySelectorAll(".es-set-row").length + 1;
+    const li = document.createElement("li");
+    li.className = "es-set-row";
+    li.innerHTML = `
+        <span class="es-set-num">${n}</span>
+        <input type="number" class="es-set-kg" placeholder="-" min="0">
+        <input type="number" class="es-set-reps" placeholder="-" min="0">
+        <button class="es-set-check" onclick="toggleCheck(this)">✓</button>
+    `;
+
+    lista.appendChild(li);
+
+    const esItem = btn.closest(".es-item");
+    li.querySelectorAll(".es-set-kg, .es-set-reps").forEach(input => {
+        input.addEventListener("input", () => {
+            aggiornaSummary(esItem);
+            calcolaVolumeTotale();
+        });
+    });
+    aggiornaSummary(esItem);
+}
+
+function aggiornaSummary(li) {
+    const righe = li.querySelectorAll(".es-set-row");
+    const summary = li.querySelector(".es-summary");
+
+    if (li.dataset.expanded === "true") return;
+
+    let html = "";
+
+    righe.forEach((riga, i) => {
+        const kg = riga.querySelector(".es-set-kg").value.trim();
+        const reps = riga.querySelector(".es-set-reps").value.trim();
+        const completato = riga.classList.contains("es-set-done");
+
+        let contenuto = "";
+
+        if (kg && reps) {
+            contenuto = `
+                <span class="es-summary-kg">${kg}kg</span>
+                <span class="es-summary-x">×</span>
+                <span class="es-summary-reps">${reps} rip</span>
+            `;
+        } else if (kg && !reps) {
+            contenuto = `<span class="es-summary-kg">${kg}kg</span>`;
+        } else if (!kg && reps) {
+            contenuto = `<span class="es-summary-reps">${reps} rip</span>`;
+        } else {
+            contenuto = `<span class="es-summary-reps">- reps</span>`;
+        }
+
+        html += `
+            <div class="es-summary-row">
+                ${completato ? `<span class="es-summary-check"><i class="fa-solid fa-check"></i></span>` : ""}
+                <span class="es-summary-num">${i + 1}</span>
+                ${contenuto}
+            </div>
+        `;
+    });
+
+    summary.innerHTML = html;
+    summary.style.display = "block";
+}
+
+function calcolaVolumeTotale() {
+    let totale = 0;
+    document.querySelectorAll(".es-set-row.es-set-done").forEach(riga => {
+        const kg = parseFloat(riga.querySelector(".es-set-kg").value) || 0;
+        const reps = parseFloat(riga.querySelector(".es-set-reps").value) || 0;
+        totale += kg * reps;
+    });
+
+    const volumeEl = document.getElementById("volume-value");
+    if (volumeEl) volumeEl.innerText = totale + "kg";
+}
+
+function aggiornaSetsCompletati() {
+    const totale = document.querySelectorAll(".es-set-row.es-set-done").length;
+    const totaleSet = document.querySelectorAll(".es-set-row").length;
+    const setEl = document.getElementById("set-value");
+    if (setEl) setEl.innerText = totale;
+
+    const btnEnd = document.getElementById("btnEnd");
+    if (!btnEnd) return;
+
+    if (totaleSet === 0) {
+        btnEnd.style.backgroundColor = "rgba(0, 94, 255, 0.603)";
+        btnEnd.style.opacity = "1";
+    } else if (totale === totaleSet) {
+        btnEnd.style.backgroundColor = "#36eb09";
+        btnEnd.style.color = "#fff";
+        btnEnd.style.opacity = "1";
+    } else if (totale > 0) {
+        btnEnd.style.backgroundColor = "rgba(0, 94, 255, 0.603)";
+        btnEnd.style.color = "#fff";
+        btnEnd.style.opacity = "0.5";
+    } else {
+        btnEnd.style.backgroundColor = "rgba(0, 94, 255, 0.603)";
+        btnEnd.style.color = "#fff";
+        btnEnd.style.opacity = "1";
+    }
+}
+
+function toggleCheck(btn) {
+    const row = btn.closest(".es-set-row");
+    row.classList.toggle("es-set-done");
+    calcolaVolumeTotale();
+    aggiornaSetsCompletati();
 }
 
 let voci_progress = ["Panoramica", "Misure", "Foto"];
@@ -519,8 +901,6 @@ function muoviSelezionato() {
     let divPanoramica = document.getElementById("panoramica");
     let divMisure = document.getElementById("misure");
     let divFoto = document.getElementById("foto");
-
-    voce_selezionata = "Panoramica";
 
     if (!lineaDinamica || !divPanoramica || !divMisure || !divFoto) return;
 
@@ -855,7 +1235,7 @@ function modifyValue(valore) {
 }
 
 function aggiornaDatiPanoramica() {
-    let emailSalvata = sessionStorage.getItem("email") || "";
+    const emailSalvata = sessionStorage.getItem("email") || "";
     let nWorkoutPano = document.getElementById("n-workout-pano");
     let nVolumePano = document.getElementById("n-volume-pano");
     let nDurationPano = document.getElementById("n-duration-pano");
@@ -865,32 +1245,13 @@ function aggiornaDatiPanoramica() {
         nWorkoutPano.textContent = contatore + " allenamenti";
     }
 
-    let ultimoId = parseInt(sessionStorage.getItem("id_workout")) - 1;
+    const volumeTotale = parseFloat(localStorage.getItem("volume_totale_" + emailSalvata)) || 0;
+    if (nVolumePano) nVolumePano.textContent = volumeTotale + "kg";
 
-    if (ultimoId > 0) {
-        let stringaDati = sessionStorage.getItem(emailSalvata + "_workout_" + ultimoId);
-
-        if (stringaDati) {
-            let parti = stringaDati.split("_");
-            let durataEstratta = "0:00:00";
-            let volumeEstratto = "0kg";
-
-            parti.forEach(parte => {
-                if (parte.startsWith("duration:")) {
-                    durataEstratta = parte.replace("duration:", "");
-                }
-                if (parte.startsWith("volume:")) {
-                    volumeEstratto = parte.replace("volume:", "");
-                }
-            });
-
-            if (nDurationPano) nDurationPano.textContent = "Ultima durata: " + durataEstratta;
-            if (nVolumePano) nVolumePano.textContent = "Ultimo volume: " + volumeEstratto;
-        }
-    } else {
-        if (nDurationPano) nDurationPano.textContent = "0h 0m";
-        if (nVolumePano) nVolumePano.textContent = "0kg";
-    }
+    const secondiTotali = parseInt(localStorage.getItem("durata_totale_" + emailSalvata)) || 0;
+    const h = Math.floor(secondiTotali / 3600);
+    const m = Math.floor((secondiTotali % 3600) / 60);
+    if (nDurationPano) nDurationPano.textContent = `${h}h ${m}m`;
 
     renderGoals();
 }
@@ -900,11 +1261,28 @@ function resetWork() {
     let emailSalvata = sessionStorage.getItem("email") || "";
     if (emailSalvata === "") return;
 
-    let element = document.getElementById("n-workout");
+    let element = document.getElementById("n-workout");;
+
     if (element) {
         element.textContent = "0";
+
         localStorage.setItem("workouts_" + emailSalvata, "0");
     }
+}
+
+function resetTuttiIDati() {
+    const emailSalvata = sessionStorage.getItem("email") || "";
+    if (emailSalvata === "") return;
+
+    localStorage.removeItem("workouts_" + emailSalvata);
+    localStorage.removeItem("volume_totale_" + emailSalvata);
+    localStorage.removeItem("durata_totale_" + emailSalvata);
+    sessionStorage.removeItem("id_workout");
+
+    aggiornaDatiPanoramica();
+    loadProfile();
+
+    console.log("Reset completato per: " + emailSalvata);
 }
 
 window.onload = function () {
