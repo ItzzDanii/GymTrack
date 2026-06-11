@@ -1210,7 +1210,7 @@ function openPanoramica() {
 }
 
 let voci_workout = ["Allenati ora", "Biblioteca"];
-let voce_workout_selezionata = voci_workout[1];
+let voce_workout_selezionata = voci_workout[0];
 
 function openWorkoutNow() {
     voce_workout_selezionata = voci_workout[0];
