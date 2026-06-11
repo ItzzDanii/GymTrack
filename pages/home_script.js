@@ -373,7 +373,6 @@ function terminaComunque() {
     const volumeCorrente = parseFloat(document.getElementById("volume-value").innerText) || 0;
     const setCorrenti = document.getElementById("set-value").innerText;
 
-    // Accumula durata sempre, se maggiore di 0
     const secondiCorrente = durataInSecondi(durataCorrente);
     if (secondiCorrente > 0) {
         let secondiTotali = parseInt(localStorage.getItem("durata_totale_" + emailSalvata)) || 0;
@@ -381,14 +380,12 @@ function terminaComunque() {
         localStorage.setItem("durata_totale_" + emailSalvata, secondiTotali);
     }
 
-    // Accumula volume se maggiore di 0
     if (volumeCorrente > 0) {
         let volumeTotale = parseFloat(localStorage.getItem("volume_totale_" + emailSalvata)) || 0;
         volumeTotale += volumeCorrente;
         localStorage.setItem("volume_totale_" + emailSalvata, volumeTotale);
     }
 
-    // Salva il workout
     if (sessionStorage.getItem("id_workout") == null) {
         sessionStorage.setItem("id_workout", 1);
     }
@@ -476,7 +473,6 @@ function addEs() {
     const btn = document.getElementById("btnAddEs");
 
     if (!show_combo_es) {
-        // Popola la select se vuota
         if (combo.innerHTML.trim() === "") {
             let s = "";
             esercizi.forEach((es, i) => {
@@ -824,7 +820,6 @@ function calcolaProgresso(g, email) {
         target = parseFloat(g.valore) || 1;
 
     } else if (g.nome === "Record su") {
-        // binario: 0% o 100% — l'utente lo segna manualmente
         corrente = 0;
         target = 1;
     }
