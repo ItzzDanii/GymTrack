@@ -72,7 +72,7 @@ function controllaLoggato() {
         showUsername();
         setInterval(showUsername, 500);
         setScenario("main-container");
-        scenario_selezionato("main");
+        scenario_selezionato = "main";
     }
 }
 
@@ -86,7 +86,7 @@ function setScenario(scenario) {
             }
         }
     }
-    if (id === "main-container" || id === "startworkout-container" || id === "workout-container") {
+    if (scenario === "main-container" || scenario === "startworkout-container" || scenario === "workout-container") {
         renderProgrammi();
     }
 }
@@ -223,12 +223,13 @@ function chiudiPopupProgramma() {
 function creaProgramma() {
     const input = document.getElementById("input-nome-programma");
 
-    const nome = input.value.trim() !== "" ? input.value.trim() : `Il Mio Programma #${programmaId}`;
-
-    if (programmaId > maxProgrammi - 1) {
+    if (programmi.length >= maxProgrammi) {
         input.value = "Max. numero di programmi raggiunto!";
         return;
     }
+
+    const nome = input.value.trim() !== "" ? input.value.trim() : `Il Mio Programma #${programmaId}`;
+
     const programma = {
         id: programmaId,
         nome,
@@ -248,6 +249,19 @@ function creaProgramma() {
     renderProgrammi();
 }
 
+function rimuoviProgramma(id) {
+    if (!confirm("Sei sicuro di voler eliminare questo programma?")) return;
+
+    programmi = programmi.filter(p => p.id !== id);
+
+    programmaId = programmi.length > 0
+        ? Math.max(...programmi.map(p => p.id)) + 1
+        : 0;
+
+    salvaProgrammiSuLocalStorage();
+    renderProgrammi();
+}
+
 function renderProgrammi() {
     const lista = document.getElementById("list-workouts");
     lista.innerHTML = "";
@@ -262,6 +276,9 @@ function renderProgrammi() {
                 <span class="programma-nome">${p.nome}</span>
                 <span class="programma-allenamenti">${p.allenamenti} allenamenti</span>
             </div>
+            <button class="programma-remove" onclick="event.stopPropagation(); rimuoviProgramma(${p.id})">
+                <i class="fa-solid fa-trash"></i>
+            </button>
         `;
         lista.appendChild(li);
     });
@@ -459,8 +476,15 @@ function apriDettaglioProgramma(id, inModalitaModifica = false) {
                         <div class="visualizza-header-blocco">
                             <div id="visualizza-dettaglio-nome">${programma.nome}</div>
                         </div>
-                        <div id="visualizza-dettaglio-desc">${descrizioneValore !== "" ? descrizioneValore : "Nessuna descrizione"}</div>
-                        
+                        <div id="visualizza-dettaglio-desc">${descrizioneValore !== "" ? descrizioneValore : ""}</div>
+
+                        <button id="btn-aggiungi-routine" onclick="apriPopupRoutine(${programma.id})">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Aggiungi routine di allenamento<br>al programma</span>
+                        </button>
+
+                        <ul id="lista-routine"></ul>
+
                         <div class="spaziatore-fine-visualizza"></div>
                     `}
                 </div>
@@ -475,16 +499,23 @@ function apriDettaglioProgramma(id, inModalitaModifica = false) {
     `;
 
     overlay.style.display = "flex";
+
+    if (!inModalitaModifica) {
+        renderRoutine(programma.id);
+    }
 }
 
 function espandiDettagli() {
     document.getElementById("div-dettagli-espandibili").style.display = "block";
     document.getElementById("trigger-espandi").style.display = "none";
+    document.getElementById("visualizza-dettaglio-nome").style.marginRight = '38%';
 }
 
 function riduciDettagli() {
     document.getElementById("div-dettagli-espandibili").style.display = "none";
     document.getElementById("trigger-espandi").style.display = "flex";
+    document.getElementById("visualizza-dettaglio-nome").style.marginRight = '40%';
+
 }
 
 
@@ -657,14 +688,49 @@ function endWorkout() {
         return;
     }
 
-    const totale = document.querySelectorAll(".es-set-row.es-set-done").length;
-    if (totale < totaleSet) {
+    const totaleCompletati = document.querySelectorAll(".es-set-row.es-set-done").length;
+
+    if (totaleCompletati === 0) {
+        popupApertoWorkout = true;
+        mostraPopupNessunSetCompletato();
+        return;
+    }
+
+    if (totaleCompletati < totaleSet) {
         popupApertoWorkout = true;
         mostraPopupTermina();
         return;
     }
 
     terminaComunque();
+}
+
+function mostraPopupNessunSetCompletato() {
+    let overlay = document.getElementById("popup-nessun-set");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "popup-nessun-set";
+        document.body.appendChild(overlay);
+    }
+
+    overlay.innerHTML = `
+        <div id="popup-nessun-set-box">
+            <h3>Si prega di contrassegnare almeno un set come completato per terminare l'allenamento.</h3>
+            <div id="popup-nessun-set-btns">
+                <button id="btn-capito-nessun-set" onclick="chiudiPopupNessunSet()">Capito</button>
+            </div>
+        </div>
+    `;
+
+    overlay.style.display = "flex";
+}
+
+function chiudiPopupNessunSet() {
+    const overlay = document.getElementById("popup-nessun-set");
+    if (overlay) overlay.style.display = "none";
+    popupApertoWorkout = false;
+    setScenario("workout-container");
+    scenario_selezionato = "workout";
 }
 
 function mostraPopupNessunEsercizio() {
@@ -890,8 +956,12 @@ function startWorkout() {
             if (scenario_selezionato !== "workout" && !popupApertoWorkout) {
                 popupApertoWorkout = true;
                 const totaleSet = document.querySelectorAll(".es-set-row").length;
+                const totaleCompletati = document.querySelectorAll(".es-set-row.es-set-done").length;
+
                 if (totaleSet === 0) {
                     mostraPopupNessunEsercizio();
+                } else if (totaleCompletati === 0) {
+                    mostraPopupNessunSetCompletato();
                 } else {
                     mostraPopupTermina();
                 }
@@ -1053,8 +1123,28 @@ function creaRigaSet(n) {
             <input type="number" class="es-set-kg" placeholder="-" min="0">
             <input type="number" class="es-set-reps" placeholder="-" min="0">
             <button class="es-set-check" onclick="toggleCheck(this)"><i class="fa-solid fa-check"></i></button>
+            <button class="es-set-remove" onclick="rimuoviSet(this)"><i class="fa-solid fa-trash"></i></button>
         </li>
     `;
+}
+
+function rimuoviSet(btn) {
+    const riga = btn.closest(".es-set-row");
+    const lista = riga.closest(".es-set-list");
+    const esItem = riga.closest(".es-item");
+
+    riga.remove();
+
+    rinumerizzaSet(lista);
+    aggiornaSummary(esItem);
+    calcolaVolumeTotale();
+    aggiornaSetsCompletati();
+}
+
+function rinumerizzaSet(lista) {
+    lista.querySelectorAll(".es-set-row").forEach((riga, i) => {
+        riga.querySelector(".es-set-num").textContent = i + 1;
+    });
 }
 
 function toggleEs(header) {
@@ -1084,6 +1174,7 @@ function aggiungiSet(btn) {
         <input type="number" class="es-set-kg" placeholder="-" min="0">
         <input type="number" class="es-set-reps" placeholder="-" min="0">
         <button class="es-set-check" onclick="toggleCheck(this)">✓</button>
+        <button class="es-set-remove" onclick="rimuoviSet(this)"><i class="fa-solid fa-trash"></i></button>
     `;
 
     lista.appendChild(li);
@@ -1135,7 +1226,6 @@ function aggiornaSummary(li) {
 
         html += `
             <div class="es-summary-row">
-                ${completato ? `<span class="es-summary-check"><i class="fa-solid fa-check"></i></span>` : ""}
                 <span class="es-summary-num">${i + 1}</span>
                 ${contenuto}
             </div>
@@ -1234,7 +1324,7 @@ function muoviWorkoutSelezionato() {
     if (!lineaDinamica || !divLibrary || !divAllentiOra) return;
 
     if (voce_workout_selezionata === "Allenati ora") {
-        btnStart.style.marginTop = "26%";
+        btnStart.style.marginTop = "35%";
         btnStart.style.marginLeft = "85%";
         lineaDinamica.style.width = '5%';
         lineaDinamica.style.marginLeft = '13.7%';
@@ -1810,6 +1900,439 @@ function aggiornaDatiPanoramica() {
     if (nDurationPano) nDurationPano.textContent = `${h}h ${m}m`;
 
     renderGoals();
+}
+
+
+function getRoutineKey(programmaId) {
+    const emailSalvata = sessionStorage.getItem("email") || "default";
+    return `routine_${emailSalvata}_${programmaId}`;
+}
+
+function caricaRoutine(programmaId) {
+    return JSON.parse(localStorage.getItem(getRoutineKey(programmaId)) || "[]");
+}
+
+function salvaRoutine(programmaId, routine) {
+    localStorage.setItem(getRoutineKey(programmaId), JSON.stringify(routine));
+}
+
+function renderRoutine(programmaId) {
+    const lista = document.getElementById("lista-routine");
+    if (!lista) return;
+
+    const routine = caricaRoutine(programmaId);
+    lista.innerHTML = "";
+
+    routine.forEach(r => {
+        const li = document.createElement("li");
+        li.className = "routine-item";
+
+        const nomeVisualizzato = r.titolo && r.titolo.trim() !== "" ? r.titolo : "La mia routine";
+        const nEsercizi = r.esercizi ? r.esercizi.length : 0;
+
+        li.innerHTML = `
+            <div class="routine-info">
+                <span class="routine-nome">${nomeVisualizzato}</span>
+                <span class="routine-n-esercizi">${nEsercizi} Eserciz${nEsercizi === 1 ? "io" : "i"}</span>
+            </div>
+            <div class="routine-actions">
+                <button class="routine-play" onclick="avviaRoutine(${programmaId}, '${r.id}')">
+                    <i class="fa-solid fa-circle-play"></i>
+                </button>
+                <button class="routine-remove" onclick="rimuoviRoutine(${programmaId}, '${r.id}')">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        `;
+        lista.appendChild(li);
+    });
+}
+
+function rimuoviRoutine(programmaId, routineId) {
+    if (!confirm("Sei sicuro di voler eliminare questa routine?")) return;
+
+    let routine = caricaRoutine(programmaId);
+    routine = routine.filter(r => r.id !== routineId);
+    salvaRoutine(programmaId, routine);
+    renderRoutine(programmaId);
+}
+
+function avviaRoutine(programmaId, routineId) {
+    const routine = caricaRoutine(programmaId);
+    const r = routine.find(x => x.id === routineId);
+    if (!r) return;
+
+    chiudiDettaglioProgramma();
+    startWorkout();
+
+    setTimeout(() => {
+        const lista = document.getElementById("list-es-workout");
+        if (!lista) return;
+        lista.innerHTML = "";
+
+        r.esercizi.forEach(es => {
+            aggiungiEsercizioAllaLista(es.nome);
+
+            const li = Array.from(lista.querySelectorAll(".es-item")).find(
+                item => item.querySelector(".es-nome").textContent === es.nome
+            );
+            if (!li) return;
+
+            li.querySelector(".es-note").value = es.note || "";
+
+            const righe = li.querySelectorAll(".es-set-row");
+            es.sets.forEach((s, i) => {
+                if (!righe[i]) {
+                    const addBtn = li.querySelector(".es-add-set");
+                    if (addBtn) aggiungiSet(addBtn);
+                }
+            });
+
+            const righeAggiornate = li.querySelectorAll(".es-set-row");
+            es.sets.forEach((s, i) => {
+                if (righeAggiornate[i]) {
+                    righeAggiornate[i].querySelector(".es-set-kg").value = s.kg || "";
+                    righeAggiornate[i].querySelector(".es-set-reps").value = s.reps || "";
+                }
+            });
+
+            aggiornaSummary(li);
+        });
+
+        calcolaVolumeTotale();
+    }, 50);
+}
+
+let routineEsTemporanei = [];
+let routineProgrammaIdCorrente = null;
+
+function apriPopupRoutine(programmaId) {
+    routineProgrammaIdCorrente = programmaId;
+    routineEsTemporanei = [];
+
+    let overlay = document.getElementById("popup-routine");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "popup-routine";
+        document.body.appendChild(overlay);
+    }
+
+    overlay.innerHTML = `
+        <div id="popup-routine-box">
+            <div id="popup-routine-header">
+                <button class="btn-popup-icon" onclick="chiudiPopupRoutine()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <h3>Crea Routine</h3>
+                <button id="btn-salva-routine" onclick="salvaNuovaRoutine()">Salva</button>
+            </div>
+            <div id="popup-routine-body">
+                <input type="text" id="input-routine-titolo" placeholder="Titolo della routine...">
+                <input type="text" id="input-routine-note" placeholder="Note...">
+                <ul id="routine-list-es"></ul>
+                <button id="btn-aggiungi-es-routine" onclick="toggleComboEsRoutine()">Aggiungi esercizi</button>
+                <select id="comboEsRoutine" multiple></select>
+            </div>
+        </div>
+    `;
+
+    overlay.style.display = "flex";
+}
+
+function chiudiPopupRoutine() {
+    const overlay = document.getElementById("popup-routine");
+    if (overlay) overlay.style.display = "none";
+    routineEsTemporanei = [];
+    routineProgrammaIdCorrente = null;
+}
+
+let show_combo_es_routine = false;
+
+function toggleComboEsRoutine() {
+    const combo = document.getElementById("comboEsRoutine");
+    const btn = document.getElementById("btn-aggiungi-es-routine");
+
+    if (!show_combo_es_routine) {
+        if (combo.innerHTML.trim() === "") {
+            let s = "";
+            esercizi.forEach((es, i) => {
+                s += `<option value="${i}">${es}</option>`;
+            });
+            combo.innerHTML = s;
+        }
+
+        combo.style.display = "block";
+        btn.textContent = "Aggiungi esercizio";
+        show_combo_es_routine = true;
+
+        combo.onchange = function () {
+            const selezionati = Array.from(combo.selectedOptions).length;
+            if (selezionati > 0) {
+                btn.textContent = `Aggiungi ${selezionati} esercizi${selezionati === 1 ? "o" : ""}`;
+            }
+        };
+
+    } else {
+        const selezionati = Array.from(combo.selectedOptions);
+        selezionati.forEach(opt => {
+            aggiungiEsRoutineTemp(opt.text);
+        });
+
+        combo.style.display = "none";
+        combo.selectedIndex = -1;
+        btn.textContent = "Aggiungi esercizi";
+        show_combo_es_routine = false;
+    }
+}
+
+function aggiungiEsRoutineTemp(nome) {
+    const esistente = routineEsTemporanei.find(e => e.nome === nome);
+    if (esistente) return;
+
+    routineEsTemporanei.push({
+        nome,
+        note: "",
+        sets: [
+            { kg: "", reps: "" },
+            { kg: "", reps: "" },
+            { kg: "", reps: "" }
+        ]
+    });
+
+    renderRoutineListEs();
+    aggiornaStatoBtnSalvaRoutine();
+}
+
+function rimuoviEsRoutineTemp(nome) {
+    routineEsTemporanei = routineEsTemporanei.filter(e => e.nome !== nome);
+    renderRoutineListEs();
+    aggiornaStatoBtnSalvaRoutine();
+}
+
+function renderRoutineListEs() {
+    const lista = document.getElementById("routine-list-es");
+    if (!lista) return;
+
+    lista.innerHTML = "";
+
+    routineEsTemporanei.forEach((es, indexEs) => {
+        const li = document.createElement("li");
+        li.className = "es-item";
+        li.dataset.expanded = "false";
+
+        li.innerHTML = `
+            <div class="es-header" onclick="toggleEsRoutine(this)">
+                <span class="es-nome">${es.nome}</span>
+                <div class="es-header-right">
+                    <button class="es-remove" onclick="event.stopPropagation(); rimuoviEsRoutineTemp('${es.nome}')">×</button>
+                </div>
+            </div>
+            <div class="es-summary"></div>
+            <div class="es-body" style="display:none;">
+                <input type="text" class="es-note" placeholder="Note...">
+                <div class="es-table-header">
+                    <span>Set</span>
+                    <span><i class="fa-solid fa-dumbbell es-dumbbell-icon"></i> Kg</span>
+                    <span>Reps</span>
+                    <span></span>
+                </div>
+                <ul class="es-set-list">
+                    ${es.sets.map((s, n) => creaRigaSetRoutine(n, s)).join("")}
+                </ul>
+                <button class="es-add-set" onclick="aggiungiSetRoutine(this, ${indexEs})">+ Aggiungi Serie</button>
+            </div>
+        `;
+
+        lista.appendChild(li);
+
+        li.querySelector(".es-note").value = es.note;
+        li.querySelector(".es-note").addEventListener("input", (e) => {
+            es.note = e.target.value;
+            aggiornaSummaryRoutine(li);
+        });
+
+        li.querySelectorAll(".es-set-kg, .es-set-reps").forEach((input, i) => {
+            const isKg = input.classList.contains("es-set-kg");
+            const setIndex = Math.floor(i / 2);
+
+            input.addEventListener("input", () => {
+                if (isKg) {
+                    es.sets[setIndex].kg = input.value;
+                } else {
+                    es.sets[setIndex].reps = input.value;
+                }
+                aggiornaSummaryRoutine(li);
+            });
+        });
+
+        aggiornaSummaryRoutine(li);
+    });
+}
+
+function creaRigaSetRoutine(n, set) {
+    return `
+        <li class="es-set-row">
+            <span class="es-set-num">${n + 1}</span>
+            <input type="number" class="es-set-kg" placeholder="-" min="0" value="${set.kg}">
+            <input type="number" class="es-set-reps" placeholder="-" min="0" value="${set.reps}">
+            <button class="es-set-remove" onclick="rimuoviSetRoutine(this)"><i class="fa-solid fa-trash"></i></button>
+        </li>
+    `;
+}
+
+function aggiungiSetRoutine(btn, indexEs) {
+    const lista = btn.previousElementSibling;
+    const n = lista.querySelectorAll(".es-set-row").length;
+    const li = document.createElement("li");
+    li.className = "es-set-row";
+    li.innerHTML = `
+        <span class="es-set-num">${n + 1}</span>
+        <input type="number" class="es-set-kg" placeholder="-" min="0">
+        <input type="number" class="es-set-reps" placeholder="-" min="0">
+        <button class="es-set-remove" onclick="rimuoviSetRoutine(this)"><i class="fa-solid fa-trash"></i></button>
+    `;
+    lista.appendChild(li);
+
+    routineEsTemporanei[indexEs].sets.push({ kg: "", reps: "" });
+
+    const esItem = btn.closest(".es-item");
+
+    li.querySelector(".es-set-kg").addEventListener("input", (e) => {
+        const idx = Array.from(lista.children).indexOf(li);
+        routineEsTemporanei[indexEs].sets[idx].kg = e.target.value;
+        aggiornaSummaryRoutine(esItem);
+    });
+    li.querySelector(".es-set-reps").addEventListener("input", (e) => {
+        const idx = Array.from(lista.children).indexOf(li);
+        routineEsTemporanei[indexEs].sets[idx].reps = e.target.value;
+        aggiornaSummaryRoutine(esItem);
+    });
+
+    aggiornaSummaryRoutine(esItem);
+}
+
+function rimuoviSetRoutine(btn) {
+    const riga = btn.closest(".es-set-row");
+    const lista = riga.closest(".es-set-list");
+    const esItem = riga.closest(".es-item");
+
+    const indexEs = routineEsTemporanei.findIndex(
+        es => es.nome === esItem.querySelector(".es-nome").textContent
+    );
+    const indexSet = Array.from(lista.children).indexOf(riga);
+
+    if (indexEs !== -1) {
+        routineEsTemporanei[indexEs].sets.splice(indexSet, 1);
+    }
+
+    riga.remove();
+    rinumerizzaSet(lista);
+    aggiornaSummaryRoutine(esItem);
+}
+
+function toggleEsRoutine(header) {
+    const li = header.closest("li");
+    const body = li.querySelector(".es-body");
+    const summary = li.querySelector(".es-summary");
+    const expanded = li.dataset.expanded === "true";
+
+    li.dataset.expanded = !expanded;
+
+    if (expanded) {
+        body.style.display = "none";
+        aggiornaSummaryRoutine(li);
+    } else {
+        summary.style.display = "none";
+        body.style.display = "block";
+    }
+}
+
+function toggleCheckRoutine(btn) {
+    const row = btn.closest(".es-set-row");
+    row.classList.toggle("es-set-done");
+    aggiornaSummaryRoutine(row.closest(".es-item"));
+}
+
+function aggiornaSummaryRoutine(li) {
+    const righe = li.querySelectorAll(".es-set-row");
+    const summary = li.querySelector(".es-summary");
+
+    if (li.dataset.expanded === "true") return;
+
+    const nota = li.querySelector(".es-note").value.trim();
+
+    let html = "";
+
+    if (nota) {
+        html += `<span class="es-summary-nota">${nota}</span>`;
+    }
+
+    righe.forEach((riga, i) => {
+        const kg = riga.querySelector(".es-set-kg").value.trim();
+        const reps = riga.querySelector(".es-set-reps").value.trim();
+
+        let contenuto = "";
+
+        if (kg && reps) {
+            contenuto = `
+                <span class="es-summary-kg">${kg}kg</span>
+                <span class="es-summary-x">×</span>
+                <span class="es-summary-reps">${reps} rip</span>
+            `;
+        } else if (kg && !reps) {
+            contenuto = `<span class="es-summary-kg">${kg}kg</span>`;
+        } else if (!kg && reps) {
+            contenuto = `<span class="es-summary-reps">${reps} rip</span>`;
+        } else {
+            contenuto = `<span class="es-summary-reps">- reps</span>`;
+        }
+
+        html += `
+            <div class="es-summary-row">
+                <span class="es-summary-num">${i + 1}</span>
+                ${contenuto}
+            </div>
+        `;
+    });
+
+    summary.innerHTML = html;
+    summary.style.display = "block";
+}
+
+function aggiornaStatoBtnSalvaRoutine() {
+    const btn = document.getElementById("btn-salva-routine");
+    if (!btn) return;
+
+    if (routineEsTemporanei.length > 0) {
+        btn.classList.add("attivo");
+    } else {
+        btn.classList.remove("attivo");
+    }
+}
+
+function salvaNuovaRoutine() {
+    if (routineEsTemporanei.length === 0) return;
+
+    const titolo = document.getElementById("input-routine-titolo").value.trim();
+    const noteRoutine = document.getElementById("input-routine-note").value.trim();
+
+    const nuovaRoutine = {
+        id: Date.now().toString(),
+        titolo,
+        note: noteRoutine,
+        esercizi: routineEsTemporanei.map(es => ({
+            nome: es.nome,
+            note: es.note,
+            sets: es.sets.map(s => ({ kg: s.kg, reps: s.reps }))
+        }))
+    };
+
+    const routine = caricaRoutine(routineProgrammaIdCorrente);
+    routine.push(nuovaRoutine);
+    salvaRoutine(routineProgrammaIdCorrente, routine);
+
+    chiudiPopupRoutine();
+    renderRoutine(routineProgrammaIdCorrente);
 }
 
 // DEBUG
