@@ -1308,17 +1308,33 @@ button {
     scale: 0.95;
 }
 
+.drag-handle {
+    cursor: grab;
+    color: #bbb;
+    font-size: 0.9rem;
+    padding: 4px;
+    margin-right: 4px;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.es-item.dragging {
+    opacity: 0.4;
+}
+
+.es-item.drag-over {
+    border-top: 2px solid #4285f4;
+}
+
 #comboEsRoutine {
-    display: none;
     width: 100%;
-    height: 160px;
     margin-top: 10px;
     border: 2px solid #333;
     border-radius: 10px;
-    padding: 6px;
+    padding: 10px;
     font-size: 0.85rem;
-    background-color: #fff;
-    color: #333;
     box-sizing: border-box;
 }
 
@@ -1403,31 +1419,101 @@ button {
 #comboEs {
     margin-top: 3%;
     margin-left: 42%;
-    display: block;
     width: 500px;
-    height: 160px;
     border: 2px solid #333;
     border-radius: 10px;
-    padding: 6px;
+    padding: 10px;
     font-size: 0.85rem;
     background-color: #fff;
     color: #333;
+    box-sizing: border-box;
 }
 
-#comboEs option {
-    padding: 4px 8px;
-    border-radius: 6px;
+.es-picker-search {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    outline: none;
+    font-family: inherit;
+}
+
+.es-picker-filtri {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.filtro-muscolo {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    background-color: #fff;
+    color: #555;
     cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.2s;
 }
 
-#comboEs option:hover {
-    background-color: #aaaaaa8e;
-    transition: 0.5s all;
+.filtro-muscolo:hover {
+    background-color: #f0f0f0;
 }
 
-#comboEs option:checked {
+.filtro-muscolo.active {
     background-color: #333;
     color: #fff;
+    border-color: #333;
+}
+
+.es-picker-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 160px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.es-picker-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.es-picker-item:hover {
+    background-color: #f5f5f5;
+}
+
+.es-picker-check {
+    opacity: 0;
+    color: #36eb09;
+}
+
+.es-picker-item.selezionato {
+    background-color: #aaaaaa18;
+}
+
+.es-picker-item.selezionato .es-picker-check {
+    opacity: 1;
+}
+
+.es-picker-vuoto {
+    text-align: center;
+    color: #aaa;
+    padding: 10px 0;
+    font-style: italic;
+    cursor: default;
 }
 
 #btnAddEs {
@@ -2786,15 +2872,34 @@ body.dark-mode #info-duration-container h3 {
     color: #aaaaaa;
 }
 
-body.dark-mode #comboEs {
-    background-color: #2a2a2a;
-    border-color: #fff;
+body.dark-mode .es-picker-search {
+    background-color: #1e1e1e;
+    border-color: #444;
     color: #fff;
 }
 
-body.dark-mode #comboEs option:checked {
+body.dark-mode .filtro-muscolo {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #ccc;
+}
+
+body.dark-mode .filtro-muscolo.active {
     background-color: #fff;
     color: #222;
+    border-color: #fff;
+}
+
+body.dark-mode .drag-handle {
+    color: #666;
+}
+
+body.dark-mode .es-picker-item:hover {
+    background-color: #333;
+}
+
+body.dark-mode .es-picker-item.selezionato {
+    background-color: #ffffff18;
 }
 
 body.dark-mode #btnAddEs {

@@ -8,6 +8,107 @@ let popupApertoWorkout = false;
 
 let esercizi = [];
 
+let gruppoPerEsercizio = {};
+
+const GRUPPI_MUSCOLARI = {
+    tutti: { label: "Tutti", icon: "fa-solid fa-layer-group" },
+    petto: { label: "Petto", icon: "fa-solid fa-shield-halved" },
+    schiena: { label: "Schiena", icon: "fa-solid fa-grip-lines" },
+    spalle: { label: "Spalle", icon: "fa-solid fa-angles-up" },
+    braccia: { label: "Braccia", icon: "fa-solid fa-hand-fist" },
+    gambe: { label: "Gambe", icon: "fa-solid fa-shoe-prints" },
+    addominali: { label: "Addominali", icon: "fa-solid fa-water" },
+    glutei: { label: "Glutei", icon: "fa-solid fa-person-walking" },
+    cardio: { label: "Cardio", icon: "fa-solid fa-heart-pulse" },
+    altro: { label: "Altro", icon: "fa-solid fa-ellipsis" }
+};
+
+const PAROLE_CHIAVE_GRUPPI = {
+    petto: ["panca", "chest", "petto", "croci", "push up", "piegamenti", "dip", "parallele", "pec", "spinte"],
+    schiena: ["trazioni", "rematore", "lat machine", "pulley", "schiena", "pull up", "pulldown", "iperestensioni", "lat"],
+    spalle: ["shoulder", "spalle", "alzate", "military", "arnold", "deltoide", "lento avanti"],
+    braccia: ["curl", "bicipiti", "tricipiti", "french press", "push down", "braccia", "avambraccio", "hammer"],
+    gambe: ["squat", "leg", "gambe", "affondi", "pressa", "estensioni", "calf", "polpacci", "quadricipiti", "femorali", "stacco"],
+    addominali: ["addominali", "crunch", "plank", "ab wheel", "sit up", "core", "obliqui"],
+    glutei: ["glutei", "gluteo", "hip thrust", "ponte", "abductor", "abduttore"],
+    cardio: ["corsa", "cyclette", "tapis", "ellittica", "cardio", "rowing", "vogatore", "burpee", "salto", "jump"]
+};
+
+function rilevaGruppoMuscolare(nome) {
+    const nomeLower = nome.toLowerCase();
+    for (const gruppo in PAROLE_CHIAVE_GRUPPI) {
+        if (PAROLE_CHIAVE_GRUPPI[gruppo].some(parola => nomeLower.includes(parola))) {
+            return gruppo;
+        }
+    }
+    return "altro";
+}
+
+function generaContenutoPicker() {
+    let filtriHtml = "";
+    for (const key in GRUPPI_MUSCOLARI) {
+        const g = GRUPPI_MUSCOLARI[key];
+        filtriHtml += `<button class="filtro-muscolo ${key === 'tutti' ? 'active' : ''}" data-gruppo="${key}" title="${g.label}"><i class="${g.icon}"></i></button>`;
+    }
+
+    return `
+        <input type="text" class="es-picker-search" placeholder="Cerca esercizio...">
+        <div class="es-picker-filtri">${filtriHtml}</div>
+        <ul class="es-picker-lista"></ul>
+    `;
+}
+
+function renderListaPicker(container, selezionati) {
+    const lista = container.querySelector(".es-picker-lista");
+    const ricerca = container.querySelector(".es-picker-search").value.trim().toLowerCase();
+    const gruppoAttivo = container.querySelector(".filtro-muscolo.active").dataset.gruppo;
+
+    lista.innerHTML = "";
+
+    esercizi.forEach(nome => {
+        const gruppo = gruppoPerEsercizio[nome] || "altro";
+        if (gruppoAttivo !== "tutti" && gruppo !== gruppoAttivo) return;
+        if (ricerca && !nome.toLowerCase().includes(ricerca)) return;
+
+        const li = document.createElement("li");
+        li.className = "es-picker-item" + (selezionati.has(nome) ? " selezionato" : "");
+        li.innerHTML = `<span>${nome}</span><i class="fa-solid fa-check es-picker-check"></i>`;
+        li.onclick = () => {
+            if (selezionati.has(nome)) {
+                selezionati.delete(nome);
+            } else {
+                selezionati.add(nome);
+            }
+            li.classList.toggle("selezionato");
+            if (container._onSelectionChange) container._onSelectionChange();
+        };
+        lista.appendChild(li);
+    });
+
+    if (lista.children.length === 0) {
+        lista.innerHTML = `<li class="es-picker-vuoto">Nessun esercizio trovato</li>`;
+    }
+}
+
+function inizializzaPicker(container, selezionati, onSelectionChange) {
+    container.innerHTML = generaContenutoPicker();
+    container._onSelectionChange = onSelectionChange;
+
+    container.querySelector(".es-picker-search").addEventListener("input", () => {
+        renderListaPicker(container, selezionati);
+    });
+
+    container.querySelectorAll(".filtro-muscolo").forEach(btn => {
+        btn.addEventListener("click", () => {
+            container.querySelectorAll(".filtro-muscolo").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            renderListaPicker(container, selezionati);
+        });
+    });
+
+    renderListaPicker(container, selezionati);
+}
+
 function inizializzaScenari() {
     scenari = [
         document.getElementById("main-container"),
@@ -35,10 +136,9 @@ async function inizializzaEsercizi() {
             if (nomeEsercizio) {
                 nomeEsercizio = nomeEsercizio.replace(/_/g, ' ');
                 esercizi.push(nomeEsercizio);
+                gruppoPerEsercizio[nomeEsercizio] = rilevaGruppoMuscolare(nomeEsercizio);
             }
         }
-
-        console.log("Esercizi caricati nel browser:", esercizi);
     } catch (errore) {
         console.error("Errore nel caricamento del file:", errore);
     }
@@ -293,6 +393,12 @@ function salvaProgrammiSuLocalStorage() {
 function apriDettaglioProgramma(id, inModalitaModifica = false) {
     const programma = programmi.find(p => p.id === id);
     if (!programma) return;
+
+    const conteggioRoutine = caricaRoutine(id).length;
+    if (programma.allenamenti !== conteggioRoutine) {
+        programma.allenamenti = conteggioRoutine;
+        salvaProgrammiSuLocalStorage();
+    }
 
     let overlay = document.getElementById("popup-dettaglio-programma");
     if (!overlay) {
@@ -1032,38 +1138,29 @@ function aggiornaObiettivoRecord(nomeEsercizio) {
     renderGoals();
 }
 
+let selezionatiEs = new Set();
+
 function addEs() {
-    const combo = document.getElementById("comboEs");
+    const container = document.getElementById("comboEs");
     const btn = document.getElementById("btnAddEs");
 
     if (!show_combo_es) {
-        if (combo.innerHTML.trim() === "") {
-            let s = "";
-            esercizi.forEach((es, i) => {
-                s += `<option value="${i}">${es}</option>`;
-            });
-            combo.innerHTML = s;
-        }
+        selezionatiEs = new Set();
+        inizializzaPicker(container, selezionatiEs, () => {
+            const n = selezionatiEs.size;
+            btn.textContent = n > 0 ? `Aggiungi ${n} esercizi${n === 1 ? "o" : ""}` : "Aggiungi esercizio";
+        });
 
-        combo.style.display = "block";
+        container.style.display = "block";
         btn.textContent = "Aggiungi esercizio";
         show_combo_es = true;
 
-        combo.onchange = function () {
-            const selezionati = Array.from(combo.selectedOptions).length;
-            if (selezionati > 0) {
-                btn.textContent = `Aggiungi ${selezionati} esercizi${selezionati === 1 ? "o" : ""}`;
-            }
-        };
-
     } else {
-        const selezionati = Array.from(combo.selectedOptions);
-        selezionati.forEach(opt => {
-            aggiungiEsercizioAllaLista(opt.text);
-        });
+        selezionatiEs.forEach(nome => aggiungiEsercizioAllaLista(nome));
 
-        combo.style.display = "none";
-        combo.selectedIndex = -1;
+        container.style.display = "none";
+        container.innerHTML = "";
+        selezionatiEs.clear();
         btn.textContent = "Aggiungi Esercizi";
         show_combo_es = false;
     }
@@ -1103,6 +1200,7 @@ function aggiungiEsercizioAllaLista(nome) {
 `;
     lista.appendChild(li);
     aggiornaSummary(li);
+    abilitaDragReorder(li, lista, null);
 
     li.querySelector(".es-note").addEventListener("input", () => {
         aggiornaSummary(li);
@@ -1126,6 +1224,42 @@ function creaRigaSet(n) {
             <button class="es-set-remove" onclick="rimuoviSet(this)"><i class="fa-solid fa-trash"></i></button>
         </li>
     `;
+}
+
+function abilitaDragReorder(item, lista, onReorder) {
+    const handle = item.querySelector(".drag-handle");
+    if (!handle) return;
+
+    handle.addEventListener("click", (e) => e.stopPropagation());
+    handle.addEventListener("mousedown", () => { item.draggable = true; });
+    handle.addEventListener("mouseup", () => { item.draggable = false; });
+
+    item.addEventListener("dragstart", (e) => {
+        item.classList.add("dragging");
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", "");
+    });
+
+    item.addEventListener("dragend", () => {
+        item.classList.remove("dragging");
+        item.draggable = false;
+        lista.querySelectorAll(".drag-over").forEach(el => el.classList.remove("drag-over"));
+        if (onReorder) onReorder();
+    });
+
+    item.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        const dragging = lista.querySelector(".dragging");
+        if (!dragging || dragging === item) return;
+
+        const rect = item.getBoundingClientRect();
+        const dopo = (e.clientY - rect.top) / rect.height > 0.5;
+
+        item.classList.add("drag-over");
+        dopo ? item.after(dragging) : item.before(dragging);
+    });
+
+    item.addEventListener("dragleave", () => item.classList.remove("drag-over"));
 }
 
 function rimuoviSet(btn) {
@@ -1954,6 +2088,7 @@ function rimuoviRoutine(programmaId, routineId) {
     let routine = caricaRoutine(programmaId);
     routine = routine.filter(r => r.id !== routineId);
     salvaRoutine(programmaId, routine);
+    aggiornaContatoreAllenamenti(programmaId, routine.length);
     renderRoutine(programmaId);
 }
 
@@ -2031,7 +2166,7 @@ function apriPopupRoutine(programmaId) {
                 <input type="text" id="input-routine-note" placeholder="Note...">
                 <ul id="routine-list-es"></ul>
                 <button id="btn-aggiungi-es-routine" onclick="toggleComboEsRoutine()">Aggiungi esercizi</button>
-                <select id="comboEsRoutine" multiple></select>
+                <div id="comboEsRoutine" style="display:none;"></div>
             </div>
         </div>
     `;
@@ -2048,38 +2183,29 @@ function chiudiPopupRoutine() {
 
 let show_combo_es_routine = false;
 
+let selezionatiEsRoutine = new Set();
+
 function toggleComboEsRoutine() {
-    const combo = document.getElementById("comboEsRoutine");
+    const container = document.getElementById("comboEsRoutine");
     const btn = document.getElementById("btn-aggiungi-es-routine");
 
     if (!show_combo_es_routine) {
-        if (combo.innerHTML.trim() === "") {
-            let s = "";
-            esercizi.forEach((es, i) => {
-                s += `<option value="${i}">${es}</option>`;
-            });
-            combo.innerHTML = s;
-        }
+        selezionatiEsRoutine = new Set();
+        inizializzaPicker(container, selezionatiEsRoutine, () => {
+            const n = selezionatiEsRoutine.size;
+            btn.textContent = n > 0 ? `Aggiungi ${n} esercizi${n === 1 ? "o" : ""}` : "Aggiungi esercizio";
+        });
 
-        combo.style.display = "block";
+        container.style.display = "block";
         btn.textContent = "Aggiungi esercizio";
         show_combo_es_routine = true;
 
-        combo.onchange = function () {
-            const selezionati = Array.from(combo.selectedOptions).length;
-            if (selezionati > 0) {
-                btn.textContent = `Aggiungi ${selezionati} esercizi${selezionati === 1 ? "o" : ""}`;
-            }
-        };
-
     } else {
-        const selezionati = Array.from(combo.selectedOptions);
-        selezionati.forEach(opt => {
-            aggiungiEsRoutineTemp(opt.text);
-        });
+        selezionatiEsRoutine.forEach(nome => aggiungiEsRoutineTemp(nome));
 
-        combo.style.display = "none";
-        combo.selectedIndex = -1;
+        container.style.display = "none";
+        container.innerHTML = "";
+        selezionatiEsRoutine.clear();
         btn.textContent = "Aggiungi esercizi";
         show_combo_es_routine = false;
     }
@@ -2107,6 +2233,18 @@ function rimuoviEsRoutineTemp(nome) {
     routineEsTemporanei = routineEsTemporanei.filter(e => e.nome !== nome);
     renderRoutineListEs();
     aggiornaStatoBtnSalvaRoutine();
+}
+
+function riordinaRoutineEsTemporanei() {
+    const lista = document.getElementById("routine-list-es");
+    const nuovoOrdine = [];
+    lista.querySelectorAll(".es-item").forEach(li => {
+        const nome = li.querySelector(".es-nome").textContent;
+        const es = routineEsTemporanei.find(e => e.nome === nome);
+        if (es) nuovoOrdine.push(es);
+    });
+    routineEsTemporanei = nuovoOrdine;
+    renderRoutineListEs();
 }
 
 function renderRoutineListEs() {
@@ -2144,6 +2282,7 @@ function renderRoutineListEs() {
         `;
 
         lista.appendChild(li);
+        abilitaDragReorder(li, lista, riordinaRoutineEsTemporanei);
 
         li.querySelector(".es-note").value = es.note;
         li.querySelector(".es-note").addEventListener("input", (e) => {
@@ -2167,6 +2306,15 @@ function renderRoutineListEs() {
 
         aggiornaSummaryRoutine(li);
     });
+}
+
+function aggiornaContatoreAllenamenti(programmaId, nuovoConteggio) {
+    const programma = programmi.find(p => p.id === programmaId);
+    if (programma) {
+        programma.allenamenti = nuovoConteggio;
+        salvaProgrammiSuLocalStorage();
+        renderProgrammi();
+    }
 }
 
 function creaRigaSetRoutine(n, set) {
@@ -2330,6 +2478,7 @@ function salvaNuovaRoutine() {
     const routine = caricaRoutine(routineProgrammaIdCorrente);
     routine.push(nuovaRoutine);
     salvaRoutine(routineProgrammaIdCorrente, routine);
+    aggiornaContatoreAllenamenti(routineProgrammaIdCorrente, routine.length);
 
     chiudiPopupRoutine();
     renderRoutine(routineProgrammaIdCorrente);
