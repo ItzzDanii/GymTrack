@@ -338,7 +338,8 @@ function creaProgramma() {
         livello: "",
         obiettivo: "",
         giorni: "",
-        durata: ""
+        durata: "",
+        immagine: ""
     };
 
     programmi.push(programma);
@@ -370,8 +371,13 @@ function renderProgrammi() {
         const li = document.createElement("li");
         li.className = "programma-item";
         li.onclick = () => apriDettaglioProgramma(p.id, false);
+
+        const iconaHtml = p.immagine
+            ? `<img src="${p.immagine}" class="programma-img" alt="${p.nome}">`
+            : `<i class="fa-solid fa-receipt programma-icon"></i>`;
+
         li.innerHTML = `
-            <i class="fa-solid fa-receipt programma-icon"></i>
+            <div class="programma-icona-wrap">${iconaHtml}</div>
             <div class="programma-info">
                 <span class="programma-nome">${p.nome}</span>
                 <span class="programma-allenamenti">${p.allenamenti} allenamenti</span>
@@ -444,8 +450,10 @@ function apriDettaglioProgramma(id, inModalitaModifica = false) {
             
             ${inModalitaModifica ? `
                 <div class="area-foto-programma" onclick="cambiaFotoProgramma(${programma.id})">
-                    <i class="fa-solid fa-receipt dettaglio-icon-centrata"></i>
-                    <span class="link-aggiungi-foto">Aggiungi Foto</span>
+                    ${programma.immagine
+                ? `<img src="${programma.immagine}" class="programma-foto-preview" alt="${programma.nome}"><span class="link-aggiungi-foto">Cambia Foto</span>`
+                : `<i class="fa-solid fa-receipt dettaglio-icon-centrata"></i><span class="link-aggiungi-foto">Aggiungi Foto</span>`
+            }
                 </div>
                 <hr class="divisore-dettaglio">
             ` : ''}
@@ -537,7 +545,10 @@ function apriDettaglioProgramma(id, inModalitaModifica = false) {
                         </div>
                     ` : `
                         <div class="visualizza-top-icona-box">
-                            <i class="fa-solid fa-receipt visualizza-icona-top"></i>
+                            ${programma.immagine
+            ? `<img src="${programma.immagine}" class="visualizza-icona-img" alt="${programma.nome}">`
+            : `<i class="fa-solid fa-receipt visualizza-icona-top"></i>`
+        }
                         </div>
 
                         <div class="trigger-vedi-piu" id="trigger-espandi" onclick="espandiDettagli()">
@@ -611,6 +622,56 @@ function apriDettaglioProgramma(id, inModalitaModifica = false) {
     }
 }
 
+function cambiaFotoProgramma(id) {
+    const programma = programmi.find(p => p.id === id);
+    if (!programma) return;
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/png, image/jpeg';
+    input.onchange = function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                programma.immagine = event.target.result;
+                salvaProgrammiSuLocalStorage();
+                renderProgrammi();
+                apriDettaglioProgramma(id, true);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    input.click();
+}
+
+function cambiaFotoRoutineTemp() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/png, image/jpeg';
+    input.onchange = function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                routineImmagineTemporanea = event.target.result;
+                aggiornaAreaFotoRoutine();
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    input.click();
+}
+
+function aggiornaAreaFotoRoutine() {
+    const area = document.getElementById("area-foto-routine");
+    if (!area) return;
+
+    area.innerHTML = routineImmagineTemporanea
+        ? `<img src="${routineImmagineTemporanea}" class="routine-foto-preview" alt="Foto routine"><span class="link-aggiungi-foto">Cambia Foto</span>`
+        : `<i class="fa-solid fa-dumbbell dettaglio-icon-centrata"></i><span class="link-aggiungi-foto">Aggiungi Foto</span>`;
+}
+
 function espandiDettagli() {
     document.getElementById("div-dettagli-espandibili").style.display = "block";
     document.getElementById("trigger-espandi").style.display = "none";
@@ -623,7 +684,6 @@ function riduciDettagli() {
     document.getElementById("visualizza-dettaglio-nome").style.marginRight = '40%';
 
 }
-
 
 function selezionaLivello(elemento, id, valore) {
     const p = programmi.find(x => x.id === id);
@@ -2076,7 +2136,12 @@ function renderRoutine(programmaId) {
         const nomeVisualizzato = r.titolo && r.titolo.trim() !== "" ? r.titolo : "La mia routine";
         const nEsercizi = r.esercizi ? r.esercizi.length : 0;
 
+        const iconaHtml = r.immagine
+            ? `<img src="${r.immagine}" class="routine-img" alt="${nomeVisualizzato}">`
+            : `<i class="fa-solid fa-dumbbell routine-icon"></i>`;
+
         li.innerHTML = `
+            <div class="routine-icona-wrap">${iconaHtml}</div>
             <div class="routine-info">
                 <span class="routine-nome">${nomeVisualizzato}</span>
                 <span class="routine-n-esercizi">${nEsercizi} Eserciz${nEsercizi === 1 ? "io" : "i"}</span>
@@ -2174,11 +2239,13 @@ function avviaRoutine(programmaId, routineId) {
 let routineEsTemporanei = [];
 let routineProgrammaIdCorrente = null;
 let routineIdInModifica = null;
+let routineImmagineTemporanea = "";
 
 function apriPopupRoutine(programmaId, routineId = null) {
     routineProgrammaIdCorrente = programmaId;
     routineIdInModifica = routineId;
     routineEsTemporanei = [];
+    routineImmagineTemporanea = "";
 
     let titoloIniziale = "";
     let noteIniziali = "";
@@ -2189,6 +2256,7 @@ function apriPopupRoutine(programmaId, routineId = null) {
         if (r) {
             titoloIniziale = r.titolo || "";
             noteIniziali = r.note || "";
+            routineImmagineTemporanea = r.immagine || "";
             routineEsTemporanei = r.esercizi.map(es => ({
                 nome: es.nome,
                 note: es.note || "",
@@ -2214,6 +2282,7 @@ function apriPopupRoutine(programmaId, routineId = null) {
                 <button id="btn-salva-routine" onclick="salvaNuovaRoutine()">Salva</button>
             </div>
             <div id="popup-routine-body">
+                <div class="area-foto-routine" id="area-foto-routine" onclick="cambiaFotoRoutineTemp()"></div>
                 <input type="text" id="input-routine-titolo" placeholder="Titolo della routine..." value="${titoloIniziale}">
                 <input type="text" id="input-routine-note" placeholder="Note..." value="${noteIniziali}">
                 <ul id="routine-list-es"></ul>
@@ -2225,6 +2294,7 @@ function apriPopupRoutine(programmaId, routineId = null) {
 
     overlay.style.display = "flex";
 
+    aggiornaAreaFotoRoutine();
     renderRoutineListEs();
     aggiornaStatoBtnSalvaRoutine();
 }
@@ -2235,6 +2305,7 @@ function chiudiPopupRoutine() {
     routineEsTemporanei = [];
     routineProgrammaIdCorrente = null;
     routineIdInModifica = null;
+    routineImmagineTemporanea = "";
 }
 
 let show_combo_es_routine = false;
@@ -2523,6 +2594,7 @@ function salvaNuovaRoutine() {
     const datiRoutine = {
         titolo,
         note: noteRoutine,
+        immagine: routineImmagineTemporanea,
         esercizi: routineEsTemporanei.map(es => ({
             nome: es.nome,
             note: es.note,
