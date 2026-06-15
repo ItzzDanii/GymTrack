@@ -23,6 +23,23 @@ const GRUPPI_MUSCOLARI = {
     altro: { label: "Altro", icon: "fa-solid fa-ellipsis" }
 };
 
+const TIPI_SET = {
+    R: { label: "Riscaldamento", colore: "#c9a227", testo: "#fff" },
+    F: { label: "Failure", colore: "#e53935", testo: "#fff" },
+    S: { label: "Sinistra", colore: "#43a047", testo: "#fff" },
+    D: { label: "Destra", colore: "#8e24aa", testo: "#fff" },
+    DS: { label: "Drop Set", colore: "#29b6f6", testo: "#fff" },
+    N: { label: "Negativo", colore: "#ffb300", testo: "#5a3d00" },
+    RP: { label: "Partial Reps", colore: "#a5d6a7", testo: "#1b3c1d" },
+    MR: { label: "Myo Reps", colore: "#fb8c00", testo: "#fff" },
+    FD: { label: "Feeder Set", colore: "#fdd835", testo: "#5a4a00" },
+    T: { label: "Top Set", colore: "#0277bd", testo: "#fff" },
+    BO: { label: "Back Off Set", colore: "#26a69a", testo: "#fff" }
+};
+
+const TIPI_SET_BASE = ["R", "F", "S", "D", "DS", "N"];
+const TIPI_SET_EXTRA = ["RP", "MR", "FD", "T", "BO"];
+
 const PAROLE_CHIAVE_GRUPPI = {
     petto: ["panca", "chest", "petto", "croci", "push up", "piegamenti", "dip", "parallele", "pec", "spinte"],
     schiena: ["trazioni", "rematore", "lat machine", "pulley", "schiena", "pull up", "pulldown", "iperestensioni", "lat"],
@@ -1040,7 +1057,8 @@ function terminaComunque() {
             const kg = parseFloat(riga.querySelector(".es-set-kg").value) || 0;
             const reps = parseFloat(riga.querySelector(".es-set-reps").value) || 0;
             const completato = riga.classList.contains("es-set-done");
-            sets.push({ kg, reps, completato });
+            const tipo = riga.dataset.tipo || "";
+            sets.push({ kg, reps, completato, tipo });
         });
         esDettaglio.push({ nome, sets });
     });
@@ -1288,8 +1306,8 @@ function aggiungiEsercizioAllaLista(nome) {
 
 function creaRigaSet(n) {
     return `
-        <li class="es-set-row">
-            <span class="es-set-num">${n}</span>
+        <li class="es-set-row" data-tipo="" data-num="${n}">
+            <button class="es-set-num" onclick="apriPopupTipoSet(this)">${n}</button>
             <input type="number" class="es-set-kg" placeholder="-" min="0">
             <input type="number" class="es-set-reps" placeholder="-" min="0">
             <button class="es-set-check" onclick="toggleCheck(this)"><i class="fa-solid fa-check"></i></button>
@@ -1334,6 +1352,147 @@ function abilitaDragReorder(item, lista, onReorder) {
     item.addEventListener("dragleave", () => item.classList.remove("drag-over"));
 }
 
+let setRigaCorrente = null;
+let tipoSetEspanso = false;
+
+function apriPopupTipoSet(elemento) {
+    setRigaCorrente = elemento.closest(".es-set-row");
+    tipoSetEspanso = false;
+
+    let overlay = document.getElementById("popup-tipo-set");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "popup-tipo-set";
+        document.body.appendChild(overlay);
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) chiudiPopupTipoSet();
+        });
+    }
+
+    overlay.innerHTML = generaContenutoPopupTipoSet();
+    overlay.style.display = "flex";
+}
+
+function generaContenutoPopupTipoSet() {
+    const tipoAttivo = setRigaCorrente ? setRigaCorrente.dataset.tipo : "";
+
+    let bottoniHtml = "";
+
+    TIPI_SET_BASE.forEach(tipo => {
+        bottoniHtml += generaBottoneTipoSet(tipo, tipoAttivo);
+    });
+
+    if (tipoSetEspanso) {
+        TIPI_SET_EXTRA.forEach(tipo => {
+            bottoniHtml += generaBottoneTipoSet(tipo, tipoAttivo);
+        });
+    } else {
+        bottoniHtml += `
+            <button class="tipo-set-btn tipo-set-altro" onclick="espandiTipoSet()">
+                <i class="fa-solid fa-ellipsis"></i>
+                <span>Di più</span>
+            </button>
+        `;
+    }
+
+    bottoniHtml += `
+        <button class="tipo-set-btn tipo-set-elimina" onclick="eliminaSetDaPopup()">
+            <i class="fa-solid fa-trash"></i>
+            <span>Rimuovi Set</span>
+        </button>
+    `;
+
+    return `
+        <div id="popup-tipo-set-box">
+            <h3>Tipo di Serie</h3>
+            <div class="tipo-set-grid">
+                ${bottoniHtml}
+            </div>
+        </div>
+    `;
+}
+
+function generaBottoneTipoSet(tipo, tipoAttivo) {
+    const info = TIPI_SET[tipo];
+    const attivo = tipo === tipoAttivo ? "active" : "";
+    return `
+        <button class="tipo-set-btn tipo-set-${tipo.toLowerCase()} ${attivo}" onclick="selezionaTipoSet('${tipo}')">
+            <span class="tipo-set-sigla">${tipo}</span>
+            <span class="tipo-set-label">${info.label}</span>
+        </button>
+    `;
+}
+
+function espandiTipoSet() {
+    tipoSetEspanso = true;
+    const overlay = document.getElementById("popup-tipo-set");
+    overlay.innerHTML = generaContenutoPopupTipoSet();
+}
+
+function selezionaTipoSet(tipo) {
+    if (!setRigaCorrente) return;
+
+    const tipoAttuale = setRigaCorrente.dataset.tipo || "";
+    const nuovoTipo = tipoAttuale === tipo ? "" : tipo;
+
+    setRigaCorrente.dataset.tipo = nuovoTipo;
+    aggiornaBadgeSetNum(setRigaCorrente);
+    sincronizzaTipoSet(setRigaCorrente, nuovoTipo);
+
+    chiudiPopupTipoSet();
+}
+
+function aggiornaBadgeSetNum(riga) {
+    const numEl = riga.querySelector(".es-set-num");
+    const tipo = riga.dataset.tipo;
+
+    numEl.className = "es-set-num";
+
+    if (tipo && TIPI_SET[tipo]) {
+        numEl.classList.add("es-set-num-tipo", "tipo-" + tipo.toLowerCase());
+        numEl.textContent = tipo;
+        numEl.title = TIPI_SET[tipo].label;
+    } else {
+        numEl.textContent = riga.dataset.num || "";
+        numEl.removeAttribute("title");
+    }
+}
+
+function sincronizzaTipoSet(riga, tipo) {
+    const esItem = riga.closest(".es-item");
+    if (!esItem || !esItem.closest("#routine-list-es")) return;
+
+    const lista = riga.closest(".es-set-list");
+    const nomeEs = esItem.querySelector(".es-nome").textContent;
+    const indexEs = routineEsTemporanei.findIndex(e => e.nome === nomeEs);
+    const indexSet = Array.from(lista.children).indexOf(riga);
+
+    if (indexEs !== -1 && routineEsTemporanei[indexEs].sets[indexSet]) {
+        routineEsTemporanei[indexEs].sets[indexSet].tipo = tipo;
+    }
+}
+
+function eliminaSetDaPopup() {
+    if (!setRigaCorrente) return;
+
+    const riga = setRigaCorrente;
+    const inRoutine = !!riga.closest("#routine-list-es");
+    const btnRemove = riga.querySelector(".es-set-remove");
+
+    chiudiPopupTipoSet();
+
+    if (btnRemove) {
+        inRoutine ? rimuoviSetRoutine(btnRemove) : rimuoviSet(btnRemove);
+    }
+}
+
+function chiudiPopupTipoSet() {
+    const overlay = document.getElementById("popup-tipo-set");
+    if (overlay) overlay.style.display = "none";
+    setRigaCorrente = null;
+    tipoSetEspanso = false;
+}
+
 function rimuoviSet(btn) {
     const riga = btn.closest(".es-set-row");
     const lista = riga.closest(".es-set-list");
@@ -1349,7 +1508,10 @@ function rimuoviSet(btn) {
 
 function rinumerizzaSet(lista) {
     lista.querySelectorAll(".es-set-row").forEach((riga, i) => {
-        riga.querySelector(".es-set-num").textContent = i + 1;
+        riga.dataset.num = i + 1;
+        if (!riga.dataset.tipo) {
+            riga.querySelector(".es-set-num").textContent = i + 1;
+        }
     });
 }
 
@@ -1375,8 +1537,10 @@ function aggiungiSet(btn) {
     const n = lista.querySelectorAll(".es-set-row").length + 1;
     const li = document.createElement("li");
     li.className = "es-set-row";
+    li.dataset.tipo = "";
+    li.dataset.num = n;
     li.innerHTML = `
-        <span class="es-set-num">${n}</span>
+        <button class="es-set-num" onclick="apriPopupTipoSet(this)">${n}</button>
         <input type="number" class="es-set-kg" placeholder="-" min="0">
         <input type="number" class="es-set-reps" placeholder="-" min="0">
         <button class="es-set-check" onclick="toggleCheck(this)">✓</button>
@@ -1394,7 +1558,6 @@ function aggiungiSet(btn) {
     });
     aggiornaSummary(esItem);
 }
-
 function aggiornaSummary(li) {
     const righe = li.querySelectorAll(".es-set-row");
     const summary = li.querySelector(".es-summary");
@@ -2226,6 +2389,10 @@ function avviaRoutine(programmaId, routineId) {
                 if (righeAggiornate[i]) {
                     righeAggiornate[i].querySelector(".es-set-kg").value = s.kg || "";
                     righeAggiornate[i].querySelector(".es-set-reps").value = s.reps || "";
+                    if (s.tipo) {
+                        righeAggiornate[i].dataset.tipo = s.tipo;
+                        aggiornaBadgeSetNum(righeAggiornate[i]);
+                    }
                 }
             });
 
@@ -2445,9 +2612,16 @@ function aggiornaContatoreAllenamenti(programmaId, nuovoConteggio) {
 }
 
 function creaRigaSetRoutine(n, set) {
+    const tipo = set.tipo || "";
+    const haTipo = tipo && TIPI_SET[tipo];
+
+    const numClass = haTipo ? "es-set-num es-set-num-tipo tipo-" + tipo.toLowerCase() : "es-set-num";
+    const numContent = haTipo ? tipo : (n + 1);
+    const titleAttr = haTipo ? ` title="${TIPI_SET[tipo].label}"` : "";
+
     return `
-        <li class="es-set-row">
-            <span class="es-set-num">${n + 1}</span>
+        <li class="es-set-row" data-tipo="${tipo}" data-num="${n + 1}">
+            <button class="${numClass}" onclick="apriPopupTipoSet(this)"${titleAttr}>${numContent}</button>
             <input type="number" class="es-set-kg" placeholder="-" min="0" value="${set.kg}">
             <input type="number" class="es-set-reps" placeholder="-" min="0" value="${set.reps}">
             <button class="es-set-remove" onclick="rimuoviSetRoutine(this)"><i class="fa-solid fa-trash"></i></button>
@@ -2460,15 +2634,17 @@ function aggiungiSetRoutine(btn, indexEs) {
     const n = lista.querySelectorAll(".es-set-row").length;
     const li = document.createElement("li");
     li.className = "es-set-row";
+    li.dataset.tipo = "";
+    li.dataset.num = n + 1;
     li.innerHTML = `
-        <span class="es-set-num">${n + 1}</span>
+        <button class="es-set-num" onclick="apriPopupTipoSet(this)">${n + 1}</button>
         <input type="number" class="es-set-kg" placeholder="-" min="0">
         <input type="number" class="es-set-reps" placeholder="-" min="0">
         <button class="es-set-remove" onclick="rimuoviSetRoutine(this)"><i class="fa-solid fa-trash"></i></button>
     `;
     lista.appendChild(li);
 
-    routineEsTemporanei[indexEs].sets.push({ kg: "", reps: "" });
+    routineEsTemporanei[indexEs].sets.push({ kg: "", reps: "", tipo: "" });
 
     const esItem = btn.closest(".es-item");
 
