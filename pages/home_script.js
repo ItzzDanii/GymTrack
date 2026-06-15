@@ -704,9 +704,21 @@ function togglePopupSettings(event) {
     }
 }
 
+function toggleRoutineMenu(event, btn) {
+    event.stopPropagation();
+    const dropdown = btn.nextElementSibling;
+    const aperto = dropdown.style.display === "block";
+
+    document.querySelectorAll(".routine-menu-dropdown").forEach(d => d.style.display = "none");
+
+    dropdown.style.display = aperto ? "none" : "block";
+}
+
 document.addEventListener("click", () => {
     const menu = document.getElementById("popup-settings-dropdown");
     if (menu) menu.style.display = "none";
+
+    document.querySelectorAll(".routine-menu-dropdown").forEach(d => d.style.display = "none");
 });
 
 function aggiornaNomeProgramma(id, nuovoNome) {
@@ -2073,9 +2085,21 @@ function renderRoutine(programmaId) {
                 <button class="routine-play" onclick="avviaRoutine(${programmaId}, '${r.id}')">
                     <i class="fa-solid fa-circle-play"></i>
                 </button>
-                <button class="routine-remove" onclick="rimuoviRoutine(${programmaId}, '${r.id}')">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
+                <div class="routine-menu-wrap">
+                    <button class="routine-menu-btn" onclick="toggleRoutineMenu(event, this)">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <div class="routine-menu-dropdown">
+                        <div onclick="modificaRoutine(${programmaId}, '${r.id}')">
+                            <i class="fa-solid fa-pencil"></i>
+                            <span>Modifica</span>
+                        </div>
+                        <div onclick="rimuoviRoutine(${programmaId}, '${r.id}')">
+                            <i class="fa-solid fa-trash"></i>
+                            <span>Elimina</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
         lista.appendChild(li);
@@ -2090,6 +2114,15 @@ function rimuoviRoutine(programmaId, routineId) {
     salvaRoutine(programmaId, routine);
     aggiornaContatoreAllenamenti(programmaId, routine.length);
     renderRoutine(programmaId);
+}
+
+function modificaRoutine(programmaId, routineId) {
+    modificaRoutine_chiudiMenu();
+    apriPopupRoutine(programmaId, routineId);
+}
+
+function modificaRoutine_chiudiMenu() {
+    document.querySelectorAll(".routine-menu-dropdown").forEach(d => d.style.display = "none");
 }
 
 function avviaRoutine(programmaId, routineId) {
@@ -2140,10 +2173,29 @@ function avviaRoutine(programmaId, routineId) {
 
 let routineEsTemporanei = [];
 let routineProgrammaIdCorrente = null;
+let routineIdInModifica = null;
 
-function apriPopupRoutine(programmaId) {
+function apriPopupRoutine(programmaId, routineId = null) {
     routineProgrammaIdCorrente = programmaId;
+    routineIdInModifica = routineId;
     routineEsTemporanei = [];
+
+    let titoloIniziale = "";
+    let noteIniziali = "";
+
+    if (routineId) {
+        const routine = caricaRoutine(programmaId);
+        const r = routine.find(x => x.id === routineId);
+        if (r) {
+            titoloIniziale = r.titolo || "";
+            noteIniziali = r.note || "";
+            routineEsTemporanei = r.esercizi.map(es => ({
+                nome: es.nome,
+                note: es.note || "",
+                sets: es.sets.map(s => ({ kg: s.kg, reps: s.reps }))
+            }));
+        }
+    }
 
     let overlay = document.getElementById("popup-routine");
     if (!overlay) {
@@ -2158,12 +2210,12 @@ function apriPopupRoutine(programmaId) {
                 <button class="btn-popup-icon" onclick="chiudiPopupRoutine()">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
-                <h3>Crea Routine</h3>
+                <h3>${routineId ? "Modifica Routine" : "Crea Routine"}</h3>
                 <button id="btn-salva-routine" onclick="salvaNuovaRoutine()">Salva</button>
             </div>
             <div id="popup-routine-body">
-                <input type="text" id="input-routine-titolo" placeholder="Titolo della routine...">
-                <input type="text" id="input-routine-note" placeholder="Note...">
+                <input type="text" id="input-routine-titolo" placeholder="Titolo della routine..." value="${titoloIniziale}">
+                <input type="text" id="input-routine-note" placeholder="Note..." value="${noteIniziali}">
                 <ul id="routine-list-es"></ul>
                 <button id="btn-aggiungi-es-routine" onclick="toggleComboEsRoutine()">Aggiungi esercizi</button>
                 <div id="comboEsRoutine" style="display:none;"></div>
@@ -2172,6 +2224,9 @@ function apriPopupRoutine(programmaId) {
     `;
 
     overlay.style.display = "flex";
+
+    renderRoutineListEs();
+    aggiornaStatoBtnSalvaRoutine();
 }
 
 function chiudiPopupRoutine() {
@@ -2179,6 +2234,7 @@ function chiudiPopupRoutine() {
     if (overlay) overlay.style.display = "none";
     routineEsTemporanei = [];
     routineProgrammaIdCorrente = null;
+    routineIdInModifica = null;
 }
 
 let show_combo_es_routine = false;
@@ -2464,8 +2520,7 @@ function salvaNuovaRoutine() {
     const titolo = document.getElementById("input-routine-titolo").value.trim();
     const noteRoutine = document.getElementById("input-routine-note").value.trim();
 
-    const nuovaRoutine = {
-        id: Date.now().toString(),
+    const datiRoutine = {
         titolo,
         note: noteRoutine,
         esercizi: routineEsTemporanei.map(es => ({
@@ -2476,7 +2531,16 @@ function salvaNuovaRoutine() {
     };
 
     const routine = caricaRoutine(routineProgrammaIdCorrente);
-    routine.push(nuovaRoutine);
+
+    if (routineIdInModifica) {
+        const index = routine.findIndex(r => r.id === routineIdInModifica);
+        if (index !== -1) {
+            routine[index] = { id: routineIdInModifica, ...datiRoutine };
+        }
+    } else {
+        routine.push({ id: Date.now().toString(), ...datiRoutine });
+    }
+
     salvaRoutine(routineProgrammaIdCorrente, routine);
     aggiornaContatoreAllenamenti(routineProgrammaIdCorrente, routine.length);
 

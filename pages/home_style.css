@@ -1177,6 +1177,68 @@ button {
     transform: scale(1.15);
 }
 
+.routine-menu-wrap {
+    position: relative;
+}
+
+.routine-menu-btn {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.routine-menu-btn:hover {
+    background-color: #aaaaaa33;
+}
+
+.routine-menu-btn:active {
+    transform: scale(0.95);
+}
+
+.routine-menu-dropdown {
+    display: none;
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.routine-menu-dropdown div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    font-size: 0.85rem;
+    color: #333;
+    cursor: pointer;
+}
+
+.routine-menu-dropdown div:hover {
+    background-color: #f5f5f5;
+}
+
+.routine-menu-dropdown div:last-child {
+    color: #e53935;
+}
+
+.routine-menu-dropdown div:last-child:hover {
+    background-color: #fdecea;
+}
+
 /* POPUP CREA ROUTINE */
 #popup-routine {
     display: none;
@@ -2864,6 +2926,35 @@ body.dark-mode #comboEsRoutine {
     background-color: #2a2a2a;
     border-color: #fff;
     color: #fff;
+}
+
+body.dark-mode .routine-menu-btn {
+    color: #ccc;
+}
+
+body.dark-mode .routine-menu-btn:hover {
+    background-color: #ffffff18;
+}
+
+body.dark-mode .routine-menu-dropdown {
+    background: #2a2a2a;
+    border-color: #444;
+}
+
+body.dark-mode .routine-menu-dropdown div {
+    color: #fff;
+}
+
+body.dark-mode .routine-menu-dropdown div:hover {
+    background-color: #383838;
+}
+
+body.dark-mode .routine-menu-dropdown div:last-child {
+    color: #ef9f9f;
+}
+
+body.dark-mode .routine-menu-dropdown div:last-child:hover {
+    background-color: #3a2a2a;
 }
 
 body.dark-mode #info-workouts-container h3,
