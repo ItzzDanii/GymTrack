@@ -875,23 +875,24 @@ function resetInfo() {
 }
 
 function endWorkout() {
-    const totaleSet = document.querySelectorAll(".es-set-row").length;
+    const tutteLeRighe = document.querySelectorAll(".es-set-row");
+    const righeNormali = Array.from(tutteLeRighe).filter(r => r.dataset.tipo !== "R");
 
-    if (totaleSet === 0) {
+    if (tutteLeRighe.length === 0) {
         popupApertoWorkout = true;
         mostraPopupNessunEsercizio();
         return;
     }
 
-    const totaleCompletati = document.querySelectorAll(".es-set-row.es-set-done").length;
+    const normaliCompletati = righeNormali.filter(r => r.classList.contains("es-set-done")).length;
 
-    if (totaleCompletati === 0) {
+    if (normaliCompletati === 0) {
         popupApertoWorkout = true;
         mostraPopupNessunSetCompletato();
         return;
     }
 
-    if (totaleCompletati < totaleSet) {
+    if (normaliCompletati < righeNormali.length) {
         popupApertoWorkout = true;
         mostraPopupTermina();
         return;
@@ -984,10 +985,11 @@ function eliminaAllenamento() {
 function mostraPopupTermina() {
     popupApertoWorkout = true;
     const esIncompleti = [];
+
     document.querySelectorAll(".es-item").forEach(item => {
         const nome = item.querySelector(".es-nome").textContent;
-        const righe = item.querySelectorAll(".es-set-row");
-        const completate = item.querySelectorAll(".es-set-row.es-set-done");
+        const righe = Array.from(item.querySelectorAll(".es-set-row")).filter(r => r.dataset.tipo !== "R");
+        const completate = righe.filter(r => r.classList.contains("es-set-done"));
         if (completate.length < righe.length) {
             esIncompleti.push(`• ${nome} (${completate.length}/${righe.length} set)`);
         }
@@ -1173,24 +1175,23 @@ function startWorkout() {
 let show_combo_es = false;
 
 function calcolaMassimale(kg, reps) {
-    if (reps === 1) return kg;
-    return Math.round(kg * (1 + reps / 30));
+    return kg;
 }
 
 function controllaMassimale(nomeEsercizio, kg, reps) {
-    if (kg <= 0 || reps <= 0) return;
+    const kgNum = parseFloat(kg);
+    if (!kgNum || kgNum <= 0) return;
 
     const emailSalvata = sessionStorage.getItem("email") || "";
     const chiaveMassimali = "massimali_" + emailSalvata;
     const massimali = JSON.parse(localStorage.getItem(chiaveMassimali) || "{}");
 
-    const nuovoMax = calcolaMassimale(kg, reps);
-    const vecchioMax = massimali[nomeEsercizio] || 0;
+    const vecchioMax = parseFloat(massimali[nomeEsercizio]) || 0;
 
-    if (nuovoMax > vecchioMax) {
-        massimali[nomeEsercizio] = nuovoMax;
+    if (kgNum > vecchioMax) {
+        massimali[nomeEsercizio] = kgNum;
         localStorage.setItem(chiaveMassimali, JSON.stringify(massimali));
-        mostraNotificaMassimale(nomeEsercizio, nuovoMax, vecchioMax);
+        mostraNotificaMassimale(nomeEsercizio, kgNum, vecchioMax);
         aggiornaObiettivoRecord(nomeEsercizio);
     }
 }
@@ -1204,8 +1205,8 @@ function mostraNotificaMassimale(nome, nuovo, vecchio) {
     }
 
     const testo = vecchio === 0
-        ? `Primo massimale su ${nome}: ${nuovo}kg!`
-        : `Nuovo massimale su ${nome}: ${nuovo}kg (prima: ${vecchio}kg)!`;
+        ? `Nuovo record su ${nome}: ${nuovo}kg!`
+        : `Nuovo record su ${nome}: ${nuovo}kg (prima: ${vecchio}kg)!`;
 
     notifica.innerHTML = `
         <i class="fa-solid fa-trophy"></i>
@@ -1439,12 +1440,16 @@ function selezionaTipoSet(tipo) {
     aggiornaBadgeSetNum(setRigaCorrente);
     sincronizzaTipoSet(setRigaCorrente, nuovoTipo);
 
+    const lista = setRigaCorrente.closest(".es-set-list");
+    if (lista) rinumerizzaSet(lista);
+
     chiudiPopupTipoSet();
 }
 
 function aggiornaBadgeSetNum(riga) {
     const numEl = riga.querySelector(".es-set-num");
-    const tipo = riga.dataset.tipo;
+    const tipo = riga.dataset.tipo || "";
+    const num = riga.dataset.num || "";
 
     numEl.className = "es-set-num";
 
@@ -1453,21 +1458,24 @@ function aggiornaBadgeSetNum(riga) {
         numEl.textContent = tipo;
         numEl.title = TIPI_SET[tipo].label;
     } else {
-        numEl.textContent = riga.dataset.num || "";
+        numEl.textContent = num;
         numEl.removeAttribute("title");
     }
 }
 
 function sincronizzaTipoSet(riga, tipo) {
     const esItem = riga.closest(".es-item");
-    if (!esItem || !esItem.closest("#routine-list-es")) return;
+    if (!esItem) return;
+
+    const inRoutine = !!esItem.closest("#routine-list-es");
+    if (!inRoutine) return;
 
     const lista = riga.closest(".es-set-list");
     const nomeEs = esItem.querySelector(".es-nome").textContent;
     const indexEs = routineEsTemporanei.findIndex(e => e.nome === nomeEs);
-    const indexSet = Array.from(lista.children).indexOf(riga);
+    const indexSet = Array.from(lista.querySelectorAll(".es-set-row")).indexOf(riga);
 
-    if (indexEs !== -1 && routineEsTemporanei[indexEs].sets[indexSet]) {
+    if (indexEs !== -1 && routineEsTemporanei[indexEs].sets[indexSet] !== undefined) {
         routineEsTemporanei[indexEs].sets[indexSet].tipo = tipo;
     }
 }
@@ -1507,10 +1515,19 @@ function rimuoviSet(btn) {
 }
 
 function rinumerizzaSet(lista) {
-    lista.querySelectorAll(".es-set-row").forEach((riga, i) => {
-        riga.dataset.num = i + 1;
-        if (!riga.dataset.tipo) {
-            riga.querySelector(".es-set-num").textContent = i + 1;
+    let contatore = 1;
+    lista.querySelectorAll(".es-set-row").forEach((riga) => {
+        const tipo = riga.dataset.tipo || "";
+        const numEl = riga.querySelector(".es-set-num");
+
+        if (tipo === "R") {
+            riga.dataset.num = "R";
+        } else {
+            riga.dataset.num = contatore;
+            if (!tipo) {
+                numEl.textContent = contatore;
+            }
+            contatore++;
         }
     });
 }
@@ -1534,7 +1551,11 @@ function toggleEs(header) {
 
 function aggiungiSet(btn) {
     const lista = btn.previousElementSibling;
-    const n = lista.querySelectorAll(".es-set-row").length + 1;
+
+    const setNormali = Array.from(lista.querySelectorAll(".es-set-row"))
+        .filter(r => r.dataset.tipo !== "R").length;
+    const n = setNormali + 1;
+
     const li = document.createElement("li");
     li.className = "es-set-row";
     li.dataset.tipo = "";
@@ -1558,6 +1579,7 @@ function aggiungiSet(btn) {
     });
     aggiornaSummary(esItem);
 }
+
 function aggiornaSummary(li) {
     const righe = li.querySelectorAll(".es-set-row");
     const summary = li.querySelector(".es-summary");
@@ -1565,7 +1587,6 @@ function aggiornaSummary(li) {
     if (li.dataset.expanded === "true") return;
 
     const nota = li.querySelector(".es-note").value.trim();
-
     let html = "";
 
     if (nota) {
@@ -1575,10 +1596,18 @@ function aggiornaSummary(li) {
     righe.forEach((riga, i) => {
         const kg = riga.querySelector(".es-set-kg").value.trim();
         const reps = riga.querySelector(".es-set-reps").value.trim();
-        const completato = riga.classList.contains("es-set-done");
+        const tipo = riga.dataset.tipo || "";
+        const num = riga.dataset.num || (i + 1);
+
+        let badgeNum = "";
+        if (tipo && TIPI_SET[tipo]) {
+            const info = TIPI_SET[tipo];
+            badgeNum = `<span class="es-summary-tipo-badge tipo-${tipo.toLowerCase()}">${tipo}</span>`;
+        } else {
+            badgeNum = `<span class="es-summary-num">${num}</span>`;
+        }
 
         let contenuto = "";
-
         if (kg && reps) {
             contenuto = `
                 <span class="es-summary-kg">${kg}kg</span>
@@ -1595,7 +1624,7 @@ function aggiornaSummary(li) {
 
         html += `
             <div class="es-summary-row">
-                <span class="es-summary-num">${i + 1}</span>
+                ${badgeNum}
                 ${contenuto}
             </div>
         `;
@@ -1618,22 +1647,28 @@ function calcolaVolumeTotale() {
 }
 
 function aggiornaSetsCompletati() {
-    const totale = document.querySelectorAll(".es-set-row.es-set-done").length;
-    const totaleSet = document.querySelectorAll(".es-set-row").length;
+    const tutteLeRighe = document.querySelectorAll(".es-set-row");
+    const righeNormali = Array.from(tutteLeRighe).filter(r => r.dataset.tipo !== "R");
+    const tutteCompletate = Array.from(tutteLeRighe).filter(r => r.classList.contains("es-set-done"));
+
     const setEl = document.getElementById("set-value");
-    if (setEl) setEl.innerText = totale;
+    if (setEl) setEl.innerText = tutteCompletate.length;
 
     const btnEnd = document.getElementById("btnEnd");
     if (!btnEnd) return;
 
+    const totaleSet = tutteLeRighe.length;
+    const normaliCompletati = righeNormali.filter(r => r.classList.contains("es-set-done")).length;
+    const totaleNormali = righeNormali.length;
+
     if (totaleSet === 0) {
         btnEnd.style.backgroundColor = "rgba(0, 94, 255, 0.603)";
         btnEnd.style.opacity = "1";
-    } else if (totale === totaleSet) {
+    } else if (totaleNormali > 0 && normaliCompletati === totaleNormali) {
         btnEnd.style.backgroundColor = "#36eb09";
         btnEnd.style.color = "#fff";
         btnEnd.style.opacity = "1";
-    } else if (totale > 0) {
+    } else if (tutteCompletate.length > 0) {
         btnEnd.style.backgroundColor = "rgba(0, 94, 255, 0.603)";
         btnEnd.style.color = "#fff";
         btnEnd.style.opacity = "0.5";
@@ -2341,7 +2376,9 @@ function rimuoviRoutine(programmaId, routineId) {
     routine = routine.filter(r => r.id !== routineId);
     salvaRoutine(programmaId, routine);
     aggiornaContatoreAllenamenti(programmaId, routine.length);
+
     renderRoutine(programmaId);
+    renderProgrammi();
 }
 
 function modificaRoutine(programmaId, routineId) {
@@ -2389,6 +2426,7 @@ function avviaRoutine(programmaId, routineId) {
                 if (righeAggiornate[i]) {
                     righeAggiornate[i].querySelector(".es-set-kg").value = s.kg || "";
                     righeAggiornate[i].querySelector(".es-set-reps").value = s.reps || "";
+
                     if (s.tipo) {
                         righeAggiornate[i].dataset.tipo = s.tipo;
                         aggiornaBadgeSetNum(righeAggiornate[i]);
@@ -2513,9 +2551,9 @@ function aggiungiEsRoutineTemp(nome) {
         nome,
         note: "",
         sets: [
-            { kg: "", reps: "" },
-            { kg: "", reps: "" },
-            { kg: "", reps: "" }
+            { kg: "", reps: "", tipo: "" },
+            { kg: "", reps: "", tipo: "" },
+            { kg: "", reps: "", tipo: "" }
         ]
     });
 
@@ -2631,13 +2669,17 @@ function creaRigaSetRoutine(n, set) {
 
 function aggiungiSetRoutine(btn, indexEs) {
     const lista = btn.previousElementSibling;
-    const n = lista.querySelectorAll(".es-set-row").length;
+
+    const setNormali = Array.from(lista.querySelectorAll(".es-set-row"))
+        .filter(r => r.dataset.tipo !== "R").length;
+    const n = setNormali + 1;
+
     const li = document.createElement("li");
     li.className = "es-set-row";
     li.dataset.tipo = "";
-    li.dataset.num = n + 1;
+    li.dataset.num = n;
     li.innerHTML = `
-        <button class="es-set-num" onclick="apriPopupTipoSet(this)">${n + 1}</button>
+        <button class="es-set-num" onclick="apriPopupTipoSet(this)">${n}</button>
         <input type="number" class="es-set-kg" placeholder="-" min="0">
         <input type="number" class="es-set-reps" placeholder="-" min="0">
         <button class="es-set-remove" onclick="rimuoviSetRoutine(this)"><i class="fa-solid fa-trash"></i></button>
@@ -2647,7 +2689,6 @@ function aggiungiSetRoutine(btn, indexEs) {
     routineEsTemporanei[indexEs].sets.push({ kg: "", reps: "", tipo: "" });
 
     const esItem = btn.closest(".es-item");
-
     li.querySelector(".es-set-kg").addEventListener("input", (e) => {
         const idx = Array.from(lista.children).indexOf(li);
         routineEsTemporanei[indexEs].sets[idx].kg = e.target.value;
@@ -2711,7 +2752,6 @@ function aggiornaSummaryRoutine(li) {
     if (li.dataset.expanded === "true") return;
 
     const nota = li.querySelector(".es-note").value.trim();
-
     let html = "";
 
     if (nota) {
@@ -2721,9 +2761,17 @@ function aggiornaSummaryRoutine(li) {
     righe.forEach((riga, i) => {
         const kg = riga.querySelector(".es-set-kg").value.trim();
         const reps = riga.querySelector(".es-set-reps").value.trim();
+        const tipo = riga.dataset.tipo || "";
+        const num = riga.dataset.num || (i + 1);
+
+        let badgeNum = "";
+        if (tipo && TIPI_SET[tipo]) {
+            badgeNum = `<span class="es-summary-tipo-badge tipo-${tipo.toLowerCase()}">${tipo}</span>`;
+        } else {
+            badgeNum = `<span class="es-summary-num">${num}</span>`;
+        }
 
         let contenuto = "";
-
         if (kg && reps) {
             contenuto = `
                 <span class="es-summary-kg">${kg}kg</span>
@@ -2740,7 +2788,7 @@ function aggiornaSummaryRoutine(li) {
 
         html += `
             <div class="es-summary-row">
-                <span class="es-summary-num">${i + 1}</span>
+                ${badgeNum}
                 ${contenuto}
             </div>
         `;
@@ -2774,7 +2822,11 @@ function salvaNuovaRoutine() {
         esercizi: routineEsTemporanei.map(es => ({
             nome: es.nome,
             note: es.note,
-            sets: es.sets.map(s => ({ kg: s.kg, reps: s.reps }))
+            sets: es.sets.map(s => ({
+                kg: s.kg,
+                reps: s.reps,
+                tipo: s.tipo || ""
+            }))
         }))
     };
 
@@ -2792,8 +2844,11 @@ function salvaNuovaRoutine() {
     salvaRoutine(routineProgrammaIdCorrente, routine);
     aggiornaContatoreAllenamenti(routineProgrammaIdCorrente, routine.length);
 
+    const programmaId = routineProgrammaIdCorrente;
     chiudiPopupRoutine();
-    renderRoutine(routineProgrammaIdCorrente);
+
+    renderRoutine(programmaId);
+    renderProgrammi();
 }
 
 // DEBUG

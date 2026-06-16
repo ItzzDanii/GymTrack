@@ -1992,6 +1992,25 @@ button {
     background-color: #ffcdd2;
 }
 
+.es-summary-tipo-badge {
+    font-size: 0.8rem;
+    font-weight: bold;
+    min-width: 16px;
+    text-align: center;
+}
+
+.es-summary-tipo-badge.tipo-r  { color: #ffc400; }
+.es-summary-tipo-badge.tipo-f  { color: #ff0000; }
+.es-summary-tipo-badge.tipo-s  { color: #1caa00c9; }
+.es-summary-tipo-badge.tipo-d  { color: #5d12b3d5; }
+.es-summary-tipo-badge.tipo-ds { color: #0593d4; }
+.es-summary-tipo-badge.tipo-n  { color: #ffaf04; }
+.es-summary-tipo-badge.tipo-rp { color: #0dbd19a4; }
+.es-summary-tipo-badge.tipo-mr { color: #ff7300; }
+.es-summary-tipo-badge.tipo-fd { color: #ffc400; }
+.es-summary-tipo-badge.tipo-t  { color: #1000a5; }
+.es-summary-tipo-badge.tipo-bo { color: #009669; }
+
 .es-set-reps {
     color: #858484;
     margin-left: 10px;
