@@ -370,6 +370,17 @@ function creaProgramma() {
 function rimuoviProgramma(id) {
     if (!confirm("Sei sicuro di voler eliminare questo programma?")) return;
 
+    const emailSalvata = sessionStorage.getItem("email") || "default";
+
+    const routine = caricaRoutine(id);
+    routine.forEach(r => {
+        localStorage.removeItem(`ultima_esecuzione_routine_${emailSalvata}_${r.id}`);
+    });
+
+    localStorage.removeItem(getRoutineKey(id));
+
+    localStorage.removeItem(`esecuzioni_programma_${emailSalvata}_${id}`);
+
     programmi = programmi.filter(p => p.id !== id);
 
     programmaId = programmi.length > 0
@@ -378,6 +389,7 @@ function rimuoviProgramma(id) {
 
     salvaProgrammiSuLocalStorage();
     renderProgrammi();
+    renderSuggeriti();
 }
 
 function renderProgrammi() {
@@ -1735,6 +1747,7 @@ function muoviWorkoutSelezionato() {
 
         divAllentiOra.style.display = "block";
         divLibrary.style.display = "none";
+        renderSuggeriti();
     }
     else if (voce_workout_selezionata == "Biblioteca") {
         btnStart.style.marginTop = "35%";
@@ -2372,6 +2385,10 @@ function renderRoutine(programmaId) {
 function rimuoviRoutine(programmaId, routineId) {
     if (!confirm("Sei sicuro di voler eliminare questa routine?")) return;
 
+    const emailSalvata = sessionStorage.getItem("email") || "default";
+
+    localStorage.removeItem(`ultima_esecuzione_routine_${emailSalvata}_${routineId}`);
+
     let routine = caricaRoutine(programmaId);
     routine = routine.filter(r => r.id !== routineId);
     salvaRoutine(programmaId, routine);
@@ -2379,6 +2396,7 @@ function rimuoviRoutine(programmaId, routineId) {
 
     renderRoutine(programmaId);
     renderProgrammi();
+    renderSuggeriti();
 }
 
 function modificaRoutine(programmaId, routineId) {
@@ -2391,6 +2409,18 @@ function modificaRoutine_chiudiMenu() {
 }
 
 function avviaRoutine(programmaId, routineId) {
+    const emailSalvata = sessionStorage.getItem("email") || "default";
+
+    localStorage.setItem(
+        `ultima_esecuzione_routine_${emailSalvata}_${routineId}`,
+        Date.now().toString()
+    );
+
+    const chiaveFreq = `esecuzioni_programma_${emailSalvata}_${programmaId}`;
+    const freq = parseInt(localStorage.getItem(chiaveFreq) || "0");
+    localStorage.setItem(chiaveFreq, freq + 1);
+
+
     const routine = caricaRoutine(programmaId);
     const r = routine.find(x => x.id === routineId);
     if (!r) return;
@@ -2851,6 +2881,89 @@ function salvaNuovaRoutine() {
     renderProgrammi();
 }
 
+function renderSuggeriti() {
+    const lista = document.getElementById("suggested-workouts");
+    const container = document.getElementById("suggested-workouts-container");
+    if (!lista || !container) return;
+
+    const emailSalvata = sessionStorage.getItem("email") || "default";
+
+    let tutteLeRoutine = [];
+
+    programmi.forEach(p => {
+        const routine = caricaRoutine(p.id);
+        routine.forEach(r => {
+            const ultimaEsecuzione = parseInt(
+                localStorage.getItem(`ultima_esecuzione_routine_${emailSalvata}_${r.id}`) || "0"
+            );
+            tutteLeRoutine.push({
+                routine: r,
+                programma: p,
+                ultimaEsecuzione
+            });
+        });
+    });
+
+    const frequenzaProgramma = {};
+    programmi.forEach(p => {
+        const chiave = `esecuzioni_programma_${emailSalvata}_${p.id}`;
+        frequenzaProgramma[p.id] = parseInt(localStorage.getItem(chiave) || "0");
+    });
+
+    tutteLeRoutine.sort((a, b) => {
+        if (b.ultimaEsecuzione !== a.ultimaEsecuzione) {
+            return b.ultimaEsecuzione - a.ultimaEsecuzione;
+        }
+        return (frequenzaProgramma[b.programma.id] || 0) - (frequenzaProgramma[a.programma.id] || 0);
+    });
+
+    lista.innerHTML = "";
+
+    if (tutteLeRoutine.length === 0) {
+        lista.innerHTML = `<li class="suggerito-vuoto">Nessuna routine ancora. Creane una!</li>`;
+        return;
+    }
+
+    tutteLeRoutine.forEach(({ routine: r, programma: p, ultimaEsecuzione }) => {
+        const nomeRoutine = r.titolo && r.titolo.trim() !== "" ? r.titolo : "La mia routine";
+        const nomeProgramma = p.nome || "";
+        const quando = tempoFa(ultimaEsecuzione);
+
+        const iconaHtml = r.immagine
+            ? `<img src="${r.immagine}" class="suggerito-img" alt="${nomeRoutine}">`
+            : `<div class="suggerito-icon-wrap"><i class="fa-solid fa-dumbbell"></i></div>`;
+
+        const tempoHtml = quando
+            ? `<span class="suggerito-tempo"><i class="fa-regular fa-clock"></i> ${quando}</span>`
+            : "";
+
+        const li = document.createElement("li");
+        li.className = "suggerito-item";
+        li.onclick = () => avviaRoutine(p.id, r.id);
+        li.innerHTML = `
+            ${iconaHtml}
+            <span class="suggerito-nome">${nomeRoutine}</span>
+            <span class="suggerito-programma">${nomeProgramma}</span>
+            ${tempoHtml}
+        `;
+        lista.appendChild(li);
+    });
+}
+
+function tempoFa(timestamp) {
+    if (!timestamp || timestamp === 0) return null;
+
+    const diff = Date.now() - parseInt(timestamp);
+    const minuti = Math.floor(diff / 60000);
+    const ore = Math.floor(diff / 3600000);
+    const giorni = Math.floor(diff / 86400000);
+
+    if (diff < 60000) return "Proprio adesso";
+    if (minuti < 60) return `${minuti}m fa`;
+    if (ore < 24) return `${ore}h fa`;
+    return `${giorni}d fa`;
+}
+
 // DEBUG
 function resetWork() {
     let emailSalvata = sessionStorage.getItem("email") || "";
@@ -2872,10 +2985,28 @@ function resetTuttiIDati() {
     localStorage.removeItem("workouts_" + emailSalvata);
     localStorage.removeItem("volume_totale_" + emailSalvata);
     localStorage.removeItem("durata_totale_" + emailSalvata);
+    localStorage.removeItem("storico_workout_" + emailSalvata);
+    localStorage.removeItem("massimali_" + emailSalvata);
     sessionStorage.removeItem("id_workout");
+
+    programmi.forEach(p => {
+        const routine = caricaRoutine(p.id);
+        routine.forEach(r => {
+            localStorage.removeItem(`ultima_esecuzione_routine_${emailSalvata}_${r.id}`);
+        });
+        localStorage.removeItem(getRoutineKey(p.id));
+        localStorage.removeItem(`esecuzioni_programma_${emailSalvata}_${p.id}`);
+    });
+
+    localStorage.removeItem("programmi_" + emailSalvata);
+    localStorage.removeItem("programmaId_max_" + emailSalvata);
+    programmi = [];
+    programmaId = 0;
 
     aggiornaDatiPanoramica();
     loadProfile();
+    renderProgrammi();
+    renderSuggeriti();
 
     console.log("Reset completato per: " + emailSalvata);
 }
@@ -2893,4 +3024,5 @@ window.onload = function () {
     muoviProgressSelezionato();
     muoviWorkoutSelezionato();
     renderFoto();
+    renderSuggeriti();
 };

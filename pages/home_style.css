@@ -338,6 +338,7 @@ button {
     font-weight: bold;
     transition: background-color 0.2s ease;
     margin-bottom: 1%;
+    margin-left: 5%;
 }
 
 #btnAddWorkout:hover {
@@ -345,7 +346,7 @@ button {
 }
 
 #btnAddWorkout .fa-plus {
-    scale: 2.2;
+    scale: 2;
     background-color: #aaaaaa33;
     border-radius: 20px;
     padding: 6px 8px;
@@ -383,6 +384,10 @@ button {
     margin-bottom: 20px;
 }
 
+#popup-nuovo-programma-box input {
+    font-weight: bold;
+}
+
 #popup-programma-input-wrap {
     margin-bottom: 24px;
 }
@@ -413,9 +418,9 @@ button {
 
 #btn-annulla-programma {
     padding: 8px 20px;
-    background-color: #fff;
+    background-color: transparent;
     color: #000;
-    border: 2px solid #aaaaaa;
+    border: 1px solid #aaaaaa;
     border-radius: 10px;
     font-weight: bold;
     font-size: 0.85rem;
@@ -1487,6 +1492,122 @@ button {
     grid-template-columns: 30px 1fr 1fr 36px;
 }
 
+/* ALLENATI ORA - SUGGERITI */
+#suggested-workouts-container h4 {
+    text-align: left;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #222;
+    margin: 0 0 12px 0;
+}
+
+
+#suggested-workouts {
+    list-style: none;
+    padding: 0 0 10px 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+#suggested-workouts::-webkit-scrollbar {
+    display: none;
+}
+
+.suggerito-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 130px;
+    border-radius: 14px;
+    padding: 0 0 8px 0;
+    transition: transform 0.15s ease;
+    overflow: hidden;
+}
+
+.suggerito-item:nth-child(1) {
+    margin-left: 33%;
+}
+
+.suggerito-item:hover {
+    transform: scale(1.03);
+}
+
+.suggerito-item:active {
+    transform: scale(0.97);
+}
+
+.suggerito-img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 14px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.suggerito-icon-wrap {
+    width: 130px;
+    height: 130px;
+    border-radius: 14px;
+    background-color: #aaaaaa22;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    font-size: 2rem;
+    color: #888;
+}
+
+.suggerito-nome {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #111;
+    width: 130px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 6px;
+}
+
+.suggerito-programma {
+    font-size: 0.72rem;
+    color: #999;
+    width: 130px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 6px;
+    margin-top: 2px;
+}
+
+.suggerito-vuoto {
+    font-size: 0.85rem;
+    color: #aaa;
+    font-style: italic;
+    padding: 10px 0;
+    margin-left: 44%;
+}
+
+.suggerito-tempo {
+    font-size: 0.7rem;
+    color: #aaa;
+    padding: 0 6px;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.suggerito-tempo i {
+    font-size: 0.65rem;
+}
+
 /* ALLENAMENTO IN CORSO */
 #workout-container {
     margin-top: 30px;
@@ -1931,47 +2052,58 @@ button {
     color: black;
 }
 
-.tipo-set-r,.es-set-num-tipo.tipo-r {
+.tipo-set-r,
+.es-set-num-tipo.tipo-r {
     color: #ffc400;
 }
 
-.tipo-set-f,.es-set-num-tipo.tipo-f {
+.tipo-set-f,
+.es-set-num-tipo.tipo-f {
     color: #ff0000;
 }
 
-.tipo-set-s,.es-set-num-tipo.tipo-s {
+.tipo-set-s,
+.es-set-num-tipo.tipo-s {
     color: #1caa00c9;
 }
 
-.tipo-set-d,.es-set-num-tipo.tipo-d {
+.tipo-set-d,
+.es-set-num-tipo.tipo-d {
     color: #5d12b3d5;
 }
 
-.tipo-set-ds,.es-set-num-tipo.tipo-ds {
+.tipo-set-ds,
+.es-set-num-tipo.tipo-ds {
     color: #0593d4;
 }
 
-.tipo-set-n,.es-set-num-tipo.tipo-n {
+.tipo-set-n,
+.es-set-num-tipo.tipo-n {
     color: #ffaf04;
 }
 
-.tipo-set-rp,.es-set-num-tipo.tipo-rp {
+.tipo-set-rp,
+.es-set-num-tipo.tipo-rp {
     color: #0dbd19a4;
 }
 
-.tipo-set-mr,.es-set-num-tipo.tipo-mr {
+.tipo-set-mr,
+.es-set-num-tipo.tipo-mr {
     color: #ff7300;
 }
 
-.tipo-set-fd,.es-set-num-tipo.tipo-fd {
+.tipo-set-fd,
+.es-set-num-tipo.tipo-fd {
     color: #ffc400;
 }
 
-.tipo-set-t,.es-set-num-tipo.tipo-t {
+.tipo-set-t,
+.es-set-num-tipo.tipo-t {
     color: #1000a5;
 }
 
-.tipo-set-bo,.es-set-num-tipo.tipo-bo {
+.tipo-set-bo,
+.es-set-num-tipo.tipo-bo {
     color: #009669;
 }
 
@@ -1999,17 +2131,49 @@ button {
     text-align: center;
 }
 
-.es-summary-tipo-badge.tipo-r  { color: #ffc400; }
-.es-summary-tipo-badge.tipo-f  { color: #ff0000; }
-.es-summary-tipo-badge.tipo-s  { color: #1caa00c9; }
-.es-summary-tipo-badge.tipo-d  { color: #5d12b3d5; }
-.es-summary-tipo-badge.tipo-ds { color: #0593d4; }
-.es-summary-tipo-badge.tipo-n  { color: #ffaf04; }
-.es-summary-tipo-badge.tipo-rp { color: #0dbd19a4; }
-.es-summary-tipo-badge.tipo-mr { color: #ff7300; }
-.es-summary-tipo-badge.tipo-fd { color: #ffc400; }
-.es-summary-tipo-badge.tipo-t  { color: #1000a5; }
-.es-summary-tipo-badge.tipo-bo { color: #009669; }
+.es-summary-tipo-badge.tipo-r {
+    color: #ffc400;
+}
+
+.es-summary-tipo-badge.tipo-f {
+    color: #ff0000;
+}
+
+.es-summary-tipo-badge.tipo-s {
+    color: #1caa00c9;
+}
+
+.es-summary-tipo-badge.tipo-d {
+    color: #5d12b3d5;
+}
+
+.es-summary-tipo-badge.tipo-ds {
+    color: #0593d4;
+}
+
+.es-summary-tipo-badge.tipo-n {
+    color: #ffaf04;
+}
+
+.es-summary-tipo-badge.tipo-rp {
+    color: #0dbd19a4;
+}
+
+.es-summary-tipo-badge.tipo-mr {
+    color: #ff7300;
+}
+
+.es-summary-tipo-badge.tipo-fd {
+    color: #ffc400;
+}
+
+.es-summary-tipo-badge.tipo-t {
+    color: #1000a5;
+}
+
+.es-summary-tipo-badge.tipo-bo {
+    color: #009669;
+}
 
 .es-set-reps {
     color: #858484;
@@ -2085,6 +2249,7 @@ button {
     width: 100%;
     font-size: 0.78rem;
     cursor: pointer;
+    font-weight: bold;
     transition: border-color 0.2s, color 0.2s;
 }
 
@@ -2953,8 +3118,6 @@ button {
     background: #888;
 }
 
-
-
 /* PROFILO */
 #profile-container {
     display: none;
@@ -3078,28 +3241,24 @@ button {
     margin-bottom: 50px;
 }
 
-/* DARK MODE */
+/* ==================== DARK MODE ==================== */
+
 body.dark-mode {
-    background-color: #222;
-    color: #fff;
+    background-color: #1a1a1a;
+    color: #f0f0f0;
 }
 
+/* TITOLI E TESTI GENERALI */
 body.dark-mode h1 {
     color: #fff;
     text-shadow: 2px 1px #555;
 }
 
-body.dark-mode .shortcut-column-bar button {
-    background-color: #222;
-    color: #fff;
-    border-color: #fff;
-    box-shadow: 4px 4px 0px #fff;
+body.dark-mode p {
+    color: #ccc;
 }
 
-body.dark-mode .shortcut-column-bar button:active {
-    box-shadow: 2px 2px 0px #fff;
-}
-
+/* NAVBAR LATERALE */
 body.dark-mode #nav-bar {
     background-color: #f4f4f4;
     border-right: 5px solid #333;
@@ -3114,11 +3273,10 @@ body.dark-mode #show-username {
     color: #333;
 }
 
-body.dark-mode #nav-bar button,
-body.dark-mode #btnChangePic {
+body.dark-mode #nav-bar button {
     background-color: #f4f4f4;
     color: #333;
-    border: 3px solid #000000;
+    border: 3px solid #000;
     box-shadow: 2px 2px #333;
 }
 
@@ -3130,8 +3288,9 @@ body.dark-mode #change-theme {
     color: #333;
 }
 
+/* LOGOUT */
 body.dark-mode #logout-button {
-    background-color: #333;
+    background-color: #1a1a1a;
     color: #fff;
     border-color: #fff;
 }
@@ -3141,36 +3300,269 @@ body.dark-mode #logout-button:hover {
     color: #333;
 }
 
-body.dark-mode #btnStart {
-    color: #000;
-    background-color: #fff;
+/* HOME - SHORTCUT */
+body.dark-mode .shortcut-column-bar button {
+    background-color: #1a1a1a;
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 4px 4px 0px #fff;
 }
 
-body.dark-mode #btn-aggiungi-routine {
+body.dark-mode .shortcut-column-bar button:active {
+    box-shadow: 2px 2px 0px #fff;
+}
+
+/* SEPARATORI DINAMICI */
+body.dark-mode #separa-info-workout-statico,
+body.dark-mode #separa-info-progress-statico {
+    background-color: #494949;
+}
+
+body.dark-mode #separa-info-workout-dinamico,
+body.dark-mode #separa-info-progress-dinamico {
+    border: 2px solid #fff;
+}
+
+/* NAV WORKOUT E PROGRESS */
+body.dark-mode #workout-nav-bar h3,
+body.dark-mode #progress-nav-bar h2 {
     color: #fff;
 }
 
-body.dark-mode #popup-routine-box {
+/* ALLENATI ORA */
+body.dark-mode #btn-new-workout,
+body.dark-mode #btn-add-workout2 {
+    background-color: #2a2a2a;
+    color: #fff;
+}
+
+body.dark-mode #btn-new-workout h5,
+body.dark-mode #btn-add-workout2 h5 {
+    color: #aaa;
+}
+
+body.dark-mode #btnStart {
+    background-color: #fff;
+    color: #000;
+}
+
+/* BIBLIOTECA */
+body.dark-mode #btnAddWorkout {
+    color: #fff;
+}
+
+body.dark-mode #btnAddWorkout .fa-plus {
+    background-color: #ffffff18;
+}
+
+body.dark-mode #btnAddWorkout:hover {
+    background-color: #ffffff12;
+}
+
+/* PROGRAMMI LISTA */
+body.dark-mode .programma-item:hover {
+    background-color: #ffffff12;
+}
+
+body.dark-mode .programma-nome {
+    color: #fff;
+}
+
+body.dark-mode .programma-allenamenti {
+    color: #666;
+}
+
+body.dark-mode .programma-icon {
+    color: #fff;
+    background-color: #ffffff18;
+}
+
+body.dark-mode .programma-icona-wrap {
+    background-color: #ffffff18;
+}
+
+/* POPUP NUOVO PROGRAMMA */
+body.dark-mode #popup-nuovo-programma-box {
+    background-color: #1e1e1e;
+}
+
+body.dark-mode #popup-nuovo-programma-box h3 {
+    color: #fff;
+}
+
+body.dark-mode #input-nome-programma {
+    color: #fff;
+}
+
+body.dark-mode #input-programma-linea {
+    border-top-color: #444;
+}
+
+body.dark-mode #btn-annulla-programma {
+    color: #fff;
+    border-color: #555;
+}
+
+body.dark-mode #btn-annulla-programma:hover {
+    background-color: #ffffff12;
+}
+
+body.dark-mode #btn-crea-programma {
+    background-color: #fff;
+    color: #000;
+}
+
+/* POPUP DETTAGLIO PROGRAMMA */
+body.dark-mode #popup-dettaglio-box {
     background: #1e1e1e;
 }
 
-body.dark-mode #popup-routine-header h3,
-body.dark-mode #input-routine-titolo {
+body.dark-mode #popup-dettaglio-header .btn-popup-icon {
+    color: #fff;
+    background-color: #ffffff12;
+}
+
+body.dark-mode #popup-dettaglio-header .btn-popup-icon:hover {
+    background-color: #ffffff22;
+}
+
+body.dark-mode #visualizza-dettaglio-nome {
     color: #fff;
 }
 
-body.dark-mode #input-routine-titolo,
-body.dark-mode #input-routine-note {
+body.dark-mode #visualizza-dettaglio-desc {
+    color: #aaa;
+}
+
+body.dark-mode .trigger-vedi-piu span,
+body.dark-mode .trigger-vedi-piu i,
+body.dark-mode .trigger-vedi-meno span,
+body.dark-mode .trigger-vedi-meno i {
+    color: #666;
+}
+
+body.dark-mode #div-dettagli-espandibili {
+    background-color: #2a2a2a;
+    border-color: #333;
+}
+
+body.dark-mode .titolo-info-espanso {
+    color: #aaa;
+}
+
+body.dark-mode .titolo-info-espanso i {
+    color: #ccc;
+}
+
+body.dark-mode .valore-info-espanso {
+    color: #fff;
+}
+
+body.dark-mode .hr-espansione {
+    border-top-color: #333;
+}
+
+body.dark-mode .visualizza-icona-top {
+    color: #fff;
+    background-color: #ffffff18;
+}
+
+body.dark-mode #popup-settings-dropdown {
+    background: #2a2a2a;
+    border-color: #444;
+}
+
+body.dark-mode #popup-settings-dropdown div {
+    color: #fff;
+}
+
+body.dark-mode #popup-settings-dropdown div:hover {
+    background-color: #383838;
+}
+
+/* MODIFICA PROGRAMMA */
+body.dark-mode .label-bordo-superiore {
+    color: #aaa;
+}
+
+body.dark-mode #input-dettaglio-nome {
+    color: #fff;
     border-bottom-color: #444;
 }
 
+body.dark-mode #input-dettaglio-nome:focus {
+    border-bottom-color: #fff;
+}
+
+body.dark-mode #input-dettaglio-desc {
+    color: #ccc;
+    border-bottom-color: #333;
+}
+
+body.dark-mode .sezione-titolo-label {
+    color: #aaa;
+}
+
+body.dark-mode .card-opzione {
+    background: #2a2a2a;
+    border-color: #444;
+    color: #fff;
+}
+
+body.dark-mode .card-opzione:hover {
+    background-color: #333;
+    border-color: #666;
+}
+
+body.dark-mode .card-opzione.active {
+    border-color: #fff !important;
+    background-color: #ffffff12 !important;
+}
+
+body.dark-mode .btn-piccolo-numero {
+    background: #2a2a2a;
+    border-color: #444;
+    color: #ccc;
+}
+
+body.dark-mode .btn-piccolo-numero:hover {
+    background-color: #333;
+}
+
+body.dark-mode .btn-piccolo-numero.active {
+    background-color: #fff !important;
+    color: #000 !important;
+}
+
+body.dark-mode .contenitore-salva-sticky {
+    background: #1e1e1e;
+    box-shadow: 0 -10px 15px rgba(0, 0, 0, 0.6);
+}
+
+body.dark-mode .area-foto-programma:hover,
+body.dark-mode .area-foto-routine:hover {
+    background-color: #2a2a2a;
+}
+
+body.dark-mode .divisore-dettaglio {
+    border-top-color: #333;
+}
+
+body.dark-mode .dettaglio-icon-centrata {
+    color: #fff;
+}
+
+/* ROUTINE - LISTA */
 body.dark-mode .routine-item {
     background-color: #2a2a2a;
-    border-color: #444;
 }
 
 body.dark-mode .routine-nome {
     color: #fff;
+}
+
+body.dark-mode .routine-n-esercizi {
+    color: #666;
 }
 
 body.dark-mode .routine-icona-wrap {
@@ -3181,15 +3573,8 @@ body.dark-mode .routine-icon {
     color: #fff;
 }
 
-body.dark-mode .area-foto-programma:hover,
-body.dark-mode .area-foto-routine:hover {
-    background-color: #2a2a2a;
-}
-
-body.dark-mode #comboEsRoutine {
-    background-color: #2a2a2a;
-    border-color: #fff;
-    color: #fff;
+body.dark-mode .routine-play {
+    color: rgb(38, 157, 255);
 }
 
 body.dark-mode .routine-menu-btn {
@@ -3218,47 +3603,76 @@ body.dark-mode .routine-menu-dropdown div:last-child {
 }
 
 body.dark-mode .routine-menu-dropdown div:last-child:hover {
-    background-color: #3a2a2a;
+    background-color: #3a2222;
 }
 
-body.dark-mode .es-set-num:hover {
-    background-color: #ffffff22;
+body.dark-mode #btn-aggiungi-routine {
+    color: #fff;
 }
 
-body.dark-mode #popup-tipo-set-box {
+body.dark-mode #btn-aggiungi-routine:hover {
+    background-color: #ffffff12;
+}
+
+body.dark-mode #btn-aggiungi-routine .fa-plus {
+    background-color: #ffffff18;
+}
+
+/* POPUP CREA/MODIFICA ROUTINE */
+body.dark-mode #popup-routine-box {
     background: #1e1e1e;
 }
 
-body.dark-mode #popup-tipo-set-box h3 {
+body.dark-mode #popup-routine-header h3 {
     color: #fff;
 }
 
-body.dark-mode .tipo-set-btn.active {
-    outline-color: #fff;
+body.dark-mode #popup-routine-header .btn-popup-icon {
+    color: rgb(38, 157, 255);
 }
 
-body.dark-mode .tipo-set-altro {
-    background-color: #333;
+body.dark-mode #input-routine-titolo {
+    color: #fff;
+    border-bottom-color: #444;
+}
+
+body.dark-mode #input-routine-titolo::placeholder {
+    color: #555;
+}
+
+body.dark-mode #input-routine-note {
+    color: #aaa;
+    border-bottom-color: #333;
+}
+
+body.dark-mode #input-routine-note::placeholder {
+    color: #555;
+}
+
+body.dark-mode #comboEsRoutine {
+    background-color: #2a2a2a;
+    border-color: #fff;
     color: #fff;
 }
 
-body.dark-mode .tipo-set-altro:hover {
-    background-color: #444;
+body.dark-mode #btn-aggiungi-es-routine {
+    background-color: #fff;
+    color: #000;
 }
 
-body.dark-mode .tipo-set-elimina {
-    background-color: #3a2222;
-    color: #ef9f9f;
+body.dark-mode .link-aggiungi-foto {
+    color: #fff;
 }
 
-body.dark-mode .tipo-set-elimina:hover {
-    background-color: #4a2a2a;
+body.dark-mode .fa-circle-play {
+    color: #fff;
 }
 
-body.dark-mode #info-workouts-container h3,
-body.dark-mode #info-volume-container h3,
-body.dark-mode #info-duration-container h3 {
-    color: #aaaaaa;
+/* PICKER ESERCIZI */
+body.dark-mode #comboEs {
+    background-color: #2a2a2a;
+    border-color: #fff;
+    color: #fff;
 }
 
 body.dark-mode .es-picker-search {
@@ -3267,10 +3681,18 @@ body.dark-mode .es-picker-search {
     color: #fff;
 }
 
+body.dark-mode .es-picker-search::placeholder {
+    color: #555;
+}
+
 body.dark-mode .filtro-muscolo {
     background-color: #2a2a2a;
     border-color: #444;
     color: #ccc;
+}
+
+body.dark-mode .filtro-muscolo:hover {
+    background-color: #333;
 }
 
 body.dark-mode .filtro-muscolo.active {
@@ -3279,8 +3701,8 @@ body.dark-mode .filtro-muscolo.active {
     border-color: #fff;
 }
 
-body.dark-mode .drag-handle {
-    color: #666;
+body.dark-mode .es-picker-item {
+    color: #fff;
 }
 
 body.dark-mode .es-picker-item:hover {
@@ -3291,8 +3713,13 @@ body.dark-mode .es-picker-item.selezionato {
     background-color: #ffffff18;
 }
 
+body.dark-mode .es-picker-vuoto {
+    color: #555;
+}
+
+/* BOTTONE AGGIUNGI ESERCIZI */
 body.dark-mode #btnAddEs {
-    background-color: #222;
+    background-color: #1a1a1a;
     border-color: #fff;
     color: #fff;
     box-shadow: 3px 3px 0px #fff;
@@ -3300,19 +3727,20 @@ body.dark-mode #btnAddEs {
 
 body.dark-mode #btnAddEs:hover {
     background-color: #fff;
-    color: #222;
+    color: #1a1a1a;
 }
 
-body.dark-mode .es-nome {
-    color: #fff;
+body.dark-mode #btnAddEs:active {
+    box-shadow: 1px 1px 0px #fff;
 }
 
-body.dark-mode .es-set-reps {
-    color: #aaaaaa;
+/* ES-ITEM */
+body.dark-mode .es-item {
+    color: #f0f0f0;
 }
 
 body.dark-mode .es-header:hover {
-    background-color: #333;
+    background-color: #2a2a2a;
 }
 
 body.dark-mode .es-nome {
@@ -3320,34 +3748,69 @@ body.dark-mode .es-nome {
 }
 
 body.dark-mode .es-note {
-    border-bottom-color: #444;
     color: #858484;
+    border-bottom-color: #333;
 }
 
 body.dark-mode .es-table-header {
-    border-bottom-color: #444;
+    color: #666;
+    border-bottom-color: #333;
+}
+
+body.dark-mode .es-set-row:nth-child(odd) {
+    background-color: #ffffff0d;
+}
+
+body.dark-mode .es-set-num {
+    color: #4285f4;
+}
+
+body.dark-mode .es-set-num:hover {
+    background-color: #ffffff22;
 }
 
 body.dark-mode .es-set-kg,
 body.dark-mode .es-set-reps {
-    border-bottom-color: #555;
     color: #fff;
 }
 
-body.dark-mode .es-set-check {
-    background-color: #444;
+body.dark-mode .es-set-kg::placeholder,
+body.dark-mode .es-set-reps::placeholder {
+    color: #444;
 }
 
-body.dark-mode .es-add-set {
+body.dark-mode .es-set-check {
     background-color: #333;
     color: #fff;
 }
 
+body.dark-mode .es-set-row.es-set-done .es-set-check {
+    background-color: #36eb09;
+    color: #000;
+}
+
+body.dark-mode .es-set-list .es-set-done {
+    background-color: #36eb007d;
+}
+
+body.dark-mode .es-set-remove {
+    color: #e53935;
+}
+
+body.dark-mode .es-add-set {
+    background-color: #2a2a2a;
+    color: #fff;
+}
+
 body.dark-mode .es-add-set:hover {
-    border-color: #aaa;
     color: #aaa;
 }
 
+body.dark-mode .drag-handle {
+    color: #555;
+}
+
+/* SUMMARY */
 body.dark-mode .es-summary-kg {
     color: #fff;
 }
@@ -3356,15 +3819,83 @@ body.dark-mode .es-summary-reps {
     color: #666;
 }
 
-body.dark-mode .es-summary-nota {
-    color: #fff;
+body.dark-mode .es-summary-x {
+    color: #555;
 }
 
-body.dark-mode #popup-termina-box {
+body.dark-mode .es-summary-nota {
+    color: #ccc;
+}
+
+/* POPUP TIPO SET */
+body.dark-mode #popup-tipo-set-box {
     background: #1e1e1e;
 }
 
-body.dark-mode #popup-termina-box h3 {
+body.dark-mode #popup-tipo-set-box h3 {
+    color: #fff;
+}
+
+body.dark-mode .tipo-set-btn {
+    border-color: #444;
+}
+
+body.dark-mode .tipo-set-label {
+    color: #ccc;
+}
+
+body.dark-mode .tipo-set-btn.active {
+    outline-color: #fff;
+    background-color: #ffffff12;
+}
+
+body.dark-mode .tipo-set-altro {
+    background-color: #2a2a2a;
+    color: #fff;
+    border-color: #444;
+}
+
+body.dark-mode .tipo-set-altro:hover {
+    background-color: #383838;
+}
+
+body.dark-mode .tipo-set-elimina {
+    background-color: #3a2222;
+    color: #ef9f9f;
+    border-color: #5a3333;
+}
+
+body.dark-mode .tipo-set-elimina:hover {
+    background-color: #4a2a2a;
+}
+
+/* ALLENAMENTO IN CORSO */
+body.dark-mode #btnEnd {
+    background-color: rgba(38, 157, 255, 0.589);
+}
+
+body.dark-mode #info-workout {
+    border-color: #444;
+}
+
+body.dark-mode #info-workout h3 {
+    color: #666;
+}
+
+body.dark-mode #info-workout p {
+    color: #fff;
+}
+
+/* POPUP TERMINA / NESSUN SET / NESSUN ES */
+body.dark-mode #popup-termina-box,
+body.dark-mode #popup-nessun-set-box,
+body.dark-mode #popup-nessun-es-box {
+    background: #1e1e1e;
+}
+
+body.dark-mode #popup-termina-box h3,
+body.dark-mode #popup-nessun-set-box h3,
+body.dark-mode #popup-nessun-es-box h3 {
     color: #fff;
 }
 
@@ -3372,40 +3903,18 @@ body.dark-mode #popup-es-list li {
     color: #aaa;
 }
 
-body.dark-mode #popup-nessun-set-box {
-    background: #1e1e1e;
-}
-
-body.dark-mode #popup-nessun-set-box h3 {
-    color: #fff;
-}
-
-body.dark-mode #popup-nessun-es-box {
-    background: #1e1e1e;
-}
-
-body.dark-mode #popup-nessun-es-box h3 {
-    color: #fff;
-}
-
+body.dark-mode #btn-riprendi,
 body.dark-mode #btn-riprendi-nessun-es {
     color: #fff;
     border-color: #fff;
 }
 
+body.dark-mode #btn-riprendi:hover,
 body.dark-mode #btn-riprendi-nessun-es:hover {
-    background-color: #333;
+    background-color: #2a2a2a;
 }
 
-body.dark-mode #btn-riprendi {
-    color: #fff;
-    border-color: #fff;
-}
-
-body.dark-mode #btn-riprendi:hover {
-    background-color: #333;
-}
-
+/* NOTIFICA MASSIMALE */
 body.dark-mode #notifica-massimale {
     background-color: #f4f4f4;
     color: #333;
@@ -3415,62 +3924,58 @@ body.dark-mode #notifica-massimale .fa-trophy {
     color: #f5a623;
 }
 
-body.dark-mode #separa-info-progress-statico {
-    background-color: #494949;
+/* SUGGERITI */
+body.dark-mode #suggested-workouts-container h4 {
+    color: #fff;
 }
 
-body.dark-mode #separa-info-progress-dinamico {
-    border: 2px solid #fff;
+body.dark-mode .suggerito-icon-wrap {
+    background-color: #ffffff15;
+    color: #666;
 }
 
-body.dark-mode #separa-info-workout-statico {
-    background-color: #494949;
+body.dark-mode .suggerito-nome {
+    color: #fff;
 }
 
-body.dark-mode #separa-info-workout-dinamico {
-    border: 2px solid #fff;
+body.dark-mode .suggerito-programma {
+    color: #666;
 }
 
+body.dark-mode .suggerito-tempo {
+    color: #555;
+}
+
+body.dark-mode .suggerito-vuoto {
+    color: #555;
+}
+
+/* PROGRESSI - PANORAMICA */
+body.dark-mode #info-workouts-container,
+body.dark-mode #info-volume-container,
+body.dark-mode #info-duration-container {
+    border-color: #444;
+}
+
+body.dark-mode #info-workouts-container h3,
+body.dark-mode #info-volume-container h3,
+body.dark-mode #info-duration-container h3 {
+    color: #aaa;
+}
+
+body.dark-mode #info-workouts-container p,
+body.dark-mode #info-volume-container p,
+body.dark-mode #info-duration-container p {
+    color: #fff;
+}
+
+/* OBIETTIVI */
 body.dark-mode #goals h3 {
     color: #aaa;
 }
 
 body.dark-mode #goal-count {
-    color: #666;
-}
-
-body.dark-mode #goal-list li {
-    background-color: #2a2a2a;
-    border-color: #444;
-    color: #fff;
-}
-
-body.dark-mode #goal-list li:hover {
-    background-color: #333;
-}
-
-body.dark-mode #goal-list li button {
-    color: #ef9f9f;
-}
-
-body.dark-mode #goal-list li button:hover {
-    color: #f09595;
-}
-
-body.dark-mode #btnSetGoal {
-    background-color: #222;
-    border-color: #fff;
-    color: #fff;
-    box-shadow: 3px 3px 0px #fff;
-}
-
-body.dark-mode #btnSetGoal:hover {
-    background-color: #fff;
-    color: #222;
-}
-
-body.dark-mode #btnSetGoal:active {
-    box-shadow: 1px 1px 0px #fff;
+    color: #555;
 }
 
 body.dark-mode #goal-list li {
@@ -3490,6 +3995,30 @@ body.dark-mode .goal-valore {
     color: #888;
 }
 
+body.dark-mode .goal-remove {
+    color: #ef9f9f;
+}
+
+body.dark-mode .goal-remove:hover {
+    color: #e53935;
+}
+
+body.dark-mode #btnSetGoal {
+    background-color: #1a1a1a;
+    border-color: #fff;
+    color: #fff;
+    box-shadow: 3px 3px 0px #fff;
+}
+
+body.dark-mode #btnSetGoal:hover {
+    background-color: #fff;
+    color: #1a1a1a;
+}
+
+body.dark-mode #btnSetGoal:active {
+    box-shadow: 1px 1px 0px #fff;
+}
+
 body.dark-mode #comboGoals,
 body.dark-mode #comboValueGoals {
     background-color: #2a2a2a;
@@ -3497,14 +4026,28 @@ body.dark-mode #comboValueGoals {
     color: #fff;
 }
 
-body.dark-mode #misure #n-weight-misure,
-body.dark-mode #misure #n-fat-misure,
-body.dark-mode #misure #n-kcal-misure {
-    color: #aaaaaa;
+/* MISURE */
+body.dark-mode #misure ul li {
+    border-bottom-color: #333;
 }
 
 body.dark-mode #misure ul li:hover {
-    background-color: #333;
+    background-color: #2a2a2a;
+}
+
+body.dark-mode #misure h4 {
+    color: #fff;
+}
+
+body.dark-mode #misure #n-weight-misure,
+body.dark-mode #misure #n-fat-misure,
+body.dark-mode #misure #n-kcal-misure {
+    color: #aaa;
+}
+
+/* FOTO */
+body.dark-mode #foto-header h3 {
+    color: #fff;
 }
 
 body.dark-mode #drag-foto {
@@ -3530,18 +4073,38 @@ body.dark-mode #lightbox-data-display {
 }
 
 body.dark-mode #lightbox-edit-data input[type="date"] {
-    background: #333;
+    background: #2a2a2a;
     color: #fff;
     border-color: #4285f4;
 }
 
+body.dark-mode #btn-close-lightbox {
+    background: #444;
+    color: #fff;
+}
+
+/* PROFILO */
 body.dark-mode #profile-container {
     border-color: #fff;
-    background-color: #333;
+    background-color: #2a2a2a;
 }
 
 body.dark-mode #profile-container #profile-pic {
-    border: 2px solid #aaaaaa98;
+    border: 2px solid #555;
+}
+
+body.dark-mode #profile-container h2 {
+    color: #fff;
+}
+
+body.dark-mode #profile-container label {
+    color: #ccc;
+}
+
+body.dark-mode #profile-container input {
+    color: #fff;
+    background: transparent;
+    border-bottom: 1px solid #444;
 }
 
 body.dark-mode #more-info .value {
