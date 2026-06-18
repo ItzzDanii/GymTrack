@@ -3761,10 +3761,6 @@ body.dark-mode .es-set-row:nth-child(odd) {
     background-color: #ffffff0d;
 }
 
-body.dark-mode .es-set-num {
-    color: #4285f4;
-}
-
 body.dark-mode .es-set-num:hover {
     background-color: #ffffff22;
 }
